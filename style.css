@@ -1,6 +1,9 @@
 /* Palette sampled from assets/banner.png so the hero and the logo share one background. */
 :root {
   --brand-bg: #2a3c40;
+  /* Hero sits between the brand colour and the page below it: closer to the
+     body than the logo's original backdrop, but still clearly a lighter band. */
+  --hero-bg: #223133;
   --brand-cyan: #53b1bd;
   --brand-mint: #88ebb9;
 
@@ -137,7 +140,7 @@ pre .c {
   /* Layers, top to bottom: a soft glow behind the logo, the same faint grid as
      the body, then the flat colour sampled from banner.png so the image's baked-in
      background blends into the section. */
-  background-color: var(--brand-bg);
+  background-color: var(--hero-bg);
   background-image:
     radial-gradient(60% 46% at 50% 4%, rgba(136, 235, 185, 0.11), transparent 72%),
     radial-gradient(45% 38% at 50% 2%, rgba(83, 177, 189, 0.1), transparent 70%),
@@ -162,10 +165,6 @@ pre .c {
   width: min(100%, 420px);
   height: auto;
   margin: 0 auto;
-  /* The PNG carries an opaque dark background, which would show as a rectangle
-     now that the hero is textured. `lighten` keeps whichever is brighter per
-     pixel: the backdrop wins across the flat background, the logo wins over it. */
-  mix-blend-mode: lighten;
 }
 
 .tagline {
@@ -533,6 +532,14 @@ pre code {
 }
 
 .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  /* Equal basis and equal grow, so both buttons end up the same width whatever
+     their label; the cap keeps them from stretching across the whole column. */
+  flex: 1 1 14rem;
+  max-width: 18rem;
   background: var(--brand-bg);
   color: #eaf4f2;
   border-radius: 8px;
@@ -555,8 +562,42 @@ footer {
   padding: 2rem 0 3rem;
   color: var(--muted);
   font-size: 0.9rem;
+  text-align: center;
 }
 
 footer p {
   margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem 0.45rem;
+}
+
+footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* The GitHub mark is a solid logo, unlike the stroked .ico set above. Defined
+   once as a <symbol> and referenced with <use>, so it isn't repeated per link.
+   Stays at the base text size rather than shrinking with the footer's type. */
+.gh {
+  width: var(--text);
+  height: var(--text);
+  fill: currentColor;
+  flex: none;
+}
+
+/* In the footer it sits inside a link, so currentColor would make it the link
+   green — keep it the same grey as the text around it. */
+footer .gh {
+  fill: var(--muted);
+}
+
+.sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
 }
