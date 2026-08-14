@@ -1,0 +1,26 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "schedule": ["* * * * 6"],
+  "minimumReleaseAge": "14 days",
+  "internalChecksFilter": "strict",
+  "customManagers": [
+    {
+      "description": "Keep the SHA-pinned `uses:` examples in index.html current, the same way buildcage/docker tracks the ones in its Markdown docs.",
+      "customType": "regex",
+      "managerFilePatterns": ["/\\.html$/"],
+      "matchStrings": [
+        "uses: (?<depName>[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+)(?:/[^@\\s]+)?@(?<currentDigest>[a-f0-9]{40}) # (?<currentValue>v[0-9.]+)"
+      ],
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Buildcage's own actions are exempt from minimumReleaseAge, so the landing page can show a new release immediately.",
+      "matchPackageNames": ["/^buildcage\\//"],
+      "minimumReleaseAge": "0 days"
+    }
+  ]
+}

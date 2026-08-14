@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Buildcage — network isolation for secure CI builds</title>
+    <meta
+      name="description"
+      content="Restrict outbound network access during CI builds to an allowlist of domains. Two GitHub Actions: one for docker build, one for run: steps."
+    />
+    <link rel="canonical" href="https://buildcage.github.io/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://buildcage.github.io/" />
+    <meta property="og:title" content="Buildcage — network isolation for secure CI builds" />
+    <meta
+      property="og:description"
+      content="Restrict outbound network access during CI builds to an allowlist of domains. Two GitHub Actions: one for docker build, one for run: steps."
+    />
+    <meta property="og:image" content="https://buildcage.github.io/assets/banner.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="wrap">
+        <img class="banner" src="assets/banner.png" alt="Buildcage" width="600" />
+
+        <p class="tagline">
+          Restrict outbound network access during CI builds to an allowlist of domains.
+        </p>
+
+        <p class="lede">
+          When a compromised dependency tries to exfiltrate secrets or phone home mid-build,
+          Buildcage blocks it: only the destinations you allow are reachable. It runs entirely
+          inside your GitHub Actions job — no agent to install, no external service, no telemetry.
+        </p>
+
+        <figure class="shot">
+          <img
+            src="assets/report-restrict-mode.png"
+            alt="Buildcage report listing allowed destinations and one blocked connection"
+            width="900"
+            loading="lazy"
+          />
+          <figcaption>
+            Every destination your build reached, written to the GitHub Job Summary. The one that
+            wasn't on the allowlist was blocked and recorded.
+          </figcaption>
+        </figure>
+
+        <p class="note">
+          This is not a hypothetical risk: the
+          <a href="https://unit42.paloaltonetworks.com/npm-supply-chain-attack/"
+            >Shai-Hulud npm worm</a
+          >
+          compromised hundreds of packages whose <code>postinstall</code> scripts exfiltrated CI/CD
+          secrets straight out of the build environment. npm v12 disables install scripts by
+          default, closing off that specific path, but builds still handle secrets and run plenty of
+          other commands that could do the same thing. That's the layer Buildcage protects.
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <section class="wrap">
+        <h2>Two ways to use it</h2>
+        <p class="sub">
+          Both follow the same flow: run once in <code>audit</code> mode to see what your build
+          actually reaches, then turn that list into an allowlist and enforce it.
+        </p>
+      </section>
+
+      <section class="wrap product">
+        <h3><a href="https://github.com/buildcage/docker">Buildcage for Docker</a></h3>
+        <p>
+          You build a Docker image. Every <code>RUN</code> step is isolated, with no Dockerfile
+          changes — Buildcage runs as a remote driver for Docker Buildx and routes the build's
+          outbound traffic through a proxy that enforces your allowlist.
+        </p>
+        <pre><code>- name: Start Buildcage in restrict mode
+  uses: buildcage/docker@567c77b193bcb93d3a534e3bf1481e2543bb9811 # v3.0.1
+  with:
+    proxy_mode: restrict
+    allowed_https_rules: |
+      registry.npmjs.org:443
+
+- name: Set up Docker Buildx
+  uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+  with:
+    driver: remote
+    endpoint: docker-container://buildcage
+
+- name: Build
+  uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+  with:
+    context: .</code></pre>
+        <p class="more">
+          <a href="https://github.com/buildcage/docker">Setup guide and reference →</a>
+        </p>
+      </section>
+
+      <section class="wrap product">
+        <h3>
+          <a href="https://github.com/buildcage/isolated-run"
+            >Buildcage for <code>run:</code> Steps</a
+          >
+        </h3>
+        <p>
+          You run a command directly in a workflow step — installing dependencies, a test suite, a
+          build script. The command runs in its own network namespace on the runner, keeping the
+          same UID and <code>$HOME</code> so credentials and caches set up by earlier steps keep
+          working.
+        </p>
+        <pre><code>- name: Install and test with outbound network isolation
+  uses: buildcage/isolated-run@1c9299a00ef0a3c2678515afd173d06f8cba798f # v1.0.1
+  with:
+    proxy_mode: restrict
+    allowed_https_rules: |
+      registry.npmjs.org:443
+    run: |
+      npm ci
+      npm test</code></pre>
+        <p class="more">
+          <a href="https://github.com/buildcage/isolated-run">Setup guide and reference →</a>
+        </p>
+      </section>
+
+      <section class="wrap">
+        <h2>How it compares</h2>
+        <p>
+          The closest tools are
+          <a href="https://github.com/step-security/harden-runner">Harden-Runner</a> and
+          <a href="https://github.com/bullfrogsec/bullfrog">Bullfrog</a>. Both attach an egress
+          policy to the whole GitHub Actions job. Buildcage scopes it to the build itself — a
+          <code>docker build</code>, or a single <code>run:</code> step — so the rest of the job is
+          untouched, and two steps in the same job can carry different allowlists.
+        </p>
+        <p>
+          <strong>Harden-Runner</strong> is a broader security agent: it monitors network, file, and
+          process activity across the runner and correlates each event back to the step that caused
+          it. Buildcage stays narrower on purpose — it restricts outbound traffic during a build and
+          does nothing else. That focus is also why it stays entirely inside your job, with no
+          dashboard and no account. Harden-Runner's Community tier covers public repositories on
+          GitHub-hosted Linux runners; private repositories and self-hosted runners are Enterprise
+          features.
+        </p>
+        <p>
+          <strong>Bullfrog</strong> is free and open source too, with a different architecture: it
+          allowlists by controlling DNS resolution and permitting the resolved IP addresses, rather
+          than inspecting the SNI or Host header of the connection itself, so shared infrastructure
+          like a CDN can end up permitting more than the intended domain. Its documentation also
+          states that jobs running in containers aren't supported, which rules out protecting a
+          <code>docker build</code>.
+        </p>
+      </section>
+
+      <section class="wrap">
+        <h2>Why I built this</h2>
+        <p>
+          Supply chain attacks keep getting more varied and more sophisticated: typosquatted
+          packages, compromised maintainer accounts, malicious postinstall scripts. No single
+          control catches all of it. Defense-in-depth is the baseline now, not an aspiration.
+        </p>
+        <p>
+          Buildcage is meant to be one of those layers: even if a secret gets stolen, it can't leave
+          the build environment. Layers like that only help if people actually deploy them. Real
+          network isolation for a build usually means someone on a security team configuring egress
+          rules and maintaining them over time. Most projects, especially small ones, don't have
+          that — not because they don't care, but because it's more setup than a side project or a
+          small team has time for.
+        </p>
+        <p>
+          I wanted adopting this layer to take nothing more than adding an action. The easier it is
+          to adopt, the more systems get that protection, and the more people's personal information
+          stays where it belongs.
+        </p>
+      </section>
+
+      <section class="wrap cta">
+        <a class="button" href="https://github.com/buildcage/docker">Buildcage for Docker</a>
+        <a class="button" href="https://github.com/buildcage/isolated-run"
+          >Buildcage for <code>run:</code> Steps</a
+        >
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <p>
+          <a href="https://github.com/buildcage">github.com/buildcage</a> · MIT licensed · Container
+          images are signed with Sigstore and verified at action startup.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
