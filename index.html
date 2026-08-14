@@ -276,10 +276,10 @@
                 <td>Whole job</td>
               </tr>
               <tr>
-                <th scope="row">Matched on</th>
+                <th scope="row">Blocking decides on</th>
                 <td>SNI / Host header</td>
-                <td>Not its focus — a broader agent</td>
-                <td>Resolved IP address</td>
+                <td>The domain at DNS time, then the resolved IP</td>
+                <td>The domain at DNS time, then the resolved IP</td>
               </tr>
               <tr>
                 <th scope="row">Private repositories</th>
@@ -304,10 +304,13 @@
         </div>
 
         <p class="fine">
-          Harden-Runner is a broader security agent, correlating each network, file, and process
-          event back to the step that caused it; Buildcage stays narrower on purpose. Bullfrog's
-          documentation states that jobs running in containers aren't supported, which rules out
-          protecting a <code>docker build</code>.
+          Both decide what to block at DNS time and then allow the address the name resolved to,
+          rather than reading the SNI or Host header of the connection itself — so shared
+          infrastructure like a CDN can end up permitting more than the domain you named.
+          Harden-Runner is also a broader security agent, correlating network, file, and process
+          events back to the step that caused them, and on its paid plans it can read inside HTTPS
+          by hooking the TLS library with eBPF — though that feeds its reporting rather than the
+          block decision. Buildcage stays narrower on purpose.
         </p>
       </section>
 
