@@ -15,6 +15,20 @@
      visibility — it should read as texture, never as a drawn element. */
   --grid: rgba(20, 50, 55, 0.045);
   --grid-size: 34px;
+  --text: 17px;
+
+  /* Outfit for headings and Rubik for running text: both geometric with
+     softened corners, which is the quality the logo's wordmark has. */
+  --font-head: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Rubik", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* YAML tokens */
+  --tok-key: #0f6f7d;
+  --tok-str: #1c7a56;
+  --tok-act: #4d7f86;
+  --tok-punc: #8a9a9c;
+  --tok-com: #8a9a9c;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -26,6 +40,12 @@
     --code-bg: #1d2a2b;
     --link: var(--brand-mint);
     --grid: rgba(160, 220, 210, 0.035);
+
+    --tok-key: #6cc6d2;
+    --tok-str: #8fe0b4;
+    --tok-act: #7c9ba0;
+    --tok-punc: #7a8b8d;
+    --tok-com: #7a8b8d;
   }
 }
 
@@ -43,12 +63,31 @@ body {
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: var(--grid-size) var(--grid-size);
   color: var(--fg);
-  font-family:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", "Hiragino Sans",
-    "Noto Sans JP", sans-serif;
-  font-size: 17px;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--text);
   line-height: 1.75;
   -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+.tagline,
+.ba-head,
+.strip b,
+.button,
+.cmp thead th {
+  font-family: var(--font-head);
+  /* Outfit at 500 — heavier weights read as shouting next to 300 body text. */
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+b,
+strong {
+  font-weight: 500;
 }
 
 .wrap {
@@ -61,8 +100,35 @@ a {
 }
 
 code {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.9em;
+}
+
+/* YAML tokens, hand-marked in the HTML — no highlighter library.
+   renovate.json's customManager is written to skip over these tags, so the
+   `uses:` lines can be split into key / action / comment like any other line. */
+pre i {
+  font-style: normal;
+}
+
+pre .k {
+  color: var(--tok-key);
+}
+
+pre .s {
+  color: var(--tok-str);
+}
+
+pre .a {
+  color: var(--tok-act);
+}
+
+pre .p {
+  color: var(--tok-punc);
+}
+
+pre .c {
+  color: var(--tok-com);
 }
 
 /* ---- Hero: always dark, so the banner's baked-in background blends in ---- */
@@ -104,7 +170,6 @@ code {
 
 .tagline {
   font-size: clamp(1.25rem, 3.6vw, 1.7rem);
-  font-weight: 700;
   line-height: 1.4;
   margin: 1.5rem auto 0;
   max-width: 34ch;
@@ -209,26 +274,32 @@ p {
 }
 
 .strip li {
-  position: relative;
-  padding-left: 1.4rem;
+  display: flex;
+  gap: 0.8rem;
   color: var(--muted);
   line-height: 1.65;
 }
 
-.strip li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.62em;
-  width: 7px;
-  height: 7px;
-  border-radius: 2px;
-  background: var(--brand-cyan);
+/* Line-art to match the wireframe cage in the logo: stroked, never filled. */
+.ico {
+  flex: none;
+  width: 27px;
+  height: 27px;
+  margin-top: 0.1rem;
+  color: var(--tok-key);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
+/* Title on its own line: inline, the title nearly fills the column and leaves a
+   single dangling word of the description behind it. */
 .strip b {
+  display: block;
   color: var(--fg);
-  font-weight: 600;
+  margin-bottom: 0.1rem;
 }
 
 /* ---- Before / After ---- */
@@ -290,9 +361,14 @@ p {
   overflow-x: auto;
 }
 
+/* The markers sit in a smaller monospace list, but reading them at that size is
+   a squint — pull them back up to the body size and re-align to the line box. */
 .ba-list li::before {
   position: absolute;
   left: 0;
+  font-size: var(--text);
+  line-height: 1.596rem;
+  font-family: var(--font-body);
 }
 
 .ba-list .open {
@@ -314,7 +390,7 @@ p {
 }
 
 .ba-list .no b {
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.78rem;
   letter-spacing: 0.04em;
   color: #d0563f;
@@ -358,7 +434,7 @@ p {
   border: 1px solid color-mix(in srgb, var(--brand-cyan) 50%, var(--rule));
   color: var(--brand-cyan);
   font-size: 0.9rem;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .steps h3 {
@@ -462,7 +538,6 @@ pre code {
   border-radius: 8px;
   padding: 0.7rem 1.4rem;
   text-decoration: none;
-  font-weight: 600;
 }
 
 .button code {

@@ -21,6 +21,12 @@
     <meta property="og:image" content="https://buildcage.github.io/assets/banner.png" />
     <meta name="twitter:card" content="summary_large_image" />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500&family=Rubik:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -68,20 +74,43 @@
       <section class="wrap">
         <ul class="strip">
           <li>
-            <b>Drops into the build you already have</b> — your Dockerfile, commands, and toolchain
-            stay as they are, in any language
+            <!-- A piece dropping into a container that keeps its shape. -->
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="11" width="17" height="9.5" rx="2.5" />
+              <path d="M12 2.75V9" />
+              <path d="M9.25 6.25 12 9l2.75-2.75" />
+            </svg>
+            <div class="txt"><b>Drops into the build you already have</b><span>your Dockerfile, commands, and toolchain stay as they are, in any language</span></div>
           </li>
           <li>
-            <b>One audit run writes the allowlist for you</b> — see what a real build reaches, copy
-            the generated config, switch to restrict
+            <!-- Inspecting a list: the audit run that produces the allowlist. -->
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 6.5h11" />
+              <path d="M4 11h8" />
+              <path d="M4 15.5h5" />
+              <circle cx="16.5" cy="15.5" r="4" />
+              <path d="m19.4 18.4 2.3 2.3" />
+            </svg>
+            <div class="txt"><b>One audit run writes the allowlist for you</b><span>see what a real build reaches, copy the generated config, switch to restrict</span></div>
           </li>
           <li>
-            <b>Guards the steps that fetch and run code</b> — every <code>RUN</code> in a
-            <code>docker build</code>, or a single <code>run:</code> step
+            <!-- The cage from the logo, closed around the step inside it. -->
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2.6 20 7.3v9.4L12 21.4 4 16.7V7.3z" />
+              <rect x="9.4" y="9.4" width="5.2" height="5.2" rx="1.2" />
+            </svg>
+            <div class="txt"><b>Guards the steps that fetch and run code</b><span>each <code>RUN</code> of a <code>docker build</code>, or a single workflow <code>run:</code></span></div>
           </li>
           <li>
-            <b>Free and open source</b> — MIT licensed, running entirely inside your GitHub Actions
-            job
+            <!-- Open branches: the project is out in the open, free to use. -->
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="5" r="2.4" />
+              <circle cx="6" cy="19" r="2.4" />
+              <circle cx="18" cy="19" r="2.4" />
+              <path d="M12 7.4V13" />
+              <path d="M6 16.6V13h12v3.6" />
+            </svg>
+            <div class="txt"><b>Free and open source</b><span>MIT licensed, free to use, with the implementation open to read</span></div>
           </li>
         </ul>
       </section>
@@ -128,8 +157,8 @@
           <li>
             <h3>Run once in audit mode</h3>
             <p>One line of configuration. Nothing is blocked yet.</p>
-            <pre><code>with:
-  proxy_mode: audit</code></pre>
+            <pre><code><i class="k">with:</i>
+  <i class="k">proxy_mode:</i> <i class="s">audit</i></code></pre>
           </li>
 
           <li>
@@ -151,10 +180,10 @@
               The report carries a <em>Switch to restrict mode</em> section with your allowlist
               already filled in, built from the hosts above.
             </p>
-            <pre><code>proxy_mode: restrict
-allowed_https_rules: &gt;-
-  registry.npmjs.org:443
-  fonts.googleapis.com:443</code></pre>
+            <pre><code><i class="k">proxy_mode:</i> <i class="s">restrict</i>
+<i class="k">allowed_https_rules:</i> <i class="p">&gt;-</i>
+  <i class="s">registry.npmjs.org:443</i>
+  <i class="s">fonts.googleapis.com:443</i></code></pre>
           </li>
         </ol>
       </section>
@@ -171,23 +200,23 @@ allowed_https_rules: &gt;-
           changes — Buildcage runs as a remote driver for Docker Buildx and routes the build's
           outbound traffic through a proxy that enforces your allowlist.
         </p>
-        <pre><code>- name: Start Buildcage in restrict mode
-  uses: buildcage/docker@567c77b193bcb93d3a534e3bf1481e2543bb9811 # v3.0.1
-  with:
-    proxy_mode: restrict
-    allowed_https_rules: |
-      registry.npmjs.org:443
+        <pre><code><i class="p">-</i> <i class="k">name:</i> Start Buildcage in restrict mode
+  <i class="k">uses:</i> <i class="a">buildcage/docker@567c77b193bcb93d3a534e3bf1481e2543bb9811</i> <i class="c"># v3.0.1</i>
+  <i class="k">with:</i>
+    <i class="k">proxy_mode:</i> <i class="s">restrict</i>
+    <i class="k">allowed_https_rules:</i> <i class="p">|</i>
+      <i class="s">registry.npmjs.org:443</i>
 
-- name: Set up Docker Buildx
-  uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
-  with:
-    driver: remote
-    endpoint: docker-container://buildcage
+<i class="p">-</i> <i class="k">name:</i> Set up Docker Buildx
+  <i class="k">uses:</i> <i class="a">docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c</i> <i class="c"># v4.2.0</i>
+  <i class="k">with:</i>
+    <i class="k">driver:</i> <i class="s">remote</i>
+    <i class="k">endpoint:</i> <i class="s">docker-container://buildcage</i>
 
-- name: Build
-  uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
-  with:
-    context: .</code></pre>
+<i class="p">-</i> <i class="k">name:</i> Build
+  <i class="k">uses:</i> <i class="a">docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a</i> <i class="c"># v7.3.0</i>
+  <i class="k">with:</i>
+    <i class="k">context:</i> <i class="s">.</i></code></pre>
         <p class="more">
           <a href="https://github.com/buildcage/docker">Setup guide and reference →</a>
         </p>
@@ -205,15 +234,15 @@ allowed_https_rules: &gt;-
           same UID and <code>$HOME</code> so credentials and caches set up by earlier steps keep
           working.
         </p>
-        <pre><code>- name: Install and test with outbound network isolation
-  uses: buildcage/isolated-run@1c9299a00ef0a3c2678515afd173d06f8cba798f # v1.0.1
-  with:
-    proxy_mode: restrict
-    allowed_https_rules: |
-      registry.npmjs.org:443
-    run: |
-      npm ci
-      npm test</code></pre>
+        <pre><code><i class="p">-</i> <i class="k">name:</i> Install and test with outbound network isolation
+  <i class="k">uses:</i> <i class="a">buildcage/isolated-run@1c9299a00ef0a3c2678515afd173d06f8cba798f</i> <i class="c"># v1.0.1</i>
+  <i class="k">with:</i>
+    <i class="k">proxy_mode:</i> <i class="s">restrict</i>
+    <i class="k">allowed_https_rules:</i> <i class="p">|</i>
+      <i class="s">registry.npmjs.org:443</i>
+    <i class="k">run:</i> <i class="p">|</i>
+      <i class="s">npm ci</i>
+      <i class="s">npm test</i></code></pre>
         <p class="more">
           <a href="https://github.com/buildcage/isolated-run">Setup guide and reference →</a>
         </p>
@@ -315,8 +344,7 @@ allowed_https_rules: &gt;-
     <footer>
       <div class="wrap">
         <p>
-          <a href="https://github.com/buildcage">github.com/buildcage</a> · MIT licensed · Container
-          images are signed with Sigstore and verified at action startup.
+          <a href="https://github.com/buildcage">github.com/buildcage</a> · MIT licensed
         </p>
       </div>
     </footer>

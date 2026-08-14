@@ -6,11 +6,11 @@
   "internalChecksFilter": "strict",
   "customManagers": [
     {
-      "description": "Keep the SHA-pinned `uses:` examples in index.html current, the same way buildcage/docker tracks the ones in its Markdown docs.",
+      "description": "Keep the SHA-pinned `uses:` examples in index.html current, the same way buildcage/docker tracks the ones in its Markdown docs. The examples are syntax-highlighted, so `(?:</?[a-z][^>]*>|\\s)*` lets tags and whitespace sit between the tokens; it still matches the plain-text form too.",
       "customType": "regex",
       "managerFilePatterns": ["/\\.html$/"],
       "matchStrings": [
-        "uses: (?<depName>[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+)(?:/[^@\\s]+)?@(?<currentDigest>[a-f0-9]{40}) # (?<currentValue>v[0-9.]+)"
+        "uses:(?:</?[a-z][^>]*>|\\s)*(?<depName>[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+)(?:/[^@\\s<]+)?@(?<currentDigest>[a-f0-9]{40})(?:</?[a-z][^>]*>|\\s)*#\\s*(?<currentValue>v[0-9.]+)"
       ],
       "datasourceTemplate": "github-tags",
       "versioningTemplate": "semver"
