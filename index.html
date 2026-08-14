@@ -9,6 +9,7 @@
       content="Restrict outbound network access during CI builds to an allowlist of domains. Two GitHub Actions: one for docker build, one for run: steps."
     />
     <link rel="canonical" href="https://buildcage.github.io/" />
+    <link rel="icon" href="assets/favicon.png" type="image/png" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://buildcage.github.io/" />
@@ -25,7 +26,7 @@
   <body>
     <header class="hero">
       <div class="wrap">
-        <img class="banner" src="assets/banner.png" alt="Buildcage" width="600" />
+        <img class="logo" src="assets/logo.png" alt="Buildcage — network isolation for secure builds" width="420" />
 
         <p class="tagline">
           Restrict outbound network access during CI builds to an allowlist of domains.
@@ -65,14 +66,105 @@
 
     <main>
       <section class="wrap">
-        <h2>Two ways to use it</h2>
-        <p class="sub">
-          Both follow the same flow: run once in <code>audit</code> mode to see what your build
-          actually reaches, then turn that list into an allowlist and enforce it.
-        </p>
+        <ul class="strip">
+          <li>
+            <b>Drops into the build you already have</b> — your Dockerfile, commands, and toolchain
+            stay as they are, in any language
+          </li>
+          <li>
+            <b>One audit run writes the allowlist for you</b> — see what a real build reaches, copy
+            the generated config, switch to restrict
+          </li>
+          <li>
+            <b>Guards the steps that fetch and run code</b> — every <code>RUN</code> in a
+            <code>docker build</code>, or a single <code>run:</code> step
+          </li>
+          <li>
+            <b>Free and open source</b> — MIT licensed, running entirely inside your GitHub Actions
+            job
+          </li>
+        </ul>
       </section>
 
-      <section class="wrap product">
+      <section class="wrap">
+        <h2>What changes</h2>
+        <p class="sub">
+          A build step can normally open a connection to anywhere. Buildcage narrows that to the
+          destinations you named, and records every attempt either way.
+        </p>
+
+        <div class="ba">
+          <div class="ba-panel">
+            <h3 class="ba-head">Without Buildcage</h3>
+            <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
+            <p class="ba-arrow" aria-hidden="true">↓</p>
+            <ul class="ba-list">
+              <li class="open">any host on the internet</li>
+            </ul>
+            <p class="ba-foot">Nothing is recorded, so nothing looks unusual.</p>
+          </div>
+
+          <div class="ba-panel is-on">
+            <h3 class="ba-head">With Buildcage</h3>
+            <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
+            <p class="ba-arrow" aria-hidden="true">↓</p>
+            <ul class="ba-list">
+              <li class="ok"><span>registry.npmjs.org:443</span></li>
+              <li class="no"><span>evil.example.com:443</span> <b>BLOCKED</b></li>
+            </ul>
+            <p class="ba-foot">Both appear in the report, whichever way they went.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="wrap">
+        <h2>Your allowlist comes from a real build</h2>
+        <p class="sub">
+          Start in <code>audit</code> mode. Buildcage watches one real build, then hands you the
+          configuration for the strict one.
+        </p>
+
+        <ol class="steps">
+          <li>
+            <h3>Run once in audit mode</h3>
+            <p>One line of configuration. Nothing is blocked yet.</p>
+            <pre><code>with:
+  proxy_mode: audit</code></pre>
+          </li>
+
+          <li>
+            <h3>Read what your build actually reached</h3>
+            <p>Every destination lands in the Job Summary.</p>
+            <figure class="shot inline">
+              <img
+                src="assets/report-audit-mode.png"
+                alt="Audit-mode report listing the hosts a build contacted"
+                width="820"
+                loading="lazy"
+              />
+            </figure>
+          </li>
+
+          <li>
+            <h3>Copy the configuration it generated for you</h3>
+            <p>
+              The report carries a <em>Switch to restrict mode</em> section with your allowlist
+              already filled in, built from the hosts above.
+            </p>
+            <pre><code>proxy_mode: restrict
+allowed_https_rules: &gt;-
+  registry.npmjs.org:443
+  fonts.googleapis.com:443</code></pre>
+          </li>
+        </ol>
+      </section>
+
+      <section class="wrap">
+        <h2>Two ways to use it</h2>
+        <p class="sub">Same audit → restrict flow either way.</p>
+      </section>
+
+      <section class="wrap product product--first">
         <h3><a href="https://github.com/buildcage/docker">Buildcage for Docker</a></h3>
         <p>
           You build a Docker image. Every <code>RUN</code> step is isolated, with no Dockerfile
@@ -129,30 +221,64 @@
 
       <section class="wrap">
         <h2>How it compares</h2>
-        <p>
+        <p class="sub">
           The closest tools are
           <a href="https://github.com/step-security/harden-runner">Harden-Runner</a> and
           <a href="https://github.com/bullfrogsec/bullfrog">Bullfrog</a>. Both attach an egress
-          policy to the whole GitHub Actions job. Buildcage scopes it to the build itself — a
-          <code>docker build</code>, or a single <code>run:</code> step — so the rest of the job is
-          untouched, and two steps in the same job can carry different allowlists.
+          policy to the whole GitHub Actions job; Buildcage scopes it to the build itself, so the
+          rest of the job is untouched and two steps can carry different allowlists.
         </p>
-        <p>
-          <strong>Harden-Runner</strong> is a broader security agent: it monitors network, file, and
-          process activity across the runner and correlates each event back to the step that caused
-          it. Buildcage stays narrower on purpose — it restricts outbound traffic during a build and
-          does nothing else. That focus is also why it stays entirely inside your job, with no
-          dashboard and no account. Harden-Runner's Community tier covers public repositories on
-          GitHub-hosted Linux runners; private repositories and self-hosted runners are Enterprise
-          features.
-        </p>
-        <p>
-          <strong>Bullfrog</strong> is free and open source too, with a different architecture: it
-          allowlists by controlling DNS resolution and permitting the resolved IP addresses, rather
-          than inspecting the SNI or Host header of the connection itself, so shared infrastructure
-          like a CDN can end up permitting more than the intended domain. Its documentation also
-          states that jobs running in containers aren't supported, which rules out protecting a
-          <code>docker build</code>.
+
+        <div class="table-scroll">
+          <table class="cmp">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Buildcage</th>
+                <th scope="col">Harden-Runner</th>
+                <th scope="col">Bullfrog</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Scope of the policy</th>
+                <td>One build, or one <code>run:</code> step</td>
+                <td>Whole job</td>
+                <td>Whole job</td>
+              </tr>
+              <tr>
+                <th scope="row">Matched on</th>
+                <td>SNI / Host header</td>
+                <td>Not its focus — a broader agent</td>
+                <td>Resolved IP address</td>
+              </tr>
+              <tr>
+                <th scope="row">Private repositories</th>
+                <td>Included</td>
+                <td>Enterprise tier</td>
+                <td>Included</td>
+              </tr>
+              <tr>
+                <th scope="row">External dashboard or account</th>
+                <td>Not required</td>
+                <td>Used for the detailed reporting</td>
+                <td>Not required</td>
+              </tr>
+              <tr>
+                <th scope="row">Also watches files and processes</th>
+                <td>No</td>
+                <td>Yes</td>
+                <td>No</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="fine">
+          Harden-Runner is a broader security agent, correlating each network, file, and process
+          event back to the step that caused it; Buildcage stays narrower on purpose. Bullfrog's
+          documentation states that jobs running in containers aren't supported, which rules out
+          protecting a <code>docker build</code>.
         </p>
       </section>
 

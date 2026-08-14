@@ -91,9 +91,9 @@ code {
   color: var(--brand-mint);
 }
 
-.banner {
+.logo {
   display: block;
-  width: min(100%, 600px);
+  width: min(100%, 420px);
   height: auto;
   margin: 0 auto;
   /* The PNG carries an opaque dark background, which would show as a rectangle
@@ -185,6 +185,245 @@ p {
 .product {
   border-top: 1px solid var(--rule);
   padding-top: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+/* The first one sits directly under its own section heading, so a rule there
+   would orphan that heading rather than separate anything. */
+.product--first {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 1.5rem;
+}
+
+/* ---- Feature strip ---- */
+
+.strip {
+  display: grid;
+  /* 16rem keeps this at a 2x2 block rather than 3-across with a stray fourth. */
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.75rem 1.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.95rem;
+}
+
+.strip li {
+  position: relative;
+  padding-left: 1.4rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.strip li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--brand-cyan);
+}
+
+.strip b {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* ---- Before / After ---- */
+
+.ba {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.ba-panel {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1.25rem 1.25rem 1rem;
+  background: var(--bg);
+}
+
+.ba-panel.is-on {
+  border-color: color-mix(in srgb, var(--brand-cyan) 45%, var(--rule));
+}
+
+.ba-head {
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 0.9rem;
+}
+
+.ba-panel.is-on .ba-head {
+  color: var(--brand-cyan);
+}
+
+.ba-step,
+.ba-arrow {
+  margin: 0;
+}
+
+.ba-arrow {
+  color: var(--muted);
+  line-height: 1.2;
+  margin: 0.35rem 0;
+}
+
+.ba-list {
+  list-style: none;
+  margin: 0.35rem 0 0.9rem;
+  padding: 0;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.84rem;
+  line-height: 1.9;
+}
+
+.ba-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.ba-list li::before {
+  position: absolute;
+  left: 0;
+}
+
+.ba-list .open {
+  color: var(--muted);
+}
+
+.ba-list .open::before {
+  content: "→";
+}
+
+.ba-list .ok::before {
+  content: "✓";
+  color: #1f9e6a;
+}
+
+.ba-list .no::before {
+  content: "✕";
+  color: #d0563f;
+}
+
+.ba-list .no b {
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: #d0563f;
+}
+
+.ba-foot {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+/* ---- Numbered steps ---- */
+
+.steps {
+  list-style: none;
+  counter-reset: step;
+  margin: 1.5rem 0 0;
+  padding: 0;
+}
+
+.steps > li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 3rem;
+}
+
+.steps > li + li {
+  margin-top: 2rem;
+}
+
+.steps > li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--brand-cyan) 50%, var(--rule));
+  color: var(--brand-cyan);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.steps h3 {
+  margin: 0.15rem 0 0.4rem;
+}
+
+.steps p {
+  color: var(--muted);
+  margin-bottom: 0.8rem;
+}
+
+.shot.inline {
+  margin: 0;
+}
+
+.shot.inline img {
+  border-color: var(--rule);
+}
+
+/* ---- Comparison table ---- */
+
+.table-scroll {
+  overflow-x: auto;
+  margin: 1.5rem 0 1rem;
+}
+
+.cmp {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 40rem;
+  font-size: 0.9rem;
+}
+
+.cmp th,
+.cmp td {
+  text-align: left;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+
+.cmp thead th {
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom-width: 2px;
+}
+
+.cmp thead th:nth-child(2) {
+  color: var(--brand-cyan);
+}
+
+.cmp tbody th {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.cmp td:first-of-type {
+  color: var(--fg);
+}
+
+.fine {
+  font-size: 0.9rem;
+  color: var(--muted);
 }
 
 pre {
