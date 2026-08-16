@@ -234,7 +234,11 @@
 <i class="p">-</i> <i class="k">name:</i> Build
   <i class="k">uses:</i> <i class="a">docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a</i> <i class="c"># v7.3.0</i>
   <i class="k">with:</i>
-    <i class="k">context:</i> <i class="s">.</i></code></pre>
+    <i class="k">context:</i> <i class="s">.</i>
+
+<i class="p">-</i> <i class="k">name:</i> Show Buildcage report
+  <i class="k">if:</i> <i class="s">always()</i>
+  <i class="k">uses:</i> <i class="a">buildcage/docker/report@567c77b193bcb93d3a534e3bf1481e2543bb9811</i> <i class="c"># v3.0.1</i></code></pre>
         <p class="more">
           <a href="https://github.com/buildcage/docker">Setup guide and reference →</a>
         </p>
