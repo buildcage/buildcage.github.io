@@ -140,6 +140,8 @@ pre .c {
   /* Layers, top to bottom: a soft glow behind the logo, the same faint grid as
      the body, then the flat colour sampled from banner.png so the image's baked-in
      background blends into the section. */
+  /* Anchors .gh-corner below. */
+  position: relative;
   background-color: var(--hero-bg);
   background-image:
     radial-gradient(60% 46% at 50% 4%, rgba(136, 235, 185, 0.11), transparent 72%),
@@ -158,6 +160,35 @@ pre .c {
 
 .hero a {
   color: var(--brand-mint);
+}
+
+/* Two classes so it outranks `.hero a` above — the GitHub mark shouldn't take
+   our mint, the same call the footer's copy makes. Larger than `.gh`'s base
+   text size because nothing sits beside it to match, and the padding turns it
+   into a real tap target. */
+.hero .gh-corner {
+  position: absolute;
+  top: clamp(0.5rem, 1.5vw, 0.75rem);
+  right: clamp(0.5rem, 1.5vw, 0.75rem);
+  display: inline-flex;
+  padding: 0.5rem;
+  border-radius: 999px;
+  color: #eaf4f2;
+  opacity: 0.7;
+  transition:
+    opacity 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.hero .gh-corner:hover,
+.hero .gh-corner:focus-visible {
+  opacity: 1;
+  background-color: rgba(234, 244, 242, 0.12);
+}
+
+.gh-corner .gh {
+  width: 1.2rem;
+  height: 1.2rem;
 }
 
 .logo {
