@@ -162,13 +162,13 @@ pre .c {
 
 .logo {
   display: block;
-  width: min(100%, 420px);
+  width: min(100%, 340px);
   height: auto;
   margin: 0 auto;
 }
 
 .tagline {
-  font-size: clamp(1.25rem, 3.6vw, 1.7rem);
+  font-size: clamp(1.25rem, 3.6vw, 1.5rem);
   line-height: 1.4;
   margin: 1.5rem auto 0;
   max-width: 34ch;
