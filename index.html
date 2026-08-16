@@ -278,9 +278,10 @@
         <p class="sub">
           The closest tools are
           <a href="https://github.com/step-security/harden-runner">Harden-Runner</a> and
-          <a href="https://github.com/bullfrogsec/bullfrog">Bullfrog</a>. Both attach an egress
-          policy to the whole GitHub Actions job; Buildcage scopes it to the build itself, so the
-          rest of the job is untouched and two steps can carry different allowlists.
+          <a href="https://github.com/bullfrogsec/bullfrog">Bullfrog</a>. Both attach one egress
+          policy to the whole job, covering every step. Buildcage scopes the policy per build
+          instead: the wrapped step gets its own allowlist, but steps outside it aren't covered —
+          protecting a whole job means wrapping each step that needs it.
         </p>
 
         <div class="table-scroll">
@@ -313,6 +314,12 @@
                 <td>Included</td>
               </tr>
               <tr>
+                <th scope="row">Runner platform</th>
+                <td>Linux only</td>
+                <td>Linux, macOS, Windows</td>
+                <td>Linux only</td>
+              </tr>
+              <tr>
                 <th scope="row">External dashboard or account</th>
                 <td>Not required</td>
                 <td>Used for the detailed reporting</td>
@@ -329,12 +336,12 @@
         </div>
 
         <p class="fine">
-          Both decide what to block at DNS time and then allow the address the name resolved to,
-          rather than reading the SNI or Host header of the connection itself — so shared
-          infrastructure like a CDN can end up permitting more than the domain you named.
-          Harden-Runner is also a broader security agent, correlating network, file, and process
-          events back to the step that caused them, and on its paid plans it can read inside HTTPS
-          by hooking the TLS library with eBPF — though that feeds its reporting rather than the
+          Both allow whatever IP a name resolved to, with no further check — so on shared hosting,
+          one allowed domain can end up allowing every other site on that IP too. Buildcage's
+          SNI/Host check narrows this but doesn't close it: domain fronting through the same kind
+          of shared infrastructure still gets through, since it doesn't decrypt what's behind an
+          allowed SNI either. Harden-Runner is also a broader agent, correlating network, file, and
+          process events, and its paid plans read inside HTTPS via eBPF — for reporting, not the
           block decision. Buildcage stays narrower on purpose.
         </p>
       </section>
