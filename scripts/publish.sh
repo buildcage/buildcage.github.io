@@ -46,7 +46,10 @@ trap 'rm -f "$tmp_index"' EXIT
 git add --force -- "${SITE_FILES[@]}"
 
 tree=$(git write-tree)
-commit=$(git commit-tree "$tree" -m "Publish site from ${source_branch} ${source_commit}")
+
+# -S explicitly: the repository requires verified signatures, and commit-tree
+# ignores commit.gpgsign (that setting only applies to `git commit`).
+commit=$(git commit-tree -S "$tree" -m "Publish site from ${source_branch} ${source_commit}")
 
 git update-ref "refs/heads/${BRANCH}" "$commit"
 
