@@ -4,20 +4,50 @@ The landing page for the [Buildcage](https://github.com/buildcage) organization,
 **<https://buildcage.github.io/>**.
 
 The page is plain HTML and CSS, with a few lines of inline JavaScript for the click-to-play video.
-GitHub Pages serves this directory as it is, from `main` — pushing to `main` is the deploy.
 
-The hero video is the one generated part of the site; everything else is authored by hand. It comes
-from the Remotion project in [`demo/`](#demo-video), and is **not** committed — at ~2.4 MB per cut,
-every version would sit in the git history for good. It's uploaded as a release asset instead and
-linked by URL, which is why `assets/demo.mp4` is gitignored. The poster frame
-(`assets/demo-poster.png`) *is* committed: it's ~170 KB and has to be there for the first paint.
+## Branches
+
+| Branch | Contents |
+| --- | --- |
+| `main` | Source. Authored files only — no rendered video or poster |
+| `publish` | What Pages serves: the site files plus the rendered assets |
+
+The hero video is the one generated part of the site, rendered from the Remotion project in
+[`demo/`](#demo-video). At ~2.4 MB per cut it stays out of `main` entirely — otherwise every version
+would sit in the history for good. `publish` is rebuilt as a single parentless commit each time, so
+it doesn't accumulate them either.
+
+Nothing is lost by `publish` having no history: it's reproducible from `main`, and each commit
+message records the source commit it was built from. To roll the site back, check out the older
+`main`, re-render, and publish again.
+
+> Pages is configured to deploy from the `publish` branch. Pushing to `main` does **not** deploy.
 
 ## Local preview
 
 ```sh
+make demo-stage     # put the rendered video and poster in assets/ (gitignored)
 make serve          # http://localhost:8765
 make serve PORT=8080
 ```
+
+Without `make demo-stage` the page renders fine but the video won't load — the file isn't on `main`.
+
+## Publishing
+
+```sh
+make demo           # render the video + poster into demo/out/
+make demo-stage     # copy them into assets/
+make publish        # rebuild the publish branch from HEAD + those assets
+git push --force origin publish
+```
+
+`make publish` refuses to run with uncommitted changes, so the recorded source commit always
+describes what was actually published. It only writes the local branch; pushing is deliberate and
+separate.
+
+Re-rendering isn't needed for a text-only change — `make demo-stage && make publish` is enough once
+the files exist in `demo/out/`.
 
 ## Demo video
 
@@ -28,31 +58,16 @@ that a wording, colour, or timing change is a re-render, not a re-recording.
 ```sh
 cd demo && vp run dev   # Remotion Studio, for iterating on scenes
 make demo               # render the video + poster into demo/out/
-make demo-publish       # copy the poster into assets/, ready to commit
-make demo-release       # upload the video to the release the page points at
 make demo-gif           # render the README GIF into demo/out/
 ```
 
-`demo/out/` is gitignored, so re-rendering while you tune something costs nothing.
-
-### Releasing a new cut of the video
-
-The `<source>` URL in `index.html` pins a release tag, so a given version of the page always names
-one exact cut of the video and a new upload can never be served from a stale cache. To ship a new
-one:
-
-1. Bump `DEMO_TAG` in the `Makefile` and the matching tag in `index.html`'s `<source>` URL.
-2. `make demo` — render it.
-3. `make demo-release` — creates the release if needed and uploads the file. It refuses to run if
-   `index.html` doesn't already point at the tag, so the two can't drift.
-4. `make demo-publish`, then commit the poster and the HTML change.
-
-`make demo-gif` stays separate because the GIF is for the two action repos' READMEs, not this site
-— upload it there by hand.
+`demo/out/` is gitignored, so re-rendering while you tune something costs nothing. `make demo-gif`
+is separate because the GIF is for the two action repos' READMEs, not this site — upload it there by
+hand.
 
 Note that Remotion is free for individuals, non-profits, and for-profit organisations with three
-employees or fewer; larger organisations need a company licence. The rendered files themselves
-carry no such restriction.
+employees or fewer; larger organisations need a company licence. The rendered files themselves carry
+no such restriction.
 
 ### What lives where
 

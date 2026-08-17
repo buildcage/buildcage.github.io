@@ -75,14 +75,9 @@
               width="1440"
               height="1080"
             >
-              <!-- Hosted as a release asset rather than committed: the file is
-                   ~2.4 MB and every version would sit in the history for good.
-                   The tag is pinned, so this URL always names one exact cut of
-                   the video — bump it and `make demo-release` together. -->
-              <source
-                src="https://github.com/buildcage/buildcage.github.io/releases/download/demo-v1/demo.mp4"
-                type="video/mp4"
-              />
+              <!-- Rendered from demo/, so it only exists on the publish
+                   branch — see the README. Absent on main by design. -->
+              <source src="assets/demo.mp4" type="video/mp4" />
             </video>
             <button
               class="play"

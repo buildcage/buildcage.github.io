@@ -1,4 +1,7 @@
 node_modules/
 demo/out/
 .DS_Store
+
+# Rendered from demo/ and carried only by the publish branch, never by main.
 assets/demo.mp4
+assets/demo-poster.png
