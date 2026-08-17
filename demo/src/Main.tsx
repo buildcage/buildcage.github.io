@@ -16,7 +16,11 @@ export type DemoProps = {
   readonly buildcageSteps: (HighlightedCode | null)[] | null;
   /** Highlighted rest-of-workflow panel per workflow state. */
   readonly restSteps: HighlightedCode[] | null;
-  /** Trim the title/outro and the first code beat for the GIF cut. */
+  /**
+   * Drop the title card for the GIF cut. The outro stays either way — a GIF
+   * loops with no controls and no gap, so the logo is what tells the viewer
+   * where the thing ends and starts over.
+   */
   readonly short: boolean;
 };
 
@@ -34,7 +38,7 @@ export const totalFrames = (short: boolean) => {
   const codeScenes = workflowStates.length * sceneFrames.code;
   const core =
     codeScenes + sceneFrames.run * 2 + sceneFrames.auditSummary + sceneFrames.restrictSummary;
-  return short ? core : core + sceneFrames.title + sceneFrames.outro;
+  return core + sceneFrames.outro + (short ? 0 : sceneFrames.title);
 };
 
 export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short }) => {
@@ -122,11 +126,9 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short }) 
           <RestrictSummaryScene heading="Anything else is blocked" />
         </Series.Sequence>
 
-        {short ? null : (
-          <Series.Sequence durationInFrames={sceneFrames.outro} name="Outro">
-            <Outro />
-          </Series.Sequence>
-        )}
+        <Series.Sequence durationInFrames={sceneFrames.outro} name="Outro">
+          <Outro />
+        </Series.Sequence>
       </Series>
     </AbsoluteFill>
   );
