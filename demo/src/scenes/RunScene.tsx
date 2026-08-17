@@ -9,7 +9,10 @@ import { color, font } from "../theme";
  * A stylized stand-in for the Actions run — deliberately not a screen recording,
  * so it never goes stale when GitHub's UI changes.
  */
-export const RunScene: React.FC<{ readonly heading: string }> = ({ heading }) => {
+export const RunScene: React.FC<{ readonly heading: string; readonly note?: string }> = ({
+  heading,
+  note,
+}) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
 
@@ -17,7 +20,7 @@ export const RunScene: React.FC<{ readonly heading: string }> = ({ heading }) =>
   const perStep = (durationInFrames - start - 16) / runnerSteps.length;
 
   return (
-    <SceneFrame heading={heading} accent={color.cyan}>
+    <SceneFrame heading={heading} note={note} accent={color.cyan}>
       <div
         style={{
           width: CONTENT_WIDTH,

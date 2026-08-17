@@ -22,7 +22,6 @@ export const gh = {
   fg: "#1f2328",
   muted: "#59636e",
   rowAlt: "#f6f8fa",
-  danger: "#d1242f",
 } as const;
 
 export const font = {
@@ -62,3 +61,17 @@ export const codeTheme = {
     },
   ],
 } as const;
+
+/**
+ * Warm counterparts to every colour the theme above emits, matched role for
+ * role and kept at a similar lightness. Lines a step actually adds or changes
+ * are recoloured through this map, so the syntax colouring still reads the
+ * same — only the hue family shifts — and the eye can tell at a glance which
+ * lines are new and which were already there.
+ */
+export const addedLineColors: Readonly<Record<string, string>> = {
+  "#6CC6D2": "#f0a95c", // key
+  "#8FE0B4": "#f6cd94", // string
+  "#7A8B8D": "#9c8b7d", // comment / punctuation
+  "#E6EEEC": "#f4e7d9", // default foreground
+};

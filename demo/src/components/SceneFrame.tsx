@@ -13,9 +13,10 @@ export const CONTENT_WIDTH = 1120;
  */
 export const SceneFrame: React.FC<{
   readonly heading: string;
+  readonly note?: string;
   readonly accent?: string;
   readonly children: React.ReactNode;
-}> = ({ heading, accent, children }) => {
+}> = ({ heading, note, accent, children }) => {
   return (
     <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
       <div
@@ -26,7 +27,9 @@ export const SceneFrame: React.FC<{
           alignItems: "flex-start",
         }}
       >
-        <SceneHeading accent={accent}>{heading}</SceneHeading>
+        <SceneHeading note={note} accent={accent}>
+          {heading}
+        </SceneHeading>
         {children}
       </div>
     </AbsoluteFill>

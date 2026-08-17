@@ -75,7 +75,8 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short }) 
               layout="none"
             >
               <CodeScene
-                heading={state.heading ?? ""}
+                heading={state.heading}
+                note={state.note}
                 buildcageOld={i === 0 ? null : (buildcageSteps[i - 1] ?? null)}
                 buildcageNew={buildcageSteps[i] ?? null}
                 restOld={i === 0 ? null : (restSteps[i - 1] ?? null)}
@@ -86,7 +87,7 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short }) 
         })}
 
         <Series.Sequence durationInFrames={sceneFrames.run} name="run-audit" layout="none">
-          <RunScene heading="Run it" />
+          <RunScene heading="Step 2 — Run it" note="nothing is blocked yet" />
         </Series.Sequence>
 
         <Series.Sequence
@@ -99,7 +100,8 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short }) 
 
         <Series.Sequence durationInFrames={sceneFrames.code} name={restrictState.id} layout="none">
           <CodeScene
-            heading={restrictState.heading ?? ""}
+            heading={restrictState.heading}
+            note={restrictState.note}
             buildcageOld={buildcageSteps[buildcageSteps.length - 2] ?? null}
             buildcageNew={restrictBuildcageCode}
             restOld={restSteps[restSteps.length - 2] ?? null}
@@ -108,7 +110,7 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short }) 
         </Series.Sequence>
 
         <Series.Sequence durationInFrames={sceneFrames.run} name="run-restrict" layout="none">
-          <RunScene heading="Run it again" />
+          <RunScene heading="Run it again" note="this time in restrict mode" />
         </Series.Sequence>
 
         <Series.Sequence

@@ -4,13 +4,16 @@ import { font, gh } from "../theme";
 
 type Column = { readonly label: string; readonly align: "left" | "center" | "right" };
 
+/**
+ * Rows are styled exactly as GitHub renders them in the Job Summary — no
+ * emphasis of our own on the blocked row. The real report doesn't tint or
+ * recolour it (see ../../assets/report-restrict-mode.png), and inventing a
+ * treatment here would show viewers an interface they'll never get.
+ */
 export const HostsTable: React.FC<{
   readonly columns: readonly Column[];
   readonly rows: readonly (readonly (string | number)[])[];
-  /** 0-based row index revealed with a highlight, for the blocked row. */
-  readonly highlightRow?: number | null;
-  readonly highlightProgress?: number;
-}> = ({ columns, rows, highlightRow = null, highlightProgress = 0 }) => {
+}> = ({ columns, rows }) => {
   const cell: React.CSSProperties = {
     border: `1px solid ${gh.border}`,
     padding: "10px 16px",
@@ -39,31 +42,22 @@ export const HostsTable: React.FC<{
         </tr>
       </thead>
       <tbody>
-        {rows.map((row, i) => {
-          const highlighted = highlightRow === i;
-          return (
-            <tr key={row.join("|")}>
-              {row.map((value, j) => (
-                <td
-                  key={columns[j]?.label ?? j}
-                  style={{
-                    ...cell,
-                    textAlign: columns[j]?.align ?? "left",
-                    background: highlighted
-                      ? `rgba(209, 36, 47, ${0.09 * highlightProgress})`
-                      : i % 2 === 1
-                        ? gh.rowAlt
-                        : gh.cardBg,
-                    color: highlighted && j === 0 ? gh.danger : gh.fg,
-                    fontWeight: highlighted && j === 0 ? 500 : 400,
-                  }}
-                >
-                  {value}
-                </td>
-              ))}
-            </tr>
-          );
-        })}
+        {rows.map((row, i) => (
+          <tr key={row.join("|")}>
+            {row.map((value, j) => (
+              <td
+                key={columns[j]?.label ?? j}
+                style={{
+                  ...cell,
+                  textAlign: columns[j]?.align ?? "left",
+                  background: i % 2 === 1 ? gh.rowAlt : gh.cardBg,
+                }}
+              >
+                {value}
+              </td>
+            ))}
+          </tr>
+        ))}
       </tbody>
     </table>
   );

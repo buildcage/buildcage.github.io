@@ -48,7 +48,10 @@ const remoteBuildx = buildxStep(`
 
 export type WorkflowState = {
   readonly id: string;
-  readonly heading: string | null;
+  readonly heading: string;
+  /** Sub-line under the heading; the three edits that make up step 1 share
+   * one heading and differ only here, so they read as one step. */
+  readonly note?: string;
   /** null = the Buildcage step isn't in the workflow yet. */
   readonly buildcageYaml: string | null;
   readonly restYaml: string;
@@ -63,25 +66,29 @@ export const workflowStates: readonly WorkflowState[] = [
   },
   {
     id: "audit",
-    heading: "Step 1 — Start Buildcage in audit mode",
+    heading: "Step 1 — Add Buildcage",
+    note: "start it in audit mode",
     buildcageYaml: auditBuildcage,
     restYaml: [plainBuildx, buildStep].join("\n\n"),
   },
   {
     id: "remote-driver",
-    heading: "Step 2 — Point Buildx at it",
+    heading: "Step 1 — Add Buildcage",
+    note: "point Buildx at it",
     buildcageYaml: auditBuildcage,
     restYaml: [remoteBuildx, buildStep].join("\n\n"),
   },
   {
     id: "report",
-    heading: "Step 3 — Show the report",
+    heading: "Step 1 — Add Buildcage",
+    note: "show the report",
     buildcageYaml: auditBuildcage,
     restYaml: [remoteBuildx, buildStep, reportStep].join("\n\n"),
   },
   {
     id: "restrict",
-    heading: "Paste it back",
+    heading: "Step 3 — Paste it back",
+    note: "the allowlist is now enforced",
     buildcageYaml: restrictBuildcage,
     restYaml: [remoteBuildx, buildStep, reportStep].join("\n\n"),
   },

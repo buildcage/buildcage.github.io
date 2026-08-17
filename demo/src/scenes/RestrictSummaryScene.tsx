@@ -52,8 +52,6 @@ export const RestrictSummaryScene: React.FC<{ readonly heading: string }> = ({ h
                 { label: "Count", align: "right" },
               ]}
               rows={blockedHosts.map((h) => [h.host, h.rule, h.reason, h.count])}
-              highlightRow={0}
-              highlightProgress={blockedIn}
             />
           </div>
         </BuildSummaryCard>

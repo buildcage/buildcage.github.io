@@ -3,10 +3,16 @@ import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 
 import { color, font } from "../theme";
 
+/**
+ * The step title holds still across the beats that belong to the same step —
+ * only `note` changes — so a multi-part step reads as one step rather than
+ * three.
+ */
 export const SceneHeading: React.FC<{
   readonly children: React.ReactNode;
+  readonly note?: string;
   readonly accent?: string;
-}> = ({ children, accent = color.mint }) => {
+}> = ({ children, note, accent = color.mint }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -17,24 +23,47 @@ export const SceneHeading: React.FC<{
     <div
       style={{
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         gap: 16,
         opacity: enter,
         transform: `translateY(${y}px)`,
         marginBottom: 40,
       }}
     >
-      <div style={{ width: 6, height: 34, borderRadius: 3, background: accent }} />
       <div
         style={{
-          fontFamily: font.heading,
-          fontWeight: 500,
-          fontSize: 40,
-          color: color.fg,
-          letterSpacing: -0.5,
+          width: 6,
+          height: note ? 62 : 34,
+          borderRadius: 3,
+          background: accent,
+          flexShrink: 0,
         }}
-      >
-        {children}
+      />
+      <div>
+        <div
+          style={{
+            fontFamily: font.heading,
+            fontWeight: 500,
+            fontSize: 40,
+            color: color.fg,
+            letterSpacing: -0.5,
+          }}
+        >
+          {children}
+        </div>
+        {note && (
+          <div
+            style={{
+              fontFamily: font.body,
+              fontWeight: 300,
+              fontSize: 27,
+              color: color.muted,
+              marginTop: 6,
+            }}
+          >
+            {note}
+          </div>
+        )}
       </div>
     </div>
   );
