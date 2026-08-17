@@ -1,5 +1,12 @@
-/* Palette sampled from assets/banner.png so the hero and the logo share one background. */
+/* Palette sampled from assets/banner.png so the hero and the logo share one background.
+   The page is dark at every setting — there is no light variant. The hero is
+   dark by necessity (the logo carries a baked-in dark backdrop), and a light
+   body below it meant the page changed character halfway down. Committing to
+   one palette also keeps the demo video, whose frames are rendered from these
+   same values, matching the page it sits in. */
 :root {
+  color-scheme: dark;
+
   --brand-bg: #2a3c40;
   /* Hero sits between the brand colour and the page below it: closer to the
      body than the logo's original backdrop, but still clearly a lighter band. */
@@ -7,16 +14,16 @@
   --brand-cyan: #53b1bd;
   --brand-mint: #88ebb9;
 
-  --bg: #ffffff;
-  --fg: #1c2426;
-  --muted: #5a686b;
-  --rule: #dfe5e6;
-  --code-bg: #f4f7f7;
-  --link: #10707e;
+  --bg: #16211f;
+  --fg: #e6eeec;
+  --muted: #9aabab;
+  --rule: #2c3b3c;
+  --code-bg: #1d2a2b;
+  --link: var(--brand-mint);
 
   /* Faint grid echoing the wireframe cage in the logo. Kept at the edge of
      visibility — it should read as texture, never as a drawn element. */
-  --grid: rgba(20, 50, 55, 0.045);
+  --grid: rgba(160, 220, 210, 0.035);
   --grid-size: 34px;
   --text: 17px;
 
@@ -27,29 +34,11 @@
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
   /* YAML tokens */
-  --tok-key: #0f6f7d;
-  --tok-str: #1c7a56;
-  --tok-act: #4d7f86;
-  --tok-punc: #8a9a9c;
-  --tok-com: #8a9a9c;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #16211f;
-    --fg: #e6eeec;
-    --muted: #9aabab;
-    --rule: #2c3b3c;
-    --code-bg: #1d2a2b;
-    --link: var(--brand-mint);
-    --grid: rgba(160, 220, 210, 0.035);
-
-    --tok-key: #6cc6d2;
-    --tok-str: #8fe0b4;
-    --tok-act: #7c9ba0;
-    --tok-punc: #7a8b8d;
-    --tok-com: #7a8b8d;
-  }
+  --tok-key: #6cc6d2;
+  --tok-str: #8fe0b4;
+  --tok-act: #7c9ba0;
+  --tok-punc: #7a8b8d;
+  --tok-com: #7a8b8d;
 }
 
 *,
