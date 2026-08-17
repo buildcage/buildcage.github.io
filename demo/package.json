@@ -1,0 +1,50 @@
+{
+  "name": "buildcage-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "vp check",
+    "dev": "remotion studio",
+    "format": "vp fmt --write",
+    "format:check": "vp fmt --check",
+    "lint": "vp lint",
+    "lint:fix": "vp lint --fix",
+    "prepare": "vp config",
+    "render": "remotion render Demo out/demo.mp4",
+    "render:gif": "remotion render DemoShort out/demo.gif --codec=gif --scale=0.5 --every-nth-frame=2",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@code-hike/lighter": "^1.0.3",
+    "@remotion/cli": "^4.0.512",
+    "@remotion/google-fonts": "^4.0.512",
+    "@remotion/layout-utils": "^4.0.512",
+    "codehike": "^1.1.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "remotion": "^4.0.512"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3",
+    "vite-plus": "^0.2.9"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.19.0",
+      "onFail": "download"
+    },
+    "runtime": {
+      "name": "node",
+      "version": "24.16.0",
+      "onFail": "download"
+    }
+  },
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=11"
+  },
+  "packageManager": "pnpm@11.19.0"
+}
