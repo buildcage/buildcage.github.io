@@ -66,15 +66,30 @@
         </p>
 
         <figure class="shot">
-          <img
-            src="assets/report-restrict-mode.png"
-            alt="Buildcage report listing allowed destinations and one blocked connection"
-            width="900"
-            loading="lazy"
-          />
+          <div class="player" data-player>
+            <video
+              id="demo-video"
+              poster="assets/demo-poster.png"
+              preload="none"
+              playsinline
+              width="1440"
+              height="1080"
+            >
+              <source src="assets/demo.mp4" type="video/mp4" />
+            </video>
+            <button
+              class="play"
+              type="button"
+              data-play
+              aria-controls="demo-video"
+              aria-label="Play the walkthrough"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+            </button>
+          </div>
           <figcaption>
-            Every destination your build reached, written to the GitHub Job Summary. The one that
-            wasn't on the allowlist was blocked and recorded.
+            Adding Buildcage to a workflow, end to end: three steps, one audit run, and the
+            allowlist it writes for you. No sound.
           </figcaption>
         </figure>
 
@@ -165,6 +180,19 @@
             <p class="ba-foot">Both appear in the report, whichever way they went.</p>
           </div>
         </div>
+
+        <figure class="shot">
+          <img
+            src="assets/report-restrict-mode.png"
+            alt="Buildcage report listing allowed destinations and one blocked connection"
+            width="900"
+            loading="lazy"
+          />
+          <figcaption>
+            Every destination your build reached, written to the GitHub Job Summary. The one that
+            wasn't on the allowlist was blocked and recorded.
+          </figcaption>
+        </figure>
       </section>
 
       <section class="wrap">
@@ -391,5 +419,22 @@
         </p>
       </div>
     </footer>
+
+    <script>
+      // Click-to-play: the poster and the styled button stand in for the video
+      // until it's asked for, so nothing downloads on page load. Native
+      // controls take over from the first play onward.
+      document.querySelectorAll('[data-player]').forEach(function (player) {
+        var video = player.querySelector('video');
+        var button = player.querySelector('[data-play]');
+        if (!video || !button) return;
+
+        button.addEventListener('click', function () {
+          video.controls = true;
+          player.classList.add('is-playing');
+          video.play();
+        });
+      });
+    </script>
   </body>
 </html>
