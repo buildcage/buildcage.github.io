@@ -33,10 +33,12 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-70R13YDQW4"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-      gtag('config', 'G-70R13YDQW4');
+      gtag("config", "G-70R13YDQW4");
     </script>
   </head>
   <body>
@@ -53,7 +55,13 @@
         <svg class="gh" aria-hidden="true"><use href="#gh-mark" /></svg>
       </a>
       <div class="wrap">
-        <img class="logo" src="assets/logo.png" alt="Buildcage — network isolation for secure builds" width="340" height="230" />
+        <img
+          class="logo"
+          src="assets/logo.png"
+          alt="Buildcage — network isolation for secure builds"
+          width="340"
+          height="230"
+        />
 
         <p class="tagline">
           Restrict outbound network access during CI builds to an allowlist of domains.
@@ -118,7 +126,12 @@
               <path d="M12 2.75V9" />
               <path d="M9.25 6.25 12 9l2.75-2.75" />
             </svg>
-            <div class="txt"><b>Drops into the build you already have</b><span>your Dockerfile, commands, and toolchain stay as they are, in any language</span></div>
+            <div class="txt">
+              <b>Drops into the build you already have</b
+              ><span
+                >your Dockerfile, commands, and toolchain stay as they are, in any language</span
+              >
+            </div>
           </li>
           <li>
             <!-- Inspecting a list: the audit run that produces the allowlist. -->
@@ -129,7 +142,12 @@
               <circle cx="16.5" cy="15.5" r="4" />
               <path d="m19.4 18.4 2.3 2.3" />
             </svg>
-            <div class="txt"><b>One audit run writes the allowlist for you</b><span>see what a real build reaches, copy the generated config, switch to restrict</span></div>
+            <div class="txt">
+              <b>One audit run writes the allowlist for you</b
+              ><span
+                >see what a real build reaches, copy the generated config, switch to restrict</span
+              >
+            </div>
           </li>
           <li>
             <!-- The cage from the logo, closed around the step inside it. -->
@@ -137,7 +155,13 @@
               <path d="M12 2.6 20 7.3v9.4L12 21.4 4 16.7V7.3z" />
               <rect x="9.4" y="9.4" width="5.2" height="5.2" rx="1.2" />
             </svg>
-            <div class="txt"><b>Guards the steps that fetch and run code</b><span>each <code>RUN</code> of a <code>docker build</code>, or a single workflow <code>run:</code></span></div>
+            <div class="txt">
+              <b>Guards the steps that fetch and run code</b
+              ><span
+                >each <code>RUN</code> of a <code>docker build</code>, or a single workflow
+                <code>run:</code></span
+              >
+            </div>
           </li>
           <li>
             <!-- Open branches: the project is out in the open, free to use. -->
@@ -148,7 +172,10 @@
               <path d="M12 7.4V13" />
               <path d="M6 16.6V13h12v3.6" />
             </svg>
-            <div class="txt"><b>Free and open source</b><span>MIT licensed, free to use, with the implementation open to read</span></div>
+            <div class="txt">
+              <b>Free and open source</b
+              ><span>MIT licensed, free to use, with the implementation open to read</span>
+            </div>
           </li>
         </ul>
       </section>
@@ -368,8 +395,8 @@
         <p class="fine">
           Both allow whatever IP a name resolved to, with no further check — so on shared hosting,
           one allowed domain can end up allowing every other site on that IP too. Buildcage's
-          SNI/Host check narrows this but doesn't close it: domain fronting through the same kind
-          of shared infrastructure still gets through, since it doesn't decrypt what's behind an
+          SNI/Host check narrows this but doesn't close it: domain fronting through the same kind of
+          shared infrastructure still gets through, since it doesn't decrypt what's behind an
           allowed SNI either. Harden-Runner is also a broader agent, correlating network, file, and
           process events, and its paid plans read inside HTTPS via eBPF — for reporting, not the
           block decision. Buildcage stays narrower on purpose.
@@ -426,14 +453,14 @@
       // Click-to-play: the poster and the styled button stand in for the video
       // until it's asked for, so nothing downloads on page load. Native
       // controls take over from the first play onward.
-      document.querySelectorAll('[data-player]').forEach(function (player) {
-        var video = player.querySelector('video');
-        var button = player.querySelector('[data-play]');
+      document.querySelectorAll("[data-player]").forEach(function (player) {
+        var video = player.querySelector("video");
+        var button = player.querySelector("[data-play]");
         if (!video || !button) return;
 
-        button.addEventListener('click', function () {
+        button.addEventListener("click", function () {
           video.controls = true;
-          player.classList.add('is-playing');
+          player.classList.add("is-playing");
           video.play();
         });
       });
