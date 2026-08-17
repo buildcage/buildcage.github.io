@@ -8,7 +8,7 @@ import { Outro } from "./scenes/Outro";
 import { RestrictSummaryScene } from "./scenes/RestrictSummaryScene";
 import { RunScene } from "./scenes/RunScene";
 import { Title } from "./scenes/Title";
-import { workflowStates } from "./content/workflow-steps";
+import { products, type ProductId } from "./content/products";
 import { color } from "./theme";
 
 export type DemoProps = {
@@ -22,6 +22,8 @@ export type DemoProps = {
    * where the thing ends and starts over.
    */
   readonly short: boolean;
+  /** Which action's workflow the cut walks through. */
+  readonly product: ProductId;
 };
 
 /** Scene lengths in frames at 30fps. */
@@ -34,26 +36,27 @@ export const sceneFrames = {
   outro: 75,
 } as const;
 
-export const totalFrames = (short: boolean) => {
-  const codeScenes = workflowStates.length * sceneFrames.code;
+export const totalFrames = (short: boolean, product: ProductId) => {
+  const codeScenes = products[product].states.length * sceneFrames.code;
   const core =
     codeScenes + sceneFrames.run * 2 + sceneFrames.auditSummary + sceneFrames.restrictSummary;
   return core + sceneFrames.outro + (short ? 0 : sceneFrames.title);
 };
 
-export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short }) => {
+export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short, product }) => {
   if (!buildcageSteps || !restSteps) {
     throw new Error("steps were not computed — check calculateMetadata");
   }
 
   // The last state (restrict) is shown after the audit report, not in the
   // initial run of code beats.
-  const buildUpStates = workflowStates.slice(0, -1);
-  const restrictState = workflowStates[workflowStates.length - 1];
+  const { states, runnerSteps } = products[product];
+  const buildUpStates = states.slice(0, -1);
+  const restrictState = states[states.length - 1];
   const restrictCode = restSteps[restSteps.length - 1];
-  const restrictBuildcageCode = buildcageSteps[buildcageSteps.length - 1];
+  const restrictBuildcageCode = buildcageSteps[buildcageSteps.length - 1] ?? null;
 
-  if (!restrictState || !restrictCode || !restrictBuildcageCode) {
+  if (!restrictState || !restrictCode) {
     throw new Error("workflow states are missing the restrict step");
   }
 
@@ -92,7 +95,7 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short }) 
         })}
 
         <Series.Sequence durationInFrames={sceneFrames.run} name="run-audit" layout="none">
-          <RunScene heading="Step 2 — Run it" note="nothing is blocked yet" />
+          <RunScene heading="Step 2 — Run it" note="nothing is blocked yet" steps={runnerSteps} />
         </Series.Sequence>
 
         <Series.Sequence
@@ -115,7 +118,7 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short }) 
         </Series.Sequence>
 
         <Series.Sequence durationInFrames={sceneFrames.run} name="run-restrict" layout="none">
-          <RunScene heading="Run it again" note="this time in restrict mode" />
+          <RunScene heading="Run it again" note="this time in restrict mode" steps={runnerSteps} />
         </Series.Sequence>
 
         <Series.Sequence

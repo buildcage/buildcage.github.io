@@ -70,15 +70,25 @@ that a wording, colour, or timing change is a re-render, not a re-recording.
 ```sh
 vp run buildcage-demo#dev         # Remotion Studio, for iterating on scenes
 vp run buildcage-demo#render      # render the video + poster into demo/out/
-vp run buildcage-demo#render:gif  # render assets/demo-docker.gif
+vp run buildcage-demo#render:gif               # render assets/demo-docker.gif
+vp run buildcage-demo#render:gif:isolated-run  # render assets/demo-isolated-run.gif
 ```
 
 `demo/out/` is gitignored, so re-rendering while you tune something costs nothing.
 
-`render:gif` is separate from the build because the GIF is for
-[buildcage/docker](https://github.com/buildcage/docker)'s README, not this site. It writes
-`assets/demo-docker.gif` — gitignored here, staged there only so you have something to upload by
-hand. The name carries its destination because `isolated-run` will want its own cut.
+The GIF tasks are separate from the build because those files are for the action repositories'
+READMEs, not this site. Each writes into `assets/` — gitignored here, staged only so you have
+something to upload by hand:
+
+| Task                      | Output                         | Destination                                                         |
+| ------------------------- | ------------------------------ | ------------------------------------------------------------------- |
+| `render:gif`              | `assets/demo-docker.gif`       | [buildcage/docker](https://github.com/buildcage/docker)             |
+| `render:gif:isolated-run` | `assets/demo-isolated-run.gif` | [buildcage/isolated-run](https://github.com/buildcage/isolated-run) |
+
+The two cuts share every scene downstream of the workflow edit — the run, the report, the allowlist
+it generates. Only the YAML on screen and the step names differ, so
+`demo/src/content/products.ts` is where a new variant would go. isolated-run has no full video:
+its README is the only place that cut is used.
 
 Note that Remotion is free for individuals, non-profits, and for-profit organisations with three
 employees or fewer; larger organisations need a company licence. The rendered files themselves carry
@@ -86,12 +96,14 @@ no such restriction.
 
 ### What lives where
 
-| Path                                 | Purpose                                                                          |
-| ------------------------------------ | -------------------------------------------------------------------------------- |
-| `demo/src/content/workflow-steps.ts` | The YAML shown on screen, and each step's heading — the file to edit for wording |
-| `demo/src/content/report-data.ts`    | Hosts, rules, and counts in the Job Summary cards                                |
-| `demo/src/theme.ts`                  | Colours and fonts, mirroring `style.css`                                         |
-| `demo/src/Main.tsx`                  | Scene order and durations                                                        |
+| Path                                     | Purpose                                                                |
+| ---------------------------------------- | ---------------------------------------------------------------------- |
+| `demo/src/content/products.ts`           | Which cuts exist, and what each one shows                              |
+| `demo/src/content/workflow-steps.ts`     | The Docker cut's YAML and step headings — the file to edit for wording |
+| `demo/src/content/isolated-run-steps.ts` | The same for the isolated-run cut                                      |
+| `demo/src/content/report-data.ts`        | Hosts, rules, and counts in the Job Summary cards                      |
+| `demo/src/theme.ts`                      | Colours and fonts, mirroring `style.css`                               |
+| `demo/src/Main.tsx`                      | Scene order and durations                                              |
 
 ## Editing notes
 

@@ -2,22 +2,22 @@ import React from "react";
 import { interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 
 import { CONTENT_WIDTH, SceneFrame } from "../components/SceneFrame";
-import { runnerSteps } from "../content/report-data";
 import { color, font } from "../theme";
 
 /**
  * A stylized stand-in for the Actions run — deliberately not a screen recording,
  * so it never goes stale when GitHub's UI changes.
  */
-export const RunScene: React.FC<{ readonly heading: string; readonly note?: string }> = ({
-  heading,
-  note,
-}) => {
+export const RunScene: React.FC<{
+  readonly heading: string;
+  readonly note?: string;
+  readonly steps: readonly string[];
+}> = ({ heading, note, steps }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
 
   const start = 16;
-  const perStep = (durationInFrames - start - 16) / runnerSteps.length;
+  const perStep = (durationInFrames - start - 16) / steps.length;
 
   return (
     <SceneFrame heading={heading} note={note} accent={color.cyan}>
@@ -31,7 +31,7 @@ export const RunScene: React.FC<{ readonly heading: string; readonly note?: stri
           boxSizing: "border-box",
         }}
       >
-        {runnerSteps.map((label, i) => {
+        {steps.map((label, i) => {
           const stepStart = start + i * perStep;
           const done = frame >= stepStart + perStep * 0.72;
           const active = frame >= stepStart && !done;

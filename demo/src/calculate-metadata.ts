@@ -1,7 +1,7 @@
 import { highlight, type HighlightedCode } from "codehike/code";
 import type { CalculateMetadataFunction } from "remotion";
 
-import { workflowStates } from "./content/workflow-steps";
+import { products } from "./content/products";
 import { addedLines, recolorLines } from "./diff-lines";
 import { waitForFonts } from "./fonts";
 import { addedLineColors, codeTheme } from "./theme";
@@ -26,8 +26,8 @@ export const calculateMetadata: CalculateMetadataFunction<DemoProps> = async ({ 
   const buildcageSteps: (HighlightedCode | null)[] = [];
   const restSteps: HighlightedCode[] = [];
 
-  for (const [i, state] of workflowStates.entries()) {
-    const prev = i === 0 ? undefined : workflowStates[i - 1];
+  for (const [i, state] of products[props.product].states.entries()) {
+    const prev = i === 0 ? undefined : products[props.product].states[i - 1];
 
     if (state.buildcageYaml) {
       const code = await highlightYaml(state.id, state.buildcageYaml);

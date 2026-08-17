@@ -3,17 +3,25 @@ import type { HighlightedCode, Token } from "codehike/code";
 /**
  * 1-based line numbers in `next` that have no counterpart in `prev` — the
  * lines a step adds or rewrites. A plain LCS is enough here: the snippets are
- * a couple of dozen lines and are authored to keep untouched lines
- * byte-identical between states.
+ * a couple of dozen lines.
+ *
+ * Lines are matched on their trimmed text, so a line that only shifts right —
+ * a command nested one level deeper once its step is wrapped — counts as the
+ * same line. It moved; the reader didn't write it, and colouring it as new
+ * would point at the wrong thing.
+ *
+ * A line whose value changed still counts as new, key and all:
+ * `proxy_mode: audit` becoming `proxy_mode: restrict` is the switch the whole
+ * paste is for, and splitting the line's colour would play it down.
  */
 export const addedLines = (prev: string | null, next: string): Set<number> => {
-  const nextLines = next.split("\n");
+  const nextLines = next.split("\n").map((line) => line.trim());
 
   if (prev === null) {
     return new Set(nextLines.map((_, i) => i + 1));
   }
 
-  const prevLines = prev.split("\n");
+  const prevLines = prev.split("\n").map((line) => line.trim());
   const n = prevLines.length;
   const m = nextLines.length;
 

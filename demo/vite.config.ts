@@ -49,6 +49,21 @@ export default defineConfig({
       ],
       output: [{ pattern: "assets/demo-docker.gif", base: "workspace" }],
     },
+
+    // The same walkthrough for buildcage/isolated-run, whose action is
+    // self-contained — one step to wrap, no builder to point at. GIF only:
+    // its README is the only place this cut is used.
+    "render:gif:isolated-run": {
+      command:
+        "remotion render IsolatedRunShort ../assets/demo-isolated-run.gif --codec=gif --scale=0.5 --every-nth-frame=2",
+      input: [
+        "src/**",
+        "package.json",
+        "remotion.config.ts",
+        { pattern: "assets/logo.png", base: "workspace" },
+      ],
+      output: [{ pattern: "assets/demo-isolated-run.gif", base: "workspace" }],
+    },
     },
   },
 });

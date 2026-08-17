@@ -4,6 +4,7 @@ import { Composition } from "remotion";
 import { calculateMetadata } from "./calculate-metadata";
 import { Main, totalFrames } from "./Main";
 import { Poster } from "./scenes/Poster";
+import type { ProductId } from "./content/products";
 
 /**
  * 4:3 rather than 16:9. The content is height-constrained — 22 lines of YAML
@@ -14,17 +15,27 @@ import { Poster } from "./scenes/Poster";
 const WIDTH = 1440;
 const HEIGHT = 1080;
 
+const props = (short: boolean, product: ProductId) => ({
+  buildcageSteps: null,
+  restSteps: null,
+  short,
+  product,
+});
+
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/* The landing page embeds the Docker cut; the README GIFs are the short
+          cuts, one per action. isolated-run gets no full video — its README is
+          the only place it's used. */}
       <Composition
         id="Demo"
         component={Main}
         fps={30}
         width={WIDTH}
         height={HEIGHT}
-        durationInFrames={totalFrames(false)}
-        defaultProps={{ buildcageSteps: null, restSteps: null, short: false }}
+        durationInFrames={totalFrames(false, "docker")}
+        defaultProps={props(false, "docker")}
         calculateMetadata={calculateMetadata}
       />
       <Composition
@@ -33,8 +44,18 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={WIDTH}
         height={HEIGHT}
-        durationInFrames={totalFrames(true)}
-        defaultProps={{ buildcageSteps: null, restSteps: null, short: true }}
+        durationInFrames={totalFrames(true, "docker")}
+        defaultProps={props(true, "docker")}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="IsolatedRunShort"
+        component={Main}
+        fps={30}
+        width={WIDTH}
+        height={HEIGHT}
+        durationInFrames={totalFrames(true, "isolated-run")}
+        defaultProps={props(true, "isolated-run")}
         calculateMetadata={calculateMetadata}
       />
       <Composition
@@ -44,7 +65,7 @@ export const RemotionRoot: React.FC = () => {
         width={WIDTH}
         height={HEIGHT}
         durationInFrames={1}
-        defaultProps={{ buildcageSteps: null, restSteps: null, short: false }}
+        defaultProps={props(false, "docker")}
         calculateMetadata={calculateMetadata}
       />
     </>
