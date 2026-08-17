@@ -31,12 +31,13 @@ const lineCount = (c: HighlightedCode | null) => (c ? c.code.split("\n").length 
 export const CodeScene: React.FC<{
   readonly heading: string;
   readonly note?: string;
+  readonly titleEnters?: boolean;
   readonly buildcageOld: HighlightedCode | null;
   readonly buildcageNew: HighlightedCode | null;
   readonly restOld: HighlightedCode | null;
   readonly restNew: HighlightedCode;
   readonly transitionFrames?: number;
-}> = ({ heading, note, buildcageOld, buildcageNew, restOld, restNew, transitionFrames = 24 }) => {
+}> = ({ heading, note, titleEnters, buildcageOld, buildcageNew, restOld, restNew, transitionFrames = 24 }) => {
   const frame = useCurrentFrame();
 
   // Two independent CodeTransition instances, each diffed only against its
@@ -66,7 +67,7 @@ export const CodeScene: React.FC<{
     : 0;
 
   return (
-    <SceneFrame heading={heading} note={note}>
+    <SceneFrame heading={heading} note={note} titleEnters={titleEnters}>
       <div
         style={{
           width: CONTENT_WIDTH,

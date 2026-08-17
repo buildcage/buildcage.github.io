@@ -77,6 +77,7 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short }) 
               <CodeScene
                 heading={state.heading}
                 note={state.note}
+                titleEnters={buildUpStates[i - 1]?.heading !== state.heading}
                 buildcageOld={i === 0 ? null : (buildcageSteps[i - 1] ?? null)}
                 buildcageNew={buildcageSteps[i] ?? null}
                 restOld={i === 0 ? null : (restSteps[i - 1] ?? null)}

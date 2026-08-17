@@ -64,6 +64,9 @@ export const Poster: React.FC<DemoProps> = ({ buildcageSteps, restSteps }) => {
           }}
         >
           <Img src={staticFile("logo.png")} style={{ width: 150 }} />
+          {/* One line, sized to clear the width beside the logo. Broken over
+              two it read as a single wrapped sentence rather than a title, and
+              sat awkwardly against the lockup. */}
           <div
             style={{
               fontFamily: font.heading,
@@ -71,11 +74,11 @@ export const Poster: React.FC<DemoProps> = ({ buildcageSteps, restSteps }) => {
               fontSize: 40,
               color: color.fg,
               letterSpacing: -0.5,
-              lineHeight: 1.3,
+              lineHeight: 1.2,
+              whiteSpace: "nowrap",
             }}
           >
-            Network isolation for your build,
-            <br />
+            Network isolation for your build,{" "}
             <span style={{ color: color.mint }}>in three steps</span>
           </div>
         </div>
