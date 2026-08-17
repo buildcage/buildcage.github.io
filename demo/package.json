@@ -10,10 +10,10 @@
     "lint": "vp lint",
     "lint:fix": "vp lint --fix",
     "prepare": "vp config",
-    "render": "remotion render Demo out/demo.mp4",
+    "render": "pnpm run render:video && pnpm run render:poster",
     "render:gif": "remotion render DemoShort out/demo.gif --codec=gif --scale=0.5 --every-nth-frame=2",
-    "render:poster": "remotion still Poster out/poster.png",
-    "render:web": "remotion render Demo out/demo-web.mp4 --crf=28",
+    "render:poster": "remotion still Poster out/demo-poster.png",
+    "render:video": "remotion render Demo out/demo.mp4 --crf=28",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
