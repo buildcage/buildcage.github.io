@@ -7,12 +7,12 @@ import { CONTENT_WIDTH, SceneFrame } from "../components/SceneFrame";
 import { color } from "../theme";
 
 /**
- * Sized so the tallest workflow state still clears the frame — the font must
- * stay constant across scenes or the morphing tokens would scale.
+ * The font stays constant across scenes — the morphing tokens would scale
+ * otherwise — so the block is sized in lines instead.
  */
 const FONT_SIZE = 25;
 const LINE_HEIGHT = FONT_SIZE * 1.5;
-const BLOCK_HEIGHT = 880;
+const BLOCK_PADDING = 30;
 /**
  * Gap between the Buildcage panel and the rest-of-workflow panel below it.
  * Matches one blank source line (`\n\n` between steps in workflow-steps.ts)
@@ -28,6 +28,22 @@ const REVEAL_FRAMES = 20;
 
 const lineCount = (c: HighlightedCode | null) => (c ? c.code.split("\n").length : 0);
 
+/**
+ * One height for every scene in a cut: the tallest state it reaches. Holding
+ * it constant keeps the block from resizing between beats, and deriving it
+ * per cut means a short workflow doesn't sit in a frame sized for a long one.
+ */
+export const blockHeight = (states: readonly { buildcageYaml: string | null; restYaml: string }[]) => {
+  const linesOf = (yaml: string) => yaml.split("\n").length;
+  const tallest = Math.max(
+    ...states.map(
+      (state) =>
+        (state.buildcageYaml ? linesOf(state.buildcageYaml) + 1 : 0) + linesOf(state.restYaml),
+    ),
+  );
+  return tallest * LINE_HEIGHT + BLOCK_PADDING * 2;
+};
+
 export const CodeScene: React.FC<{
   readonly heading: string;
   readonly note?: string;
@@ -36,8 +52,19 @@ export const CodeScene: React.FC<{
   readonly buildcageNew: HighlightedCode | null;
   readonly restOld: HighlightedCode | null;
   readonly restNew: HighlightedCode;
+  readonly height: number;
   readonly transitionFrames?: number;
-}> = ({ heading, note, titleEnters, buildcageOld, buildcageNew, restOld, restNew, transitionFrames = 24 }) => {
+}> = ({
+  heading,
+  note,
+  titleEnters,
+  buildcageOld,
+  buildcageNew,
+  restOld,
+  restNew,
+  height,
+  transitionFrames = 24,
+}) => {
   const frame = useCurrentFrame();
 
   // Two independent CodeTransition instances, each diffed only against its
@@ -71,11 +98,11 @@ export const CodeScene: React.FC<{
       <div
         style={{
           width: CONTENT_WIDTH,
-          height: BLOCK_HEIGHT,
+          height,
           background: color.codeBg,
           border: `1px solid ${color.rule}`,
           borderRadius: 14,
-          padding: "30px 38px",
+          padding: `${BLOCK_PADDING}px 38px`,
           boxSizing: "border-box",
           overflow: "hidden",
         }}

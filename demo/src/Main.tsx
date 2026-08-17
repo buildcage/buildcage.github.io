@@ -3,7 +3,7 @@ import React from "react";
 import { AbsoluteFill, Series } from "remotion";
 
 import { AuditSummaryScene } from "./scenes/AuditSummaryScene";
-import { CodeScene } from "./scenes/CodeScene";
+import { blockHeight, CodeScene } from "./scenes/CodeScene";
 import { Outro } from "./scenes/Outro";
 import { RestrictSummaryScene } from "./scenes/RestrictSummaryScene";
 import { RunScene } from "./scenes/RunScene";
@@ -51,6 +51,7 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short, pr
   // The last state (restrict) is shown after the audit report, not in the
   // initial run of code beats.
   const { states, runnerSteps } = products[product];
+  const codeHeight = blockHeight(states);
   const buildUpStates = states.slice(0, -1);
   const restrictState = states[states.length - 1];
   const restrictCode = restSteps[restSteps.length - 1];
@@ -89,6 +90,7 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short, pr
                 buildcageNew={buildcageSteps[i] ?? null}
                 restOld={i === 0 ? null : (restSteps[i - 1] ?? null)}
                 restNew={restCode}
+                height={codeHeight}
               />
             </Series.Sequence>
           );
@@ -114,6 +116,7 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short, pr
             buildcageNew={restrictBuildcageCode}
             restOld={restSteps[restSteps.length - 2] ?? null}
             restNew={restrictCode}
+            height={codeHeight}
           />
         </Series.Sequence>
 
