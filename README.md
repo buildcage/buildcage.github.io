@@ -70,12 +70,15 @@ that a wording, colour, or timing change is a re-render, not a re-recording.
 ```sh
 vp run buildcage-demo#dev         # Remotion Studio, for iterating on scenes
 vp run buildcage-demo#render      # render the video + poster into demo/out/
-vp run buildcage-demo#render:gif  # render the README GIF into demo/out/
+vp run buildcage-demo#render:gif  # render assets/demo-docker.gif
 ```
 
-`demo/out/` is gitignored, so re-rendering while you tune something costs nothing. `render:gif` is
-separate from the build because the GIF is for the two action repos' READMEs, not this site —
-upload it there by hand.
+`demo/out/` is gitignored, so re-rendering while you tune something costs nothing.
+
+`render:gif` is separate from the build because the GIF is for
+[buildcage/docker](https://github.com/buildcage/docker)'s README, not this site. It writes
+`assets/demo-docker.gif` — gitignored here, staged there only so you have something to upload by
+hand. The name carries its destination because `isolated-run` will want its own cut.
 
 Note that Remotion is free for individuals, non-profits, and for-profit organisations with three
 employees or fewer; larger organisations need a company licence. The rendered files themselves carry

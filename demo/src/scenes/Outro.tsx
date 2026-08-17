@@ -4,10 +4,11 @@ import {
   Img,
   interpolate,
   spring,
-  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+
+import logoSrc from "../../../assets/logo.png";
 
 export const Outro: React.FC = () => {
   const frame = useCurrentFrame();
@@ -18,7 +19,7 @@ export const Outro: React.FC = () => {
   return (
     <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
       <Img
-        src={staticFile("logo.png")}
+        src={logoSrc}
         style={{
           width: 420,
           opacity: enter,

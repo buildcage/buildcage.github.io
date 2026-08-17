@@ -6,3 +6,6 @@ demo/out/
 # Rendered from demo/ and carried only by the publish branch, never by main.
 assets/demo.mp4
 assets/demo-poster.png
+
+# Rendered for the action repositories' READMEs; staged here, uploaded there.
+assets/demo-docker.gif

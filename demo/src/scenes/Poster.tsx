@@ -1,6 +1,8 @@
 import { Pre } from "codehike/code";
 import React from "react";
-import { AbsoluteFill, Img, staticFile } from "remotion";
+import { AbsoluteFill, Img } from "remotion";
+
+import logoSrc from "../../../assets/logo.png";
 
 import { CONTENT_WIDTH } from "../components/SceneFrame";
 import { color, font } from "../theme";
@@ -63,7 +65,7 @@ export const Poster: React.FC<DemoProps> = ({ buildcageSteps, restSteps }) => {
             marginBottom: 34,
           }}
         >
-          <Img src={staticFile("logo.png")} style={{ width: 150 }} />
+          <Img src={logoSrc} style={{ width: 150 }} />
           {/* One line, sized to clear the width beside the logo. Broken over
               two it read as a single wrapped sentence rather than a title, and
               sat awkwardly against the lockup. */}
