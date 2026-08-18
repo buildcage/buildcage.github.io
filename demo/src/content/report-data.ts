@@ -1,3 +1,5 @@
+import type { Column } from "../components/HostsTable";
+
 /**
  * The rows shown in the reproduced Job Summary cards. Kept in sync with the
  * real reports captured in ../../assets/report-{audit,restrict}-mode.png.
@@ -22,13 +24,20 @@ export const blockedHosts: readonly BlockedRow[] = [
   { host: "www.example.com:80", rule: "HTTP", reason: "not-allowed", count: 1 },
 ];
 
-export const reportNote =
-  "Note: HTTP rules are based on the Host header, HTTPS rules on SNI, and IP rules on the destination IP address.";
+/**
+ * Column headings for the two shapes of row above. They describe the data, so
+ * they belong beside it — the audit, restrict and poster cards all render the
+ * same tables and were each carrying their own copy of these.
+ */
+export const hostColumns: readonly Column[] = [
+  { label: "Host", align: "left" },
+  { label: "Rule", align: "center" },
+  { label: "Count", align: "right" },
+];
 
-/** The runner steps ticked through in the stylized run scene. */
-export const runnerSteps: readonly string[] = [
-  "Start Buildcage",
-  "Set up Docker Buildx",
-  "Build",
-  "Show Buildcage report",
+export const blockedColumns: readonly Column[] = [
+  { label: "Host", align: "left" },
+  { label: "Rule", align: "center" },
+  { label: "Reason", align: "center" },
+  { label: "Count", align: "right" },
 ];

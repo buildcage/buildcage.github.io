@@ -46,6 +46,14 @@ const remoteBuildx = buildxStep(`
     driver: remote
     endpoint: docker-container://buildcage`);
 
+/** The runner steps ticked through in the stylized run scene. */
+export const dockerRunnerSteps: readonly string[] = [
+  "Start Buildcage",
+  "Set up Docker Buildx",
+  "Build",
+  "Show Buildcage report",
+];
+
 export type WorkflowState = {
   readonly id: string;
   readonly heading: string;

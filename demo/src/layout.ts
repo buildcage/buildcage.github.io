@@ -21,8 +21,6 @@ export type Layout = {
   readonly fontSize: number;
   readonly framePadding: number;
   readonly columnGap: number;
-  readonly headingSize: number;
-  readonly noteSize: number;
   /**
    * How much to enlarge the Job Summary card over its authored size. The card
    * is built at the width the code block uses, which reads well in a narrow
@@ -49,8 +47,6 @@ export const layoutFor = (width: number, height: number): Layout => {
         fontSize: 30,
         framePadding: 40,
         columnGap: 48,
-        headingSize: 44,
-        noteSize: 28,
         cardScale: 1.25,
         headingGap: 0,
       }
@@ -60,8 +56,6 @@ export const layoutFor = (width: number, height: number): Layout => {
         fontSize: 25,
         framePadding: 40,
         columnGap: 0,
-        headingSize: 40,
-        noteSize: 27,
         cardScale: 1,
         headingGap: 28,
       };
@@ -72,7 +66,7 @@ export const useLayout = (): Layout => {
   return layoutFor(width, height);
 };
 
-const BLOCK_PADDING = 30;
+export const BLOCK_PADDING = 30;
 
 /**
  * One height for every scene in a cut: the tallest state it reaches. Holding
@@ -95,5 +89,3 @@ export const blockHeightFor = (
   );
   return tallest * layout.fontSize * 1.5 + BLOCK_PADDING * 2;
 };
-
-export { BLOCK_PADDING };

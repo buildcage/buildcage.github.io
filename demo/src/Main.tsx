@@ -105,14 +105,19 @@ export const Main: React.FC<DemoProps> = ({
                 buildcageNew={buildcageSteps[i] ?? null}
                 restOld={i === 0 ? null : (restPlain[i - 1] ?? null)}
                 restNew={restCode}
-                height={codeHeight}
+                contentHeight={codeHeight}
               />
             </Series.Sequence>
           );
         })}
 
         <Series.Sequence durationInFrames={sceneFrames.run} name="run-audit" layout="none">
-          <RunScene heading="Step 2 — Run it" note="nothing is blocked yet" steps={runnerSteps} contentHeight={codeHeight} />
+          <RunScene
+            heading="Step 2 — Run it"
+            note="nothing is blocked yet"
+            steps={runnerSteps}
+            contentHeight={codeHeight}
+          />
         </Series.Sequence>
 
         <Series.Sequence
@@ -131,12 +136,17 @@ export const Main: React.FC<DemoProps> = ({
             buildcageNew={restrictBuildcageCode}
             restOld={restPlain[restPlain.length - 2] ?? null}
             restNew={restrictCode}
-            height={codeHeight}
+            contentHeight={codeHeight}
           />
         </Series.Sequence>
 
         <Series.Sequence durationInFrames={sceneFrames.run} name="run-restrict" layout="none">
-          <RunScene heading="Run it again" note="this time in restrict mode" steps={runnerSteps} contentHeight={codeHeight} />
+          <RunScene
+            heading="Run it again"
+            note="this time in restrict mode"
+            steps={runnerSteps}
+            contentHeight={codeHeight}
+          />
         </Series.Sequence>
 
         <Series.Sequence

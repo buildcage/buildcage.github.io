@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  AbsoluteFill,
-  Img,
-  interpolate,
-  spring,
-  useCurrentFrame,
-  useVideoConfig,
-} from "remotion";
+import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 
-import logoSrc from "../../../assets/logo.png";
+import { Wordmark } from "../components/Lockup";
 
 export const Outro: React.FC = () => {
   const frame = useCurrentFrame();
@@ -18,10 +11,9 @@ export const Outro: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
-      <Img
-        src={logoSrc}
+      <Wordmark
+        width={420}
         style={{
-          width: 420,
           opacity: enter,
           transform: `scale(${interpolate(enter, [0, 1], [0.96, 1])})`,
         }}

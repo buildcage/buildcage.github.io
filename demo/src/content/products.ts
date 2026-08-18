@@ -1,6 +1,9 @@
 import { isolatedRunRunnerSteps, isolatedRunStates } from "./isolated-run-steps";
-import { runnerSteps as dockerRunnerSteps } from "./report-data";
-import { workflowStates as dockerStates, type WorkflowState } from "./workflow-steps";
+import {
+  dockerRunnerSteps,
+  workflowStates as dockerStates,
+  type WorkflowState,
+} from "./workflow-steps";
 
 /**
  * The two actions share everything downstream of the workflow edit — the run,

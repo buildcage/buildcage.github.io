@@ -216,18 +216,12 @@ importers:
 
   demo:
     dependencies:
-      '@code-hike/lighter':
-        specifier: ^1.0.3
-        version: 1.0.3
       '@remotion/cli':
         specifier: ^4.0.512
         version: 4.0.512(lightningcss@1.33.0)(postcss@8.5.26)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(typescript@5.9.3)
       '@remotion/google-fonts':
         specifier: ^4.0.512
         version: 4.0.512(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@remotion/layout-utils':
-        specifier: ^4.0.512
-        version: 4.0.512
       codehike:
         specifier: ^1.1.0
         version: 1.1.0(supports-color@8.1.1)
@@ -344,9 +338,6 @@ packages:
 
   '@code-hike/lighter@1.0.1':
     resolution: {integrity: sha512-mccvcsk5UTScRrE02oBz1/qzckyhD8YE3VQlQv++2bSVVZgNuCUX8MpokSCi5OmfRAAxbj6kmNiqq1Um8eXPrw==}
-
-  '@code-hike/lighter@1.0.3':
-    resolution: {integrity: sha512-LU0TbZfu3L3fQZ7y9tZHttnxyFm7ewU96arGMFnjLbvFj+onYfVkznhQOmU1ZsQtv9rpQzZ313GRz6hCGDrlJQ==}
 
   '@emnapi/core@1.11.3':
     resolution: {integrity: sha512-zLpS5asjEb7lq8jYLq37N6XKaE41DIexlY1rF/z4/tIl3wo13Sqm28fRyfIsKZD+NZ8mM5RoKkpW/rBcuoSZSg==}
@@ -916,9 +907,6 @@ packages:
 
   '@remotion/google-fonts@4.0.512':
     resolution: {integrity: sha512-QDL51k6LTe5fCwPqPZRcFR5DLJ3l/ondXpXIssuHcI9nPtFxKY7cojt12UtSaDtoeE21cEGyT6u8mHblrIWODg==}
-
-  '@remotion/layout-utils@4.0.512':
-    resolution: {integrity: sha512-ZJpRRQ54UHGrTW4g3/mzwfTftaXK779SXM5TOXnhS2Bh4JaImmDfvK1cUGIJu4lAOgMZsvLva+E6SqjzDt1qiw==}
 
   '@remotion/licensing@4.0.512':
     resolution: {integrity: sha512-TRDcdvgQXOxC12A/hu1VlTzt9CqIQr2RrhlL9kODgbqOEjefK1fS4EJY+PsmpxBcQqTI4+pw3KHbo9NkddPLfg==}
@@ -2664,9 +2652,6 @@ packages:
     resolution: {integrity: sha512-yau8yJdTt989Mm0Bd/236QnzEiPf2xLLTqUZRUJOo/3CB078LSwzei343DgtJVmfJKJE3TMINY1u42SQsP6mXw==}
     engines: {node: '>=14.0.0'}
 
-  tm-grammars@1.32.5:
-    resolution: {integrity: sha512-dKlap/eITuqoSpgqT8Bnrjz8ANhF3mFWvBX7cl64NFjOce011eM9UiJqAzVyR0Ami+fYzLIH5ywldBig+OYZuA==}
-
   to-fast-properties@2.0.0:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
     engines: {node: '>=4'}
@@ -2996,11 +2981,6 @@ snapshots:
   '@code-hike/lighter@1.0.1':
     dependencies:
       ansi-sequence-parser: 1.1.1
-
-  '@code-hike/lighter@1.0.3':
-    dependencies:
-      ansi-sequence-parser: 1.1.1
-      tm-grammars: 1.32.5
 
   '@emnapi/core@1.11.3':
     dependencies:
@@ -3406,8 +3386,6 @@ snapshots:
     transitivePeerDependencies:
       - react
       - react-dom
-
-  '@remotion/layout-utils@4.0.512': {}
 
   '@remotion/licensing@4.0.512': {}
 
@@ -5015,8 +4993,6 @@ snapshots:
   tinypool@2.1.0: {}
 
   tinyrainbow@3.1.1: {}
-
-  tm-grammars@1.32.5: {}
 
   to-fast-properties@2.0.0: {}
 

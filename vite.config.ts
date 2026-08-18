@@ -21,11 +21,16 @@ export default defineConfig({
   // — a hashed name would 404. `.nojekyll` has to reach the deployed root too.
   publicDir: "public",
 
+  // Ignore patterns are resolved against the workspace, not the package you
+  // happen to run from, so listing `demo/**` here silently disabled linting
+  // and formatting inside demo/ as well — including when run from there. Only
+  // generated output is excluded now; demo/ carries its own vite.config.ts for
+  // anything specific to it.
   lint: {
-    ignorePatterns: ["dist/**", "demo/**"],
+    ignorePatterns: ["dist/**", "demo/out/**"],
   },
   fmt: {
-    ignorePatterns: ["dist/**", "demo/**", "assets/**"],
+    ignorePatterns: ["dist/**", "demo/out/**", "assets/**"],
   },
   staged: {
     "*.{ts,js,json,jsonc,md,css,html}": "vp check --fix",

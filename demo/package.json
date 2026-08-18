@@ -13,10 +13,8 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@code-hike/lighter": "^1.0.3",
     "@remotion/cli": "^4.0.512",
     "@remotion/google-fonts": "^4.0.512",
-    "@remotion/layout-utils": "^4.0.512",
     "codehike": "^1.1.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

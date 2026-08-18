@@ -23,7 +23,13 @@ export const RunScene: React.FC<{
   const perStep = (durationInFrames - start - 16) / steps.length;
 
   return (
-    <SceneFrame heading={heading} note={note} accent={color.cyan} contentHeight={contentHeight} centered>
+    <SceneFrame
+      heading={heading}
+      note={note}
+      accent={color.cyan}
+      contentHeight={contentHeight}
+      centered
+    >
       <div
         style={{
           width: layout.contentWidth,

@@ -1,11 +1,10 @@
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 
-import { BuildSummaryCard, SectionLabel } from "../components/BuildSummaryCard";
-import { HostsTable } from "../components/HostsTable";
+import { BuildSummaryCard } from "../components/BuildSummaryCard";
+import { AllowedHosts, BlockedHosts, RESTRICT_TITLE } from "../components/OutboundReport";
 import { SceneFrame } from "../components/SceneFrame";
 import { useLayout } from "../layout";
-import { allowedHosts, blockedHosts } from "../content/report-data";
 
 export const RestrictSummaryScene: React.FC<{
   readonly heading: string;
@@ -31,16 +30,8 @@ export const RestrictSummaryScene: React.FC<{
           transform: `translateY(${interpolate(cardIn, [0, 1], [24, 0])}px) scale(${layout.cardScale})`,
         }}
       >
-        <BuildSummaryCard title="Outbound Traffic Report (restrict mode)" width={layout.contentWidth}>
-          <SectionLabel icon="✅">Allowed Hosts</SectionLabel>
-          <HostsTable
-            columns={[
-              { label: "Host", align: "left" },
-              { label: "Rule", align: "center" },
-              { label: "Count", align: "right" },
-            ]}
-            rows={allowedHosts.map((h) => [h.host, h.rule, h.count])}
-          />
+        <BuildSummaryCard title={RESTRICT_TITLE} width={layout.contentWidth}>
+          <AllowedHosts />
 
           <div
             style={{
@@ -48,16 +39,7 @@ export const RestrictSummaryScene: React.FC<{
               transform: `translateY(${interpolate(blockedIn, [0, 1], [16, 0])}px)`,
             }}
           >
-            <SectionLabel icon="🚫">Blocked Hosts</SectionLabel>
-            <HostsTable
-              columns={[
-                { label: "Host", align: "left" },
-                { label: "Rule", align: "center" },
-                { label: "Reason", align: "center" },
-                { label: "Count", align: "right" },
-              ]}
-              rows={blockedHosts.map((h) => [h.host, h.rule, h.reason, h.count])}
-            />
+            <BlockedHosts />
           </div>
         </BuildSummaryCard>
       </div>

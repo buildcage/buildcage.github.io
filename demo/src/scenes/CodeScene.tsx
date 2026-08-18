@@ -7,7 +7,6 @@ import { BLOCK_PADDING, useLayout } from "../layout";
 import { SceneFrame } from "../components/SceneFrame";
 import { color } from "../theme";
 
-
 /** Frames spent growing the Buildcage panel's reserved space before its text reveals. */
 const GROW_FRAMES = 16;
 /** Frames spent fading the Buildcage panel's content in, once there's room for it. */
@@ -23,7 +22,8 @@ export const CodeScene: React.FC<{
   readonly buildcageNew: HighlightedCode | null;
   readonly restOld: HighlightedCode | null;
   readonly restNew: HighlightedCode;
-  readonly height: number;
+  /** Height of the code block, held constant across a cut's scenes. */
+  readonly contentHeight: number;
   readonly transitionFrames?: number;
 }> = ({
   heading,
@@ -33,7 +33,7 @@ export const CodeScene: React.FC<{
   buildcageNew,
   restOld,
   restNew,
-  height,
+  contentHeight,
   transitionFrames = 24,
 }) => {
   const frame = useCurrentFrame();
@@ -50,10 +50,12 @@ export const CodeScene: React.FC<{
   // to know the rest-of-workflow block should slide down as the Buildcage
   // block grows — that motion is driven by hand here, animating the
   // Buildcage panel's reserved height from its old line count to its new one.
-  // The height grows first, with the panel's own content held invisible via
-  // `revealDelay`, then the content fades in once there's room for it — a
-  // "make space, then reveal" beat that reads more clearly as a diff than
-  // growing and fading in at the same time.
+  //
+  // When the panel is growing, nothing new is shown until it has finished:
+  // the space appears first, then everything the step adds arrives into it at
+  // once. A "make space, then reveal" beat reads more clearly as a diff than
+  // growing and fading in at the same time. When the panel isn't growing there
+  // is nothing to wait for, so the beat is skipped (see `panelGrows` below).
   const growProgress = interpolate(frame, [0, GROW_FRAMES], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -77,11 +79,16 @@ export const CodeScene: React.FC<{
   const panelGrows = newLines !== oldLines;
 
   return (
-    <SceneFrame heading={heading} note={note} titleEnters={titleEnters} contentHeight={height}>
+    <SceneFrame
+      heading={heading}
+      note={note}
+      titleEnters={titleEnters}
+      contentHeight={contentHeight}
+    >
       <div
         style={{
           width: layout.contentWidth,
-          height,
+          height: contentHeight,
           background: color.codeBg,
           border: `1px solid ${color.rule}`,
           borderRadius: 14,

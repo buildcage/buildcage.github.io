@@ -6,7 +6,7 @@ import { Disclosure } from "../components/Disclosure";
 import { HostsTable } from "../components/HostsTable";
 import { SceneFrame } from "../components/SceneFrame";
 import { useLayout } from "../layout";
-import { auditedHosts } from "../content/report-data";
+import { auditedHosts, hostColumns } from "../content/report-data";
 import { generatedConfig } from "../content/workflow-steps";
 import { color, font, gh } from "../theme";
 
@@ -48,11 +48,7 @@ export const AuditSummaryScene: React.FC<{
         <BuildSummaryCard title="Outbound Traffic Report (audit mode)" width={layout.contentWidth}>
           <SectionLabel icon="📋">Audited Hosts</SectionLabel>
           <HostsTable
-            columns={[
-              { label: "Host", align: "left" },
-              { label: "Rule", align: "center" },
-              { label: "Count", align: "right" },
-            ]}
+            columns={hostColumns}
             rows={auditedHosts.map((h) => [h.host, h.rule, h.count])}
           />
 

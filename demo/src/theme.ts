@@ -5,7 +5,6 @@
 
 export const color = {
   heroBg: "#223133",
-  brandBg: "#2a3c40",
   cyan: "#53b1bd",
   mint: "#88ebb9",
   fg: "#e6eeec",

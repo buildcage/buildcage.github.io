@@ -47,20 +47,8 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={props(false, "docker")}
         calculateMetadata={calculateMetadata}
       />
-      <Composition
-        id="Poster"
-        component={Poster}
-        fps={30}
-        {...WIDE}
-        durationInFrames={1}
-      />
-      <Composition
-        id="PosterNarrow"
-        component={Poster}
-        fps={30}
-        {...NARROW}
-        durationInFrames={1}
-      />
+      <Composition id="Poster" component={Poster} fps={30} {...WIDE} durationInFrames={1} />
+      <Composition id="PosterNarrow" component={Poster} fps={30} {...NARROW} durationInFrames={1} />
 
       {/* The README GIFs render at one size — a README column is a fixed
           width, so there is nothing to adapt to. */}

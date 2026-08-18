@@ -86,9 +86,7 @@ export const SceneHeading: React.FC<{
       </div>
 
       {/* Non-breaking: a plain space collapses and takes the line with it. */}
-      {note ? null : (
-        <div style={{ ...noteStyle, visibility: "hidden" }}>{"\u00a0"}</div>
-      )}
+      {note ? null : <div style={{ ...noteStyle, visibility: "hidden" }}>{"\u00a0"}</div>}
     </div>
   );
 };

@@ -1,16 +1,7 @@
 import React from "react";
-import {
-  AbsoluteFill,
-  Img,
-  interpolate,
-  spring,
-  useCurrentFrame,
-  useVideoConfig,
-} from "remotion";
+import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 
-import logoSrc from "../../../assets/logo.png";
-
-import { color, font } from "../theme";
+import { Tagline, Wordmark } from "../components/Lockup";
 
 export const Title: React.FC = () => {
   const frame = useCurrentFrame();
@@ -26,29 +17,21 @@ export const Title: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ justifyContent: "center", alignItems: "center", gap: 56 }}>
-      <Img
-        src={logoSrc}
+      <Wordmark
+        width={420}
         style={{
-          width: 420,
           opacity: logoIn,
           transform: `scale(${interpolate(logoIn, [0, 1], [0.94, 1])})`,
         }}
       />
-      <div
+      <Tagline
+        fontSize={46}
+        fontWeight={400}
         style={{
-          fontFamily: font.heading,
-          fontWeight: 400,
-          fontSize: 46,
-          color: color.fg,
           opacity: textIn,
           transform: `translateY(${interpolate(textIn, [0, 1], [14, 0])}px)`,
-          textAlign: "center",
         }}
-      >
-        Network isolation for your build,
-        <br />
-        <span style={{ color: color.mint }}>in three steps</span>
-      </div>
+      />
     </AbsoluteFill>
   );
 };

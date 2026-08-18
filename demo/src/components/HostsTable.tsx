@@ -2,7 +2,7 @@ import React from "react";
 
 import { font, gh } from "../theme";
 
-type Column = { readonly label: string; readonly align: "left" | "center" | "right" };
+export type Column = { readonly label: string; readonly align: "left" | "center" | "right" };
 
 /**
  * Rows are styled exactly as GitHub renders them in the Job Summary — no
