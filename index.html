@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Buildcage — network isolation for GitHub Actions builds</title>
+    <title>Buildcage: restrict outbound access in GitHub Actions</title>
     <meta
       name="description"
       content="Restrict outbound network access during GitHub Actions builds to an allowlist of domains. Two actions: one for docker build, one for run: steps."
@@ -13,7 +13,7 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://buildcage.github.io/" />
-    <meta property="og:title" content="Buildcage — network isolation for GitHub Actions builds" />
+    <meta property="og:title" content="Buildcage: restrict outbound access in GitHub Actions" />
     <meta
       property="og:description"
       content="Restrict outbound network access during GitHub Actions builds to an allowlist of domains. Two actions: one for docker build, one for run: steps."
@@ -72,9 +72,10 @@
         </p>
 
         <p class="lede">
-          When a compromised dependency tries to exfiltrate secrets or phone home mid-build,
-          Buildcage blocks it: only the destinations you allow are reachable. It runs entirely
-          inside your GitHub Actions job — no agent to install, no external service, no telemetry.
+          When a supply chain attack turns a dependency against you, the payload still has to reach
+          the network to exfiltrate secrets or phone home. Buildcage blocks it: only the
+          destinations you allow are reachable. It runs entirely inside your GitHub Actions job — no
+          agent to install, no external service, no telemetry.
         </p>
 
         <figure class="shot">
