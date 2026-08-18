@@ -42,7 +42,7 @@ export const AuditSummaryScene: React.FC<{
       <div
         style={{
           opacity: cardIn,
-          transform: `translateY(${interpolate(cardIn, [0, 1], [24, 0])}px)`,
+          transform: `translateY(${interpolate(cardIn, [0, 1], [24, 0])}px) scale(${layout.cardScale})`,
         }}
       >
         <BuildSummaryCard title="Outbound Traffic Report (audit mode)" width={layout.contentWidth}>

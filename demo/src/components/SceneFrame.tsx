@@ -15,8 +15,10 @@ import { SceneHeading } from "./SceneHeading";
  *
  * Narrow: there's height to spare, so everything stacks under the heading.
  *
- * Either way the heading hangs off a box of the same height, so its top edge
- * lands in the same place from scene to scene.
+ * Either way the heading's top edge lands in the same place from scene to
+ * scene — beside the content it hangs off a box of fixed height, and stacked
+ * the box is that same height plus the heading's own, which the heading holds
+ * constant whether or not it carries a note.
  */
 export const SceneFrame: React.FC<{
   readonly heading: string;
@@ -50,7 +52,12 @@ export const SceneFrame: React.FC<{
       <div
         style={{
           width: layout.wide ? "100%" : layout.contentWidth,
-          height: contentHeight,
+          // Wide frames have no height to spare, so the box is the budget and
+          // the content divides what the heading leaves — its content is a
+          // screenshot or a step list, well short of the full height anyway.
+          // Narrow frames let the box grow by the heading instead, which is
+          // what keeps a full-height code block from running back under it.
+          height: layout.wide ? contentHeight : undefined,
           display: "flex",
           gap: layout.columnGap,
         }}
@@ -60,7 +67,9 @@ export const SceneFrame: React.FC<{
             {headingNode}
             <div
               style={{
-                flex: 1,
+                ...(layout.wide
+                  ? { flex: 1 }
+                  : { height: contentHeight, marginTop: layout.headingGap }),
                 display: "flex",
                 alignItems: "center",
                 justifyContent: layout.wide ? "center" : "flex-start",

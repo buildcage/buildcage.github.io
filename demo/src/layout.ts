@@ -23,6 +23,21 @@ export type Layout = {
   readonly columnGap: number;
   readonly headingSize: number;
   readonly noteSize: number;
+  /**
+   * How much to enlarge the Job Summary card over its authored size. The card
+   * is built at the width the code block uses, which reads well in a narrow
+   * frame but leaves a 16:9 one mostly empty — and its type, sized in absolute
+   * pixels, small against the rest. Scaling takes the whole card up together,
+   * so the GitHub proportions it copies survive.
+   */
+  readonly cardScale: number;
+  /**
+   * Space between the heading and the content stacked under it. Zero in a wide
+   * frame, where the content is centred in what the heading leaves and so
+   * carries its own slack; a stacked code block fills its box exactly and would
+   * otherwise butt straight up against the note.
+   */
+  readonly headingGap: number;
 };
 
 export const layoutFor = (width: number, height: number): Layout => {
@@ -36,6 +51,8 @@ export const layoutFor = (width: number, height: number): Layout => {
         columnGap: 48,
         headingSize: 44,
         noteSize: 28,
+        cardScale: 1.25,
+        headingGap: 0,
       }
     : {
         wide,
@@ -45,6 +62,8 @@ export const layoutFor = (width: number, height: number): Layout => {
         columnGap: 0,
         headingSize: 40,
         noteSize: 27,
+        cardScale: 1,
+        headingGap: 28,
       };
 };
 
