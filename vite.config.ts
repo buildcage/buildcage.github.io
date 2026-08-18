@@ -1,6 +1,62 @@
-import { defineConfig } from "vite-plus";
+import { defineConfig, type Plugin } from "vite-plus";
+
+const SITE = "https://buildcage.github.io";
+
+/**
+ * Describes the hero video to search engines, which is the one thing on this
+ * page eligible for a rich result.
+ *
+ * Injected at build time rather than written into index.html because the video
+ * and its poster are content-hashed: their names change whenever the video is
+ * re-rendered, and a hand-written URL would be stale from the first re-render.
+ * The names are read back out of the transformed HTML, so they can only be the
+ * ones actually shipped.
+ */
+const videoObject = (): Plugin => ({
+  name: "buildcage-video-object",
+  transformIndexHtml: {
+    order: "post",
+    handler(_html, ctx) {
+      // The emitted names, not the ones in the markup: at this point the markup
+      // still holds Vite's placeholders, which are resolved to hashed names
+      // later. In dev there is no bundle and the files are served unhashed.
+      const emitted = Object.keys(ctx.bundle ?? {});
+      const find = (pattern: RegExp, fallback: string) =>
+        emitted.find((name) => pattern.test(name)) ?? fallback;
+      const contentUrl = find(/^assets\/demo-wide-[A-Za-z0-9_-]+\.mp4$/, "assets/demo-wide.mp4");
+      const thumbnailUrl = find(
+        /^assets\/demo-wide-poster-[A-Za-z0-9_-]+\.png$/,
+        "assets/demo-wide-poster.png",
+      );
+
+      const data = {
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        name: "Adding Buildcage to a GitHub Actions workflow",
+        description:
+          "Adding Buildcage to a workflow, end to end: three steps, one audit run, and the allowlist it writes for you.",
+        // First published; re-renders change the encoding, not the recording.
+        uploadDate: "2026-08-17T20:11:25+09:00",
+        duration: "PT37S",
+        contentUrl: `${SITE}/${contentUrl}`,
+        thumbnailUrl: `${SITE}/${thumbnailUrl}`,
+      };
+
+      return [
+        {
+          tag: "script",
+          attrs: { type: "application/ld+json" },
+          children: JSON.stringify(data, null, 2),
+          injectTo: "head",
+        },
+      ];
+    },
+  },
+});
 
 export default defineConfig({
+  plugins: [videoObject()],
+
   // The site is a single hand-authored page; Vite is here for one reason —
   // content-hashed filenames. GitHub Pages serves everything with
   // `cache-control: max-age=600` and gives no way to change that, so a file
