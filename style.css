@@ -1,3 +1,34 @@
+/* Self-hosted so the page needs no third party to render its own text. Google's
+   stylesheet was a render-blocking request to one host and the fonts a
+   connection to another; both are gone, and no visitor's address is handed to
+   Google to read a page that advertises collecting nothing.
+
+   One file per family: both are variable fonts, so a single woff2 covers every
+   weight used here. Latin only — the range Google serves for this subset — so
+   anything outside it falls back rather than shipping alphabets the page never
+   sets. `swap` keeps text visible while they load. */
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url("./assets/fonts/outfit.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 300 500;
+  font-display: swap;
+  src: url("./assets/fonts/rubik.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* Palette sampled from assets/banner.png so the hero and the logo share one background.
    The page is dark at every setting — there is no light variant. The hero is
    dark by necessity (the logo carries a baked-in dark backdrop), and a light
