@@ -13,9 +13,13 @@ The page is plain HTML and CSS, with a few lines of inline JavaScript for the cl
 | `publish` | What Pages serves: the site files plus the rendered assets |
 
 The hero video is the one generated part of the site, rendered from the Remotion project in
-[`demo/`](#demo-video). At ~2.4 MB per cut it stays out of `main` entirely — otherwise every version
-would sit in the history for good. `publish` is rebuilt as a single parentless commit each time, so
-it doesn't accumulate them either.
+[`demo/`](#demo-video). It ships as **two cuts** — 16:9 and 4:3 — and the stylesheet shows whichever
+suits the screen: wide gets the widescreen cut, and below 900px the 4:3 one, which is taller at the
+same width and so sets its type larger. Both are `preload="none"`, so the hidden one costs nothing.
+
+At ~2.4 MB per cut they stay out of `main` entirely — otherwise every version would sit in the
+history for good. `publish` is rebuilt as a single parentless commit each time, so it doesn't
+accumulate them either.
 
 Nothing is lost by `publish` having no history: it's reproducible from `main`, and each commit
 message records the source commit it was built from. To roll the site back, check out the older
@@ -85,8 +89,8 @@ something to upload by hand:
 | `render:gif`              | `assets/demo-docker.gif`       | [buildcage/docker](https://github.com/buildcage/docker)             |
 | `render:gif:isolated-run` | `assets/demo-isolated-run.gif` | [buildcage/isolated-run](https://github.com/buildcage/isolated-run) |
 
-The two cuts share every scene downstream of the workflow edit — the run, the report, the allowlist
-it generates. Only the YAML on screen and the step names differ, so
+The Docker and isolated-run walkthroughs share every scene downstream of the workflow edit — the
+run, the report, the allowlist it generates. Only the YAML on screen and the step names differ, so
 `demo/src/content/products.ts` is where a new variant would go. isolated-run has no full video:
 its README is the only place that cut is used.
 
@@ -104,6 +108,7 @@ no such restriction.
 | `demo/src/content/report-data.ts`        | Hosts, rules, and counts in the Job Summary cards                      |
 | `demo/src/theme.ts`                      | Colours and fonts, mirroring `style.css`                               |
 | `demo/src/Main.tsx`                      | Scene order and durations                                              |
+| `demo/src/layout.ts`                     | How a scene arranges itself for the frame it's rendered into           |
 
 ## Editing notes
 

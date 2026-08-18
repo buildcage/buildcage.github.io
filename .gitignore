@@ -4,8 +4,10 @@ demo/out/
 .DS_Store
 
 # Rendered from demo/ and carried only by the publish branch, never by main.
-assets/demo.mp4
-assets/demo-poster.png
+assets/demo-wide.mp4
+assets/demo-wide-poster.png
+assets/demo-narrow.mp4
+assets/demo-narrow-poster.png
 
 # Rendered for the action repositories' READMEs; staged here, uploaded there.
 assets/demo-docker.gif

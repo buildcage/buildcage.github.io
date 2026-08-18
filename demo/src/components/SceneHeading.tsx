@@ -38,13 +38,13 @@ export const SceneHeading: React.FC<{
         // Stretch rather than a fixed height: the bar then always spans the
         // text beside it, with or without a note.
         alignItems: "stretch",
-        gap: 16,
-        marginBottom: 40,
+        gap: 20,
+
       }}
     >
       <div
         style={{
-          width: 6,
+          width: 7,
           borderRadius: 3,
           background: accent,
           flexShrink: 0,
@@ -56,7 +56,7 @@ export const SceneHeading: React.FC<{
           style={{
             fontFamily: font.heading,
             fontWeight: 500,
-            fontSize: 40,
+            fontSize: 44,
             lineHeight: 1.25,
             color: color.fg,
             letterSpacing: -0.5,
@@ -71,7 +71,7 @@ export const SceneHeading: React.FC<{
             style={{
               fontFamily: font.body,
               fontWeight: 300,
-              fontSize: 27,
+              fontSize: 28,
               lineHeight: 1.3,
               color: color.muted,
               marginTop: 6,

@@ -4,13 +4,18 @@ import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { BuildSummaryCard, SectionLabel } from "../components/BuildSummaryCard";
 import { Disclosure } from "../components/Disclosure";
 import { HostsTable } from "../components/HostsTable";
-import { CONTENT_WIDTH, SceneFrame } from "../components/SceneFrame";
+import { SceneFrame } from "../components/SceneFrame";
+import { useLayout } from "../layout";
 import { auditedHosts } from "../content/report-data";
 import { generatedConfig } from "../content/workflow-steps";
 import { color, font, gh } from "../theme";
 
-export const AuditSummaryScene: React.FC<{ readonly heading: string }> = ({ heading }) => {
+export const AuditSummaryScene: React.FC<{
+  readonly heading: string;
+  readonly contentHeight: number;
+}> = ({ heading, contentHeight }) => {
   const frame = useCurrentFrame();
+  const layout = useLayout();
   const { fps } = useVideoConfig();
 
   const cardIn = spring({ frame, fps, config: { damping: 200 }, durationInFrames: 20 });
@@ -33,14 +38,14 @@ export const AuditSummaryScene: React.FC<{ readonly heading: string }> = ({ head
   });
 
   return (
-    <SceneFrame heading={heading}>
+    <SceneFrame heading={heading} contentHeight={contentHeight} centered>
       <div
         style={{
           opacity: cardIn,
           transform: `translateY(${interpolate(cardIn, [0, 1], [24, 0])}px)`,
         }}
       >
-        <BuildSummaryCard title="Outbound Traffic Report (audit mode)" width={CONTENT_WIDTH}>
+        <BuildSummaryCard title="Outbound Traffic Report (audit mode)" width={layout.contentWidth}>
           <SectionLabel icon="📋">Audited Hosts</SectionLabel>
           <HostsTable
             columns={[

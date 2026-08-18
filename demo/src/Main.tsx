@@ -2,8 +2,10 @@ import type { HighlightedCode } from "codehike/code";
 import React from "react";
 import { AbsoluteFill, Series } from "remotion";
 
+import { blockHeightFor, useLayout } from "./layout";
+
 import { AuditSummaryScene } from "./scenes/AuditSummaryScene";
-import { blockHeight, CodeScene } from "./scenes/CodeScene";
+import { CodeScene } from "./scenes/CodeScene";
 import { Outro } from "./scenes/Outro";
 import { RestrictSummaryScene } from "./scenes/RestrictSummaryScene";
 import { RunScene } from "./scenes/RunScene";
@@ -50,8 +52,9 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short, pr
 
   // The last state (restrict) is shown after the audit report, not in the
   // initial run of code beats.
+  const layout = useLayout();
   const { states, runnerSteps } = products[product];
-  const codeHeight = blockHeight(states);
+  const codeHeight = blockHeightFor(states, layout);
   const buildUpStates = states.slice(0, -1);
   const restrictState = states[states.length - 1];
   const restrictCode = restSteps[restSteps.length - 1];
@@ -97,7 +100,7 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short, pr
         })}
 
         <Series.Sequence durationInFrames={sceneFrames.run} name="run-audit" layout="none">
-          <RunScene heading="Step 2 — Run it" note="nothing is blocked yet" steps={runnerSteps} />
+          <RunScene heading="Step 2 — Run it" note="nothing is blocked yet" steps={runnerSteps} contentHeight={codeHeight} />
         </Series.Sequence>
 
         <Series.Sequence
@@ -105,7 +108,7 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short, pr
           name="audit-report"
           layout="none"
         >
-          <AuditSummaryScene heading="Buildcage wrote your allowlist" />
+          <AuditSummaryScene heading="Buildcage wrote your allowlist" contentHeight={codeHeight} />
         </Series.Sequence>
 
         <Series.Sequence durationInFrames={sceneFrames.code} name={restrictState.id} layout="none">
@@ -121,7 +124,7 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short, pr
         </Series.Sequence>
 
         <Series.Sequence durationInFrames={sceneFrames.run} name="run-restrict" layout="none">
-          <RunScene heading="Run it again" note="this time in restrict mode" steps={runnerSteps} />
+          <RunScene heading="Run it again" note="this time in restrict mode" steps={runnerSteps} contentHeight={codeHeight} />
         </Series.Sequence>
 
         <Series.Sequence
@@ -129,7 +132,7 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short, pr
           name="restrict-report"
           layout="none"
         >
-          <RestrictSummaryScene heading="Anything else is blocked" />
+          <RestrictSummaryScene heading="Anything else is blocked" contentHeight={codeHeight} />
         </Series.Sequence>
 
         <Series.Sequence durationInFrames={sceneFrames.outro} name="Outro">

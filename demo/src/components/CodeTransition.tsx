@@ -15,6 +15,38 @@ const tokenTransitions: AnnotationHandler = {
   Token: ({ ...props }) => <InnerToken merge={props} style={{ display: "inline-block" }} />,
 };
 
+/** How much of a line height the blank line between two steps takes up. */
+export const BLANK_LINE_SCALE = 0.4;
+
+/**
+ * The blank lines separating workflow steps are real lines in the YAML, so
+ * they render at a full line height and eat a surprising amount of the frame.
+ * Shrinking just those keeps the steps visually grouped while giving the code
+ * back the room to be set larger.
+ */
+const compactBlankLines = (code: string, lineHeight: number): AnnotationHandler => {
+  const blank = new Set(
+    code
+      .split("\n")
+      .map((line, i) => (line.trim() === "" ? i + 1 : null))
+      .filter((n): n is number => n !== null),
+  );
+
+  return {
+    name: "compact-blank-lines",
+    Line: ({ lineNumber, style, ...props }) => (
+      <div
+        {...props}
+        style={
+          blank.has(lineNumber)
+            ? { ...style, height: lineHeight * BLANK_LINE_SCALE, lineHeight: "0" }
+            : style
+        }
+      />
+    ),
+  };
+};
+
 /**
  * Morphs one highlighted snippet into the next, driven off the current frame so
  * it renders deterministically. Adapted from Remotion's official Code Hike
@@ -83,7 +115,10 @@ export const CodeTransition: React.FC<{
     continueRender(handle);
   });
 
-  const handlers = useMemo<AnnotationHandler[]>(() => [tokenTransitions], []);
+  const handlers = useMemo<AnnotationHandler[]>(
+    () => [tokenTransitions, compactBlankLines(code.code, fontSize * 1.5)],
+    [code.code, fontSize],
+  );
 
   const style = useMemo<React.CSSProperties>(
     () => ({

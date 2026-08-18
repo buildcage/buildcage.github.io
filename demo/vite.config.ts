@@ -21,9 +21,14 @@ export default defineConfig({
     // unless the scenes — or the logo they import from the site's assets —
     // actually moved.
     render: {
+      // Both cuts, every time: the page carries the pair and picks between
+      // them at runtime, so shipping one without the other would leave half
+      // the visitors on a stale video.
       command: [
-        "remotion render Demo out/demo.mp4 --crf=28",
-        "remotion still Poster out/demo-poster.png",
+        "remotion render Demo out/demo-wide.mp4 --crf=28",
+        "remotion still Poster out/demo-wide-poster.png",
+        "remotion render DemoNarrow out/demo-narrow.mp4 --crf=28",
+        "remotion still PosterNarrow out/demo-narrow-poster.png",
       ],
       input: [
         "src/**",
@@ -31,7 +36,12 @@ export default defineConfig({
         "remotion.config.ts",
         { pattern: "assets/logo.png", base: "workspace" },
       ],
-      output: ["out/demo.mp4", "out/demo-poster.png"],
+      output: [
+        "out/demo-wide.mp4",
+        "out/demo-wide-poster.png",
+        "out/demo-narrow.mp4",
+        "out/demo-narrow-poster.png",
+      ],
     },
 
     // The GIF is for buildcage/docker's README, not this site, so it never

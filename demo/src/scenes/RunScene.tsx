@@ -1,7 +1,8 @@
 import React from "react";
 import { interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 
-import { CONTENT_WIDTH, SceneFrame } from "../components/SceneFrame";
+import { SceneFrame } from "../components/SceneFrame";
+import { useLayout } from "../layout";
 import { color, font } from "../theme";
 
 /**
@@ -12,18 +13,20 @@ export const RunScene: React.FC<{
   readonly heading: string;
   readonly note?: string;
   readonly steps: readonly string[];
-}> = ({ heading, note, steps }) => {
+  readonly contentHeight: number;
+}> = ({ heading, note, steps, contentHeight }) => {
   const frame = useCurrentFrame();
+  const layout = useLayout();
   const { durationInFrames } = useVideoConfig();
 
   const start = 16;
   const perStep = (durationInFrames - start - 16) / steps.length;
 
   return (
-    <SceneFrame heading={heading} note={note} accent={color.cyan}>
+    <SceneFrame heading={heading} note={note} accent={color.cyan} contentHeight={contentHeight} centered>
       <div
         style={{
-          width: CONTENT_WIDTH,
+          width: layout.contentWidth,
           background: color.codeBg,
           border: `1px solid ${color.rule}`,
           borderRadius: 14,

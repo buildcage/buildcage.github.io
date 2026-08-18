@@ -37,12 +37,24 @@ export default defineConfig({
       // builds from. Both are gitignored here — main never carries them.
       "stage:demo": {
         command: [
-          "cp demo/out/demo.mp4 assets/demo.mp4",
-          "cp demo/out/demo-poster.png assets/demo-poster.png",
+          "cp demo/out/demo-wide.mp4 assets/demo-wide.mp4",
+          "cp demo/out/demo-wide-poster.png assets/demo-wide-poster.png",
+          "cp demo/out/demo-narrow.mp4 assets/demo-narrow.mp4",
+          "cp demo/out/demo-narrow-poster.png assets/demo-narrow-poster.png",
         ],
         dependsOn: ["buildcage-demo#render"],
-        input: ["demo/out/demo.mp4", "demo/out/demo-poster.png"],
-        output: ["assets/demo.mp4", "assets/demo-poster.png"],
+        input: [
+          "demo/out/demo-wide.mp4",
+          "demo/out/demo-wide-poster.png",
+          "demo/out/demo-narrow.mp4",
+          "demo/out/demo-narrow-poster.png",
+        ],
+        output: [
+          "assets/demo-wide.mp4",
+          "assets/demo-wide-poster.png",
+          "assets/demo-narrow.mp4",
+          "assets/demo-narrow-poster.png",
+        ],
       },
 
       build: {

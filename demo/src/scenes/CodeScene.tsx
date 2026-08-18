@@ -2,24 +2,11 @@ import type { HighlightedCode } from "codehike/code";
 import React from "react";
 import { interpolate, useCurrentFrame } from "remotion";
 
-import { CodeTransition } from "../components/CodeTransition";
-import { CONTENT_WIDTH, SceneFrame } from "../components/SceneFrame";
+import { BLANK_LINE_SCALE, CodeTransition } from "../components/CodeTransition";
+import { BLOCK_PADDING, useLayout } from "../layout";
+import { SceneFrame } from "../components/SceneFrame";
 import { color } from "../theme";
 
-/**
- * The font stays constant across scenes — the morphing tokens would scale
- * otherwise — so the block is sized in lines instead.
- */
-const FONT_SIZE = 25;
-const LINE_HEIGHT = FONT_SIZE * 1.5;
-const BLOCK_PADDING = 30;
-/**
- * Gap between the Buildcage panel and the rest-of-workflow panel below it.
- * Matches one blank source line (`\n\n` between steps in workflow-steps.ts)
- * so the space between "Start Buildcage" and the next step reads the same as
- * the space between any two steps within the rest-of-workflow panel itself.
- */
-const PANEL_GAP = LINE_HEIGHT;
 
 /** Frames spent growing the Buildcage panel's reserved space before its text reveals. */
 const GROW_FRAMES = 16;
@@ -27,22 +14,6 @@ const GROW_FRAMES = 16;
 const REVEAL_FRAMES = 20;
 
 const lineCount = (c: HighlightedCode | null) => (c ? c.code.split("\n").length : 0);
-
-/**
- * One height for every scene in a cut: the tallest state it reaches. Holding
- * it constant keeps the block from resizing between beats, and deriving it
- * per cut means a short workflow doesn't sit in a frame sized for a long one.
- */
-export const blockHeight = (states: readonly { buildcageYaml: string | null; restYaml: string }[]) => {
-  const linesOf = (yaml: string) => yaml.split("\n").length;
-  const tallest = Math.max(
-    ...states.map(
-      (state) =>
-        (state.buildcageYaml ? linesOf(state.buildcageYaml) + 1 : 0) + linesOf(state.restYaml),
-    ),
-  );
-  return tallest * LINE_HEIGHT + BLOCK_PADDING * 2;
-};
 
 export const CodeScene: React.FC<{
   readonly heading: string;
@@ -66,6 +37,8 @@ export const CodeScene: React.FC<{
   transitionFrames = 24,
 }) => {
   const frame = useCurrentFrame();
+  const layout = useLayout();
+  const lineHeight = layout.fontSize * 1.5;
 
   // Two independent CodeTransition instances, each diffed only against its
   // own previous state. The Buildcage step and the rest of the workflow never
@@ -88,16 +61,16 @@ export const CodeScene: React.FC<{
   const oldLines = lineCount(buildcageOld);
   const newLines = lineCount(buildcageNew);
   const currentLines = interpolate(growProgress, [0, 1], [oldLines, newLines]);
-  const panelHeight = currentLines * LINE_HEIGHT;
+  const panelHeight = currentLines * lineHeight;
   const panelMargin = buildcageNew
-    ? PANEL_GAP * interpolate(growProgress, [0, 1], [oldLines > 0 ? 1 : 0, 1])
+    ? lineHeight * interpolate(growProgress, [0, 1], [oldLines > 0 ? 1 : 0, 1])
     : 0;
 
   return (
-    <SceneFrame heading={heading} note={note} titleEnters={titleEnters}>
+    <SceneFrame heading={heading} note={note} titleEnters={titleEnters} contentHeight={height}>
       <div
         style={{
-          width: CONTENT_WIDTH,
+          width: layout.contentWidth,
           height,
           background: color.codeBg,
           border: `1px solid ${color.rule}`,
@@ -114,7 +87,7 @@ export const CodeScene: React.FC<{
               newCode={buildcageNew}
               durationInFrames={REVEAL_FRAMES}
               revealDelay={GROW_FRAMES}
-              fontSize={FONT_SIZE}
+              fontSize={layout.fontSize}
             />
           </div>
         )}
@@ -122,7 +95,7 @@ export const CodeScene: React.FC<{
           oldCode={restOld}
           newCode={restNew}
           durationInFrames={transitionFrames}
-          fontSize={FONT_SIZE}
+          fontSize={layout.fontSize}
         />
       </div>
     </SceneFrame>

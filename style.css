@@ -237,6 +237,24 @@ pre .c {
   background: #223133;
 }
 
+/* Two cuts of the same walkthrough. Wide screens get the 16:9 one; below that
+   the 4:3 cut is taller for the same width, which is what makes its type
+   readable on a phone. Switching in CSS rather than script means it also
+   follows a window being resized. */
+.player .narrow {
+  display: none;
+}
+
+@media (max-width: 899px) {
+  .player .wide {
+    display: none;
+  }
+
+  .player .narrow {
+    display: block;
+  }
+}
+
 .play {
   position: absolute;
   inset: 0;
