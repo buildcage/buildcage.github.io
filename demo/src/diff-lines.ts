@@ -1,18 +1,12 @@
 import type { HighlightedCode, Token } from "codehike/code";
 
 /**
- * 1-based line numbers in `next` that have no counterpart in `prev` — the
- * lines a step adds or rewrites. A plain LCS is enough here: the snippets are
- * a couple of dozen lines.
+ * 1-based line numbers in `next` with no counterpart in `prev` — what a step
+ * adds or rewrites. LCS is plenty for snippets this size.
  *
- * Lines are matched on their trimmed text, so a line that only shifts right —
- * a command nested one level deeper once its step is wrapped — counts as the
- * same line. It moved; the reader didn't write it, and colouring it as new
- * would point at the wrong thing.
- *
- * A line whose value changed still counts as new, key and all:
- * `proxy_mode: audit` becoming `proxy_mode: restrict` is the switch the whole
- * paste is for, and splitting the line's colour would play it down.
+ * Matched on trimmed text, so a line that only shifts right when its step is
+ * wrapped counts as the same line: the reader didn't write it. A line whose
+ * value changed counts as new key and all, since that change is the point.
  */
 export const addedLines = (prev: string | null, next: string): Set<number> => {
   const nextLines = next.split("\n").map((line) => line.trim());
@@ -63,11 +57,10 @@ export const addedLines = (prev: string | null, next: string): Set<number> => {
 const textOf = (token: Token | string) => (typeof token === "string" ? token : token[0]);
 
 /**
- * Swaps the colour of every token sitting on one of `lines`, leaving the
- * tokenisation itself untouched. Recolouring the already-highlighted result
- * rather than highlighting a second time with a warm theme keeps both
- * versions token-for-token identical, which is what lets Code Hike match them
- * up and morph between scenes.
+ * Swaps the colour of tokens on `lines`, leaving tokenisation untouched.
+ * Recolouring the highlighted result — rather than highlighting again with a
+ * warm theme — keeps both versions token-for-token identical, which is what
+ * lets Code Hike match them.
  */
 export const recolorLines = (
   code: HighlightedCode,

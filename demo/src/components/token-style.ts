@@ -19,11 +19,8 @@ export function applyStyle({
   const { translateX, translateY, color, opacity } = keyframes;
 
   if (opacity) {
-    // Follow the keyframes rather than progress itself. The template this came
-    // from assumes opacity only ever runs 0 → 1, which is true of a token
-    // arriving but backwards for one leaving: it faded the outgoing text in as
-    // its replacement arrived, so a line that merely changed colour turned
-    // muddy while both were on screen.
+    // Follow the keyframes, not progress: the template assumed opacity always
+    // runs 0 → 1, which is backwards for a token on its way out.
     element.style.opacity = interpolate(linearProgress, [0, 1], opacity).toString();
   }
   if (color) {

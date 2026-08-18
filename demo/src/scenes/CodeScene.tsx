@@ -40,22 +40,12 @@ export const CodeScene: React.FC<{
   const layout = useLayout();
   const lineHeight = layout.fontSize * 1.5;
 
-  // Two independent CodeTransition instances, each diffed only against its
-  // own previous state. The Buildcage step and the rest of the workflow never
-  // share a token stream, so Code Hike can never correlate one block's tokens
-  // with the other's — which is what caused an unrelated, unchanged step to
-  // be misread as newly added when everything lived in one combined diff.
+  // Two independent CodeTransition instances so Code Hike can never correlate
+  // the Buildcage step's tokens with the rest of the workflow's — sharing one
+  // diff made unchanged steps read as newly added.
   //
-  // Because the two blocks no longer share a diff, Code Hike also has no way
-  // to know the rest-of-workflow block should slide down as the Buildcage
-  // block grows — that motion is driven by hand here, animating the
-  // Buildcage panel's reserved height from its old line count to its new one.
-  //
-  // When the panel is growing, nothing new is shown until it has finished:
-  // the space appears first, then everything the step adds arrives into it at
-  // once. A "make space, then reveal" beat reads more clearly as a diff than
-  // growing and fading in at the same time. When the panel isn't growing there
-  // is nothing to wait for, so the beat is skipped (see `panelGrows` below).
+  // The cost is that neither block knows the other moved, so the panel's
+  // growth is animated by hand here and the rest slides down with it.
   const growProgress = interpolate(frame, [0, GROW_FRAMES], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -64,18 +54,16 @@ export const CodeScene: React.FC<{
   const newLines = lineCount(buildcageNew);
   const currentLines = interpolate(growProgress, [0, 1], [oldLines, newLines]);
   const panelHeight = currentLines * lineHeight;
-  // The panel is a separate block, but the space under it stands for the same
-  // blank line that separates any two steps — so it's set to the same height
-  // those are compressed to, and the gaps down the workflow read as even.
+  // The space under the panel stands for the blank line between any two steps,
+  // so it matches the height those are compressed to.
   const gap = lineHeight * BLANK_LINE_SCALE;
   const panelMargin = buildcageNew
     ? gap * interpolate(growProgress, [0, 1], [oldLines > 0 ? 1 : 0, 1])
     : 0;
 
-  // Only when the panel is making room does the rest of the workflow have to
-  // move before anything new can land. Holding its transition for that long
-  // then playing it over the panel's own reveal window puts the two additions
-  // on screen together — they're one edit, and arriving apart looked like two.
+  // A growing panel is the only case where the workflow must move before
+  // anything new can land. Holding both for that long lands the additions at
+  // either end together — they are one edit.
   const panelGrows = newLines !== oldLines;
 
   return (
@@ -103,9 +91,8 @@ export const CodeScene: React.FC<{
               oldCode={buildcageOld}
               newCode={buildcageNew}
               durationInFrames={REVEAL_FRAMES}
-              // Only worth holding when the panel is actually making room. A
-              // panel that merely changes contents has nothing to wait for,
-              // and holding it there blanked the step for half a second.
+              // A panel that only changes contents has nothing to wait for,
+              // and holding it there blanks the step.
               revealDelay={panelGrows ? GROW_FRAMES : 0}
               fontSize={layout.fontSize}
             />

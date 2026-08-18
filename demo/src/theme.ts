@@ -30,9 +30,8 @@ export const font = {
 } as const;
 
 /**
- * Shiki-compatible theme handed to codehike's `highlight()`. Verified to be
- * accepted as a plain object — the token colors mirror the `.k` / `.s` / `.a` /
- * `.c` / `.p` classes the landing page uses for its YAML snippets.
+ * Shiki-compatible theme for codehike's `highlight()`, mirroring the classes
+ * the landing page uses for its YAML snippets.
  */
 export const codeTheme = {
   name: "buildcage-dark",
@@ -62,11 +61,9 @@ export const codeTheme = {
 } as const;
 
 /**
- * Warm counterparts to every colour the theme above emits, matched role for
- * role and kept at a similar lightness. Lines a step actually adds or changes
- * are recoloured through this map, so the syntax colouring still reads the
- * same — only the hue family shifts — and the eye can tell at a glance which
- * lines are new and which were already there.
+ * Warm counterparts to every colour the theme emits, matched role for role at a
+ * similar lightness. Added lines are recoloured through this map: the syntax
+ * colouring still reads, only the hue family shifts.
  */
 export const addedLineColors: Readonly<Record<string, string>> = {
   "#6CC6D2": "#f0a95c", // key

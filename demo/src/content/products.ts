@@ -6,9 +6,8 @@ import {
 } from "./workflow-steps";
 
 /**
- * The two actions share everything downstream of the workflow edit — the run,
- * the report, the allowlist it generates — so only the YAML on screen and the
- * step names in the run scene differ between cuts.
+ * The two actions share everything downstream of the workflow edit, so only the
+ * YAML on screen and the run scene's step names differ between cuts.
  */
 export type ProductId = "docker" | "isolated-run";
 

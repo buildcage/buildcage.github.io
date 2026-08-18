@@ -7,10 +7,8 @@ import { Poster } from "./scenes/Poster";
 import type { ProductId } from "./content/products";
 
 /**
- * The same scenes, rendered into two frames. Each composition lays itself out
- * for its own aspect ratio (see layout.ts), so the wide cut gets the heading in
- * a column beside the code and the narrow one stacks them — and the page picks
- * whichever suits the screen it's on.
+ * The same scenes rendered into two frames; each lays itself out for its own
+ * aspect ratio (see layout.ts) and the page picks whichever suits the screen.
  */
 const WIDE = { width: 1920, height: 1080 } as const;
 const NARROW = { width: 1440, height: 1080 } as const;
@@ -27,8 +25,7 @@ const props = (short: boolean, product: ProductId) => ({
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      {/* The landing page embeds both cuts of the Docker walkthrough and
-          swaps between them on viewport width. */}
+      {/* Both cuts of the Docker walkthrough; the page swaps on viewport width. */}
       <Composition
         id="Demo"
         component={Main}
@@ -50,8 +47,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition id="Poster" component={Poster} fps={30} {...WIDE} durationInFrames={1} />
       <Composition id="PosterNarrow" component={Poster} fps={30} {...NARROW} durationInFrames={1} />
 
-      {/* The README GIFs render at one size — a README column is a fixed
-          width, so there is nothing to adapt to. */}
+      {/* The README GIFs render at one size — a README column is fixed width. */}
       <Composition
         id="DemoShort"
         component={Main}

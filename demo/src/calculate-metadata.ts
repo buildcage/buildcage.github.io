@@ -13,18 +13,13 @@ const highlightYaml = (id: string, value: string) =>
   highlight({ lang: "yaml", meta: id, value }, themeArg);
 
 /**
- * Highlights every YAML state (both tracks) ahead of render, then recolours
- * the lines each state introduces so they read as warm against the cool
- * palette of the code that was already there.
- *
- * The first state is exempt: it's the workflow the viewer already has, so
- * nothing in it counts as new.
+ * Highlights every YAML state ahead of render, then recolours the lines each
+ * state introduces so they read warm against the code already there. The first
+ * state is exempt — it's the workflow the viewer already has.
  *
  * Each state is kept twice, highlighted and plain. A scene morphs out of the
- * plain copy of the state before it, so the previous step's warm lines are
- * cool again from its first frame: the highlight marks what *this* step
- * changed, and carrying it over meant a step that hadn't been touched sat
- * there recolouring itself halfway through the next scene.
+ * *plain* previous state, so the highlight marks what this step changed and
+ * doesn't carry into the next scene to recolour itself mid-shot.
  */
 export const calculateMetadata: CalculateMetadataFunction<DemoProps> = async ({ props }) => {
   await waitForFonts();

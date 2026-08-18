@@ -5,20 +5,12 @@ import { useLayout } from "../layout";
 import { SceneHeading } from "./SceneHeading";
 
 /**
- * Arranges a scene for whichever frame it's being rendered into.
+ * Arranges a scene for the frame it's rendered into. Wide puts the heading
+ * beside the code, which needs the full height; shorter content (`centered`)
+ * sits under it instead, so the left half isn't left empty. Narrow stacks
+ * everything.
  *
- * Wide: the code block is tall enough to fill the frame, so it sits beside the
- * heading — stacked, the heading ate the height the code needed, which is what
- * forced the type small on a 16:9 canvas. Shorter content (the Job Summary
- * cards, the run's step list) centres under the heading instead, since parking
- * it in the right-hand column left the left half of the frame empty.
- *
- * Narrow: there's height to spare, so everything stacks under the heading.
- *
- * Either way the heading's top edge lands in the same place from scene to
- * scene — beside the content it hangs off a box of fixed height, and stacked
- * the box is that same height plus the heading's own, which the heading holds
- * constant whether or not it carries a note.
+ * Either way the heading's top lands in the same place from scene to scene.
  */
 export const SceneFrame: React.FC<{
   readonly heading: string;
@@ -52,11 +44,9 @@ export const SceneFrame: React.FC<{
       <div
         style={{
           width: layout.wide ? "100%" : layout.contentWidth,
-          // Wide frames have no height to spare, so the box is the budget and
-          // the content divides what the heading leaves — its content is a
-          // screenshot or a step list, well short of the full height anyway.
-          // Narrow frames let the box grow by the heading instead, which is
-          // what keeps a full-height code block from running back under it.
+          // Wide: the box is the height budget and the content takes what the
+          // heading leaves. Narrow: the box grows by the heading instead, so a
+          // full-height code block can't run back under it.
           height: layout.wide ? contentHeight : undefined,
           display: "flex",
           gap: layout.columnGap,

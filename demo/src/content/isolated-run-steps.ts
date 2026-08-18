@@ -1,13 +1,10 @@
 import { generatedConfig, type WorkflowState } from "./workflow-steps";
 
 /**
- * The isolated-run cut. The action is self-contained — it wraps the command,
- * runs it in the sandbox, and appends its own report — so unlike the Docker
- * flow there is no builder to point at and no separate report step. The whole
- * edit happens inside one workflow step.
- *
- * A checkout step rides along untouched, so the recoloured lines have
- * something unchanged to read against.
+ * The isolated-run cut. The action wraps the command, runs it and appends its
+ * own report, so unlike the Docker flow there's no builder to point at and no
+ * report step — the whole edit happens inside one workflow step. A checkout
+ * step rides along untouched, to read the recoloured lines against.
  */
 
 const checkoutStep = `- name: Check out
@@ -19,9 +16,8 @@ const plainStep = `- name: Build and test
     npm run build
     npm run test`;
 
-// The command stays at the top of `with:` and the configuration accumulates
-// below it, so pasting the allowlist back appends to the end of the step
-// rather than pushing the command further down mid-block.
+// Configuration accumulates below the command, so pasting the allowlist back
+// appends to the step rather than pushing the command down mid-block.
 const wrappedStep = (config: string) => `- name: Build and test
   uses: buildcage/isolated-run@<sha> # v1.x.x
   with:

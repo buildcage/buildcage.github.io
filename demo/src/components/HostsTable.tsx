@@ -5,10 +5,9 @@ import { font, gh } from "../theme";
 export type Column = { readonly label: string; readonly align: "left" | "center" | "right" };
 
 /**
- * Rows are styled exactly as GitHub renders them in the Job Summary — no
- * emphasis of our own on the blocked row. The real report doesn't tint or
- * recolour it (see ../../assets/report-restrict-mode.png), and inventing a
- * treatment here would show viewers an interface they'll never get.
+ * Styled exactly as GitHub renders it — no emphasis of our own on the blocked
+ * row. The real report has none (see ../../assets/report-restrict-mode.png),
+ * and inventing one would show an interface viewers will never get.
  */
 export const HostsTable: React.FC<{
   readonly columns: readonly Column[];

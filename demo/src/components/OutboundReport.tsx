@@ -5,10 +5,8 @@ import { HostsTable } from "./HostsTable";
 import { allowedHosts, blockedColumns, blockedHosts, hostColumns } from "../content/report-data";
 
 /**
- * The restrict-mode report, which two places show: the scene at the end of the
- * walkthrough and the poster frame the page uses as its thumbnail. They differ
- * only in that the scene fades the blocked table in — everything else was
- * duplicated, down to the card's title.
+ * The restrict-mode report, shown by the closing scene and by the poster. They
+ * differ only in that the scene fades the blocked table in.
  */
 
 export const RESTRICT_TITLE = "Outbound Traffic Report (restrict mode)";

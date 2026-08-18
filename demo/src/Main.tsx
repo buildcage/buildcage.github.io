@@ -16,17 +16,16 @@ import { color } from "./theme";
 export type DemoProps = {
   /** Highlighted Buildcage-step panel per workflow state; null where the step isn't in the workflow yet. */
   readonly buildcageSteps: (HighlightedCode | null)[] | null;
-  /** The same panels without the added-line highlight, used as what a scene
-   * morphs out of so the previous step's marks don't carry into it. */
+  /** The same panels unhighlighted — what a scene morphs out of, so the
+   * previous step's marks don't carry into it. */
   readonly buildcagePlain: (HighlightedCode | null)[] | null;
   /** Highlighted rest-of-workflow panel per workflow state. */
   readonly restSteps: HighlightedCode[] | null;
   /** The unhighlighted counterpart of `restSteps`. */
   readonly restPlain: HighlightedCode[] | null;
   /**
-   * Drop the title card for the GIF cut. The outro stays either way — a GIF
-   * loops with no controls and no gap, so the logo is what tells the viewer
-   * where the thing ends and starts over.
+   * Drop the title card for the GIF cut. The outro stays: a GIF loops with no
+   * gap, and the logo is what marks where it ends and starts over.
    */
   readonly short: boolean;
   /** Which action's workflow the cut walks through. */
@@ -62,8 +61,7 @@ export const Main: React.FC<DemoProps> = ({
     throw new Error("steps were not computed — check calculateMetadata");
   }
 
-  // The last state (restrict) is shown after the audit report, not in the
-  // initial run of code beats.
+  // The restrict state is shown after the audit report, not with the rest.
   const layout = useLayout();
   const { states, runnerSteps } = products[product];
   const codeHeight = blockHeightFor(states, layout);

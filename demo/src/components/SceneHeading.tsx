@@ -13,10 +13,9 @@ export const SceneHeading: React.FC<{
   readonly note?: string;
   readonly accent?: string;
   /**
-   * False when the previous scene showed this same title. Each scene is its
-   * own sequence, so the heading would otherwise replay its entrance on every
-   * beat of a multi-part step — the text flashing back in unchanged, which
-   * reads as a glitch. Only the note animates in that case.
+   * False when the previous scene showed this same title. Each scene is its own
+   * sequence, so the entrance would otherwise replay on every beat of a
+   * multi-part step and read as a glitch; only the note animates then.
    */
   readonly titleEnters?: boolean;
 }> = ({ children, note, accent = color.mint, titleEnters = true }) => {
@@ -40,9 +39,8 @@ export const SceneHeading: React.FC<{
   } as const;
 
   return (
-    // The note's line is held whether or not there is a note, so that scenes
-    // stacking their content under the heading all start at the same height.
-    // The reserve sits outside the row, though — inside it, the bar would
+    // The note's line is reserved either way, so stacked scenes all start at
+    // the same height. It sits outside the row — inside, the accent bar would
     // stretch to cover a line that isn't there.
     <div>
       <div style={{ display: "flex", alignItems: "stretch", gap: 20 }}>

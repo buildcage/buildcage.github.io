@@ -1,10 +1,9 @@
 /**
- * Single source of truth for the workflow YAML shown in the video.
+ * The workflow YAML shown in the video.
  *
- * Split into two independent tracks — the Buildcage step itself, and the rest
- * of the workflow (buildx / build / report) — so each is diffed and morphed
- * independently. This keeps the Buildcage step's changes from ever displacing
- * (and thus animating) the unrelated, unchanged steps around it.
+ * Split into two tracks — the Buildcage step and the rest of the workflow — so
+ * each is diffed independently and the Buildcage step's changes never displace
+ * the unchanged steps around it.
  */
 
 const buildcageStep = (body: string) => `- name: Start Buildcage
@@ -72,9 +71,8 @@ export const workflowStates: readonly WorkflowState[] = [
     buildcageYaml: null,
     restYaml: [plainBuildx, buildStep].join("\n\n"),
   },
-  // Both new steps arrive together, one at either end of the workflow. They're
-  // a single copy-paste in practice, and showing them land as one keeps the
-  // edit from looking like more work than it is.
+  // Both steps arrive together, one at either end. They're a single paste in
+  // practice, and landing apart made the edit look like more work than it is.
   {
     id: "audit",
     heading: "Step 1 — Add Buildcage",

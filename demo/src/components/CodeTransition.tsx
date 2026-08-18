@@ -19,10 +19,8 @@ const tokenTransitions: AnnotationHandler = {
 export const BLANK_LINE_SCALE = 0.4;
 
 /**
- * The blank lines separating workflow steps are real lines in the YAML, so
- * they render at a full line height and eat a surprising amount of the frame.
- * Shrinking just those keeps the steps visually grouped while giving the code
- * back the room to be set larger.
+ * The blank lines between steps are real YAML lines and render full height,
+ * eating the frame. Shrinking them buys room to set the code larger.
  */
 const compactBlankLines = (code: string, lineHeight: number): AnnotationHandler => {
   const blank = new Set(
@@ -59,19 +57,13 @@ export const CodeTransition: React.FC<{
   readonly durationInFrames?: number;
   readonly fontSize?: number;
   /**
-   * Frames to hold the transition at its starting point before it plays.
-   * Lets a container grow into its new size first, with content still
-   * hidden, then reveal the content once there's room for it — a
-   * "make space, then fade in" beat instead of both happening at once.
+   * Holds the whole snippet at its starting point — nothing drawn — so a
+   * container can grow into its new size before its content appears. Only for
+   * a block appearing from nothing; it blanks one that has existing lines.
    */
   readonly revealDelay?: number;
-  /**
-   * Frames to hold back only the tokens that fade in, leaving everything
-   * already on screen to transition on schedule. `revealDelay` holds the whole
-   * snippet at its starting point, where nothing is drawn yet — fine for a
-   * block appearing from nothing, but it blanks a block that has existing
-   * lines in it. This delays the arrival without hiding what's already there.
-   */
+  /** Holds back only the tokens that fade in, leaving what's already on screen
+   * to transition on schedule. */
   readonly enterDelay?: number;
 }> = ({
   oldCode,
@@ -114,15 +106,12 @@ export const CodeTransition: React.FC<{
 
     const transitions = calculateTransitions(ref.current, oldSnapshot);
 
-    // Rising opacity marks a token that wasn't there before; a falling one is
-    // on its way out and must not be held back, or it would linger over the
-    // lines taking its place.
+    // Rising opacity means arriving; falling means leaving, which must never be
+    // held back or it lingers over the line replacing it.
     const isEntering = ({ keyframes }: (typeof transitions)[number]) =>
       Boolean(keyframes.opacity && keyframes.opacity[1] > keyframes.opacity[0]);
-    // Where the arrivals would have begun on their own. Shifting the whole
-    // group by the difference starts it when asked while keeping the stagger
-    // between its lines — flattening that would make the block land all at
-    // once beside one that arrives line by line.
+    // Shift the arrivals as a group so they start when asked but keep the
+    // stagger between their lines.
     const enteringDelays = transitions.filter(isEntering).map(({ options }) => options.delay);
     const firstEnter = enteringDelays.length > 0 ? Math.min(...enteringDelays) : 0;
 

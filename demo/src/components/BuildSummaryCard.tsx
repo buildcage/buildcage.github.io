@@ -3,10 +3,10 @@ import React from "react";
 import { font, gh } from "../theme";
 
 /**
- * Reproduction of GitHub's Job Summary card, matching the real reports captured
- * in ../../assets/report-{audit,restrict}-mode.png. Rendered rather than
- * screenshotted so the disclosure can actually open and its contents can morph
- * into the workflow editor in the next scene.
+ * GitHub's Job Summary card, matching the real reports in
+ * ../../assets/report-{audit,restrict}-mode.png. Rendered rather than
+ * screenshotted so the disclosure can open and its contents can morph into the
+ * workflow in the next scene.
  */
 export const BuildSummaryCard: React.FC<{
   readonly title: string;

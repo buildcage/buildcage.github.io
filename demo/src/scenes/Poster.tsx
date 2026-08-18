@@ -8,15 +8,10 @@ import { useLayout } from "../layout";
 import { color } from "../theme";
 
 /**
- * The video's poster frame. It shows the report rather than the workflow YAML:
- * the report is what the tool produces, and a table naming one blocked host
- * says what Buildcage is for in a way a screen of configuration doesn't.
- *
- * Rendered statically rather than grabbed from the timeline, so it isn't tied
- * to whatever a given frame happens to be mid-animation. Laid out for its own
- * aspect ratio, like the scenes — the wide poster sets the lockup beside the
- * report, the narrow one stacks them. Centre-weighted content is avoided on
- * purpose: the page overlays a play button there.
+ * The poster frame. It shows the report rather than the YAML — a table naming
+ * one blocked host says what Buildcage is for; a screen of configuration
+ * doesn't. Composed rather than grabbed from the timeline, so it isn't caught
+ * mid-animation, and it leaves its centre clear for the page's play button.
  */
 export const Poster: React.FC = () => {
   const layout = useLayout();
@@ -33,9 +28,8 @@ export const Poster: React.FC = () => {
     />
   );
 
-  // Wide: the line leads and the logo signs off under it, the pair centred in
-  // the column beside the report. Narrow: the lockup reads left to right along
-  // the top, the way it does on the page.
+  // Wide: the line leads, the logo signs off under it. Narrow: the lockup
+  // reads left to right along the top, as it does on the page.
   const lockup = (
     <div
       style={{
