@@ -17,7 +17,9 @@ const NARROW = { width: 1440, height: 1080 } as const;
 
 const props = (short: boolean, product: ProductId) => ({
   buildcageSteps: null,
+  buildcagePlain: null,
   restSteps: null,
+  restPlain: null,
   short,
   product,
 });

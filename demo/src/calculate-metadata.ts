@@ -19,18 +19,27 @@ const highlightYaml = (id: string, value: string) =>
  *
  * The first state is exempt: it's the workflow the viewer already has, so
  * nothing in it counts as new.
+ *
+ * Each state is kept twice, highlighted and plain. A scene morphs out of the
+ * plain copy of the state before it, so the previous step's warm lines are
+ * cool again from its first frame: the highlight marks what *this* step
+ * changed, and carrying it over meant a step that hadn't been touched sat
+ * there recolouring itself halfway through the next scene.
  */
 export const calculateMetadata: CalculateMetadataFunction<DemoProps> = async ({ props }) => {
   await waitForFonts();
 
   const buildcageSteps: (HighlightedCode | null)[] = [];
+  const buildcagePlain: (HighlightedCode | null)[] = [];
   const restSteps: HighlightedCode[] = [];
+  const restPlain: HighlightedCode[] = [];
 
   for (const [i, state] of products[props.product].states.entries()) {
     const prev = i === 0 ? undefined : products[props.product].states[i - 1];
 
     if (state.buildcageYaml) {
       const code = await highlightYaml(state.id, state.buildcageYaml);
+      buildcagePlain.push(code);
       buildcageSteps.push(
         i === 0
           ? code
@@ -41,10 +50,12 @@ export const calculateMetadata: CalculateMetadataFunction<DemoProps> = async ({ 
             ),
       );
     } else {
+      buildcagePlain.push(null);
       buildcageSteps.push(null);
     }
 
     const rest = await highlightYaml(state.id, state.restYaml);
+    restPlain.push(rest);
     restSteps.push(
       i === 0
         ? rest
@@ -52,5 +63,5 @@ export const calculateMetadata: CalculateMetadataFunction<DemoProps> = async ({ 
     );
   }
 
-  return { props: { ...props, buildcageSteps, restSteps } };
+  return { props: { ...props, buildcageSteps, buildcagePlain, restSteps, restPlain } };
 };

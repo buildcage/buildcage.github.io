@@ -16,8 +16,13 @@ import { color } from "./theme";
 export type DemoProps = {
   /** Highlighted Buildcage-step panel per workflow state; null where the step isn't in the workflow yet. */
   readonly buildcageSteps: (HighlightedCode | null)[] | null;
+  /** The same panels without the added-line highlight, used as what a scene
+   * morphs out of so the previous step's marks don't carry into it. */
+  readonly buildcagePlain: (HighlightedCode | null)[] | null;
   /** Highlighted rest-of-workflow panel per workflow state. */
   readonly restSteps: HighlightedCode[] | null;
+  /** The unhighlighted counterpart of `restSteps`. */
+  readonly restPlain: HighlightedCode[] | null;
   /**
    * Drop the title card for the GIF cut. The outro stays either way — a GIF
    * loops with no controls and no gap, so the logo is what tells the viewer
@@ -45,8 +50,15 @@ export const totalFrames = (short: boolean, product: ProductId) => {
   return core + sceneFrames.outro + (short ? 0 : sceneFrames.title);
 };
 
-export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short, product }) => {
-  if (!buildcageSteps || !restSteps) {
+export const Main: React.FC<DemoProps> = ({
+  buildcageSteps,
+  buildcagePlain,
+  restSteps,
+  restPlain,
+  short,
+  product,
+}) => {
+  if (!buildcageSteps || !restSteps || !buildcagePlain || !restPlain) {
     throw new Error("steps were not computed — check calculateMetadata");
   }
 
@@ -89,9 +101,9 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short, pr
                 heading={state.heading}
                 note={state.note}
                 titleEnters={buildUpStates[i - 1]?.heading !== state.heading}
-                buildcageOld={i === 0 ? null : (buildcageSteps[i - 1] ?? null)}
+                buildcageOld={i === 0 ? null : (buildcagePlain[i - 1] ?? null)}
                 buildcageNew={buildcageSteps[i] ?? null}
-                restOld={i === 0 ? null : (restSteps[i - 1] ?? null)}
+                restOld={i === 0 ? null : (restPlain[i - 1] ?? null)}
                 restNew={restCode}
                 height={codeHeight}
               />
@@ -115,9 +127,9 @@ export const Main: React.FC<DemoProps> = ({ buildcageSteps, restSteps, short, pr
           <CodeScene
             heading={restrictState.heading}
             note={restrictState.note}
-            buildcageOld={buildcageSteps[buildcageSteps.length - 2] ?? null}
+            buildcageOld={buildcagePlain[buildcagePlain.length - 2] ?? null}
             buildcageNew={restrictBuildcageCode}
-            restOld={restSteps[restSteps.length - 2] ?? null}
+            restOld={restPlain[restPlain.length - 2] ?? null}
             restNew={restrictCode}
             height={codeHeight}
           />

@@ -62,9 +62,19 @@ export const CodeScene: React.FC<{
   const newLines = lineCount(buildcageNew);
   const currentLines = interpolate(growProgress, [0, 1], [oldLines, newLines]);
   const panelHeight = currentLines * lineHeight;
+  // The panel is a separate block, but the space under it stands for the same
+  // blank line that separates any two steps — so it's set to the same height
+  // those are compressed to, and the gaps down the workflow read as even.
+  const gap = lineHeight * BLANK_LINE_SCALE;
   const panelMargin = buildcageNew
-    ? lineHeight * interpolate(growProgress, [0, 1], [oldLines > 0 ? 1 : 0, 1])
+    ? gap * interpolate(growProgress, [0, 1], [oldLines > 0 ? 1 : 0, 1])
     : 0;
+
+  // Only when the panel is making room does the rest of the workflow have to
+  // move before anything new can land. Holding its transition for that long
+  // then playing it over the panel's own reveal window puts the two additions
+  // on screen together — they're one edit, and arriving apart looked like two.
+  const panelGrows = newLines !== oldLines;
 
   return (
     <SceneFrame heading={heading} note={note} titleEnters={titleEnters} contentHeight={height}>
@@ -86,7 +96,10 @@ export const CodeScene: React.FC<{
               oldCode={buildcageOld}
               newCode={buildcageNew}
               durationInFrames={REVEAL_FRAMES}
-              revealDelay={GROW_FRAMES}
+              // Only worth holding when the panel is actually making room. A
+              // panel that merely changes contents has nothing to wait for,
+              // and holding it there blanked the step for half a second.
+              revealDelay={panelGrows ? GROW_FRAMES : 0}
               fontSize={layout.fontSize}
             />
           </div>
@@ -94,7 +107,8 @@ export const CodeScene: React.FC<{
         <CodeTransition
           oldCode={restOld}
           newCode={restNew}
-          durationInFrames={transitionFrames}
+          durationInFrames={panelGrows ? REVEAL_FRAMES : transitionFrames}
+          enterDelay={panelGrows ? GROW_FRAMES : 0}
           fontSize={layout.fontSize}
         />
       </div>

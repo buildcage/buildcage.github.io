@@ -65,7 +65,22 @@ export const CodeTransition: React.FC<{
    * "make space, then fade in" beat instead of both happening at once.
    */
   readonly revealDelay?: number;
-}> = ({ oldCode, newCode, durationInFrames = 24, fontSize = 30, revealDelay = 0 }) => {
+  /**
+   * Frames to hold back only the tokens that fade in, leaving everything
+   * already on screen to transition on schedule. `revealDelay` holds the whole
+   * snippet at its starting point, where nothing is drawn yet — fine for a
+   * block appearing from nothing, but it blanks a block that has existing
+   * lines in it. This delays the arrival without hiding what's already there.
+   */
+  readonly enterDelay?: number;
+}> = ({
+  oldCode,
+  newCode,
+  durationInFrames = 24,
+  fontSize = 30,
+  revealDelay = 0,
+  enterDelay = 0,
+}) => {
   const rawFrame = useCurrentFrame();
   const frame = Math.max(0, rawFrame - revealDelay);
   const ref = React.useRef<HTMLPreElement>(null);
@@ -98,8 +113,25 @@ export const CodeTransition: React.FC<{
     }
 
     const transitions = calculateTransitions(ref.current, oldSnapshot);
-    for (const { element, keyframes, options } of transitions) {
-      const delay = durationInFrames * options.delay;
+
+    // Rising opacity marks a token that wasn't there before; a falling one is
+    // on its way out and must not be held back, or it would linger over the
+    // lines taking its place.
+    const isEntering = ({ keyframes }: (typeof transitions)[number]) =>
+      Boolean(keyframes.opacity && keyframes.opacity[1] > keyframes.opacity[0]);
+    // Where the arrivals would have begun on their own. Shifting the whole
+    // group by the difference starts it when asked while keeping the stagger
+    // between its lines — flattening that would make the block land all at
+    // once beside one that arrives line by line.
+    const enteringDelays = transitions.filter(isEntering).map(({ options }) => options.delay);
+    const firstEnter = enteringDelays.length > 0 ? Math.min(...enteringDelays) : 0;
+
+    for (const transition of transitions) {
+      const { element, keyframes, options } = transition;
+      const held = enterDelay > 0 && isEntering(transition);
+      const delay = held
+        ? enterDelay + durationInFrames * (options.delay - firstEnter)
+        : durationInFrames * options.delay;
       const duration = durationInFrames * options.duration;
       const linearProgress = interpolate(frame, [delay, delay + duration], [0, 1], {
         extrapolateLeft: "clamp",

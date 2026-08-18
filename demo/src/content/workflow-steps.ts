@@ -49,8 +49,8 @@ const remoteBuildx = buildxStep(`
 export type WorkflowState = {
   readonly id: string;
   readonly heading: string;
-  /** Sub-line under the heading; the three edits that make up step 1 share
-   * one heading and differ only here, so they read as one step. */
+  /** Sub-line under the heading; the edits that make up step 1 share one
+   * heading and differ only here, so they read as one step. */
   readonly note?: string;
   /** null = the Buildcage step isn't in the workflow yet. */
   readonly buildcageYaml: string | null;
@@ -64,24 +64,20 @@ export const workflowStates: readonly WorkflowState[] = [
     buildcageYaml: null,
     restYaml: [plainBuildx, buildStep].join("\n\n"),
   },
+  // Both new steps arrive together, one at either end of the workflow. They're
+  // a single copy-paste in practice, and showing them land as one keeps the
+  // edit from looking like more work than it is.
   {
     id: "audit",
     heading: "Step 1 — Add Buildcage",
-    note: "start it in audit mode",
+    note: "start it in audit mode, show the report",
     buildcageYaml: auditBuildcage,
-    restYaml: [plainBuildx, buildStep].join("\n\n"),
+    restYaml: [plainBuildx, buildStep, reportStep].join("\n\n"),
   },
   {
     id: "remote-driver",
     heading: "Step 1 — Add Buildcage",
     note: "point Buildx at it",
-    buildcageYaml: auditBuildcage,
-    restYaml: [remoteBuildx, buildStep].join("\n\n"),
-  },
-  {
-    id: "report",
-    heading: "Step 1 — Add Buildcage",
-    note: "show the report",
     buildcageYaml: auditBuildcage,
     restYaml: [remoteBuildx, buildStep, reportStep].join("\n\n"),
   },

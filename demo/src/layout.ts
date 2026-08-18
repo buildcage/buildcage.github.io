@@ -89,7 +89,8 @@ export const blockHeightFor = (
   const tallest = Math.max(
     ...states.map(
       (state) =>
-        (state.buildcageYaml ? unitsOf(state.buildcageYaml) + 1 : 0) + unitsOf(state.restYaml),
+        (state.buildcageYaml ? unitsOf(state.buildcageYaml) + BLANK_LINE_SCALE : 0) +
+        unitsOf(state.restYaml),
     ),
   );
   return tallest * layout.fontSize * 1.5 + BLOCK_PADDING * 2;
