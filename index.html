@@ -3,20 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Buildcage — network isolation for secure CI builds</title>
+    <title>Buildcage — network isolation for GitHub Actions builds</title>
     <meta
       name="description"
-      content="Restrict outbound network access during CI builds to an allowlist of domains. Two GitHub Actions: one for docker build, one for run: steps."
+      content="Restrict outbound network access during GitHub Actions builds to an allowlist of domains. Two actions: one for docker build, one for run: steps."
     />
     <link rel="canonical" href="https://buildcage.github.io/" />
     <link rel="icon" href="assets/favicon.png" type="image/png" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://buildcage.github.io/" />
-    <meta property="og:title" content="Buildcage — network isolation for secure CI builds" />
+    <meta property="og:title" content="Buildcage — network isolation for GitHub Actions builds" />
     <meta
       property="og:description"
-      content="Restrict outbound network access during CI builds to an allowlist of domains. Two GitHub Actions: one for docker build, one for run: steps."
+      content="Restrict outbound network access during GitHub Actions builds to an allowlist of domains. Two actions: one for docker build, one for run: steps."
     />
     <meta property="og:image" content="https://buildcage.github.io/assets/banner.png" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -55,16 +55,20 @@
         <svg class="gh" aria-hidden="true"><use href="#gh-mark" /></svg>
       </a>
       <div class="wrap">
-        <img
-          class="logo"
-          src="assets/logo.png"
-          alt="Buildcage — network isolation for secure builds"
-          width="340"
-          height="230"
-        />
+        <!-- The mark is the page's headline, so it carries the h1. Its alt text
+             is what the heading reads as. -->
+        <h1 class="lockup">
+          <img
+            class="logo"
+            src="assets/logo.png"
+            alt="Buildcage — network isolation for secure builds"
+            width="340"
+            height="230"
+          />
+        </h1>
 
         <p class="tagline">
-          Restrict outbound network access during CI builds to an allowlist of domains.
+          Restrict outbound network access during GitHub Actions builds to an allowlist of domains.
         </p>
 
         <p class="lede">

@@ -180,6 +180,13 @@ pre .c {
   height: 1.2rem;
 }
 
+/* The h1 exists for the document outline, not for type: the mark inside it is
+   the headline. Stripped of the browser's own heading sizing and spacing. */
+.lockup {
+  margin: 0;
+  font-size: inherit;
+}
+
 .logo {
   display: block;
   width: min(100%, 340px);
