@@ -329,7 +329,7 @@
           same UID and <code>$HOME</code> so credentials and caches set up by earlier steps keep
           working.
         </p>
-        <pre><code><i class="p">-</i> <i class="k">name:</i> Build and test with outbound network isolation
+        <pre><code><i class="p">-</i> <i class="k">name:</i> Build and test with outbound restrictions
   <i class="k">uses:</i> <i class="a">buildcage/isolated-run@6c105ec20e59259bf0f6f3831397d25273f1c158</i> <i class="c"># v1.0.3</i>
   <i class="k">with:</i>
     <i class="k">proxy_mode:</i> <i class="s">restrict</i>
@@ -339,6 +339,15 @@
       <i class="s">npm ci</i>
       <i class="s">npm run build</i>
       <i class="s">npm run test</i></code></pre>
+        <p class="note">
+          The sandbox covers more than the network. The command runs with every Linux capability
+          dropped and its supplementary groups cleared, so neither <code>sudo</code> nor the Docker
+          socket — membership of the <code>docker</code> group is equivalent to root on a runner —
+          gets it any further. Everything outside <code>$GITHUB_WORKSPACE</code>,
+          <code>$HOME</code>, <code>/tmp</code> and <code>$RUNNER_TEMP</code> is remounted
+          read-only, so a command that does get compromised can't leave anything behind for a later
+          step in the same job to pick up.
+        </p>
         <p class="more">
           <a href="https://github.com/buildcage/isolated-run">Setup guide and reference →</a>
         </p>
