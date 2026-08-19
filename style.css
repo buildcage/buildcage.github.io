@@ -293,6 +293,19 @@ pre .c {
   }
 }
 
+/* While a cut is being watched, it stays — see the pin in index.html. These
+   outrank the rules above on specificity alone, so they hold at any width and
+   in any order. */
+.player[data-playing="wide"] .wide,
+.player[data-playing="narrow"] .narrow {
+  display: block;
+}
+
+.player[data-playing="wide"] .narrow,
+.player[data-playing="narrow"] .wide {
+  display: none;
+}
+
 .play {
   position: absolute;
   inset: 0;

@@ -487,6 +487,32 @@
           player.classList.add("is-playing");
           video.play();
         });
+
+        // Pin the cut that's playing. Going fullscreen on Android rotates the
+        // screen, which widens the viewport past the breakpoint and hands the
+        // stylesheet a different answer mid-playback: the cut being watched
+        // gets display:none and the other one's poster appears in its place.
+        // Once playback ends the page is free to answer by width again — but
+        // not while still fullscreen, where the swap would do the same thing.
+        var release = function () {
+          if (document.fullscreenElement) return;
+          // Paused counts as in use: someone stopped at 0:20 shouldn't come
+          // back from a rotation to the other cut's poster at 0:00.
+          var inUse = false;
+          videos.forEach(function (el) {
+            if (el.currentTime > 0 && !el.ended) inUse = true;
+          });
+          if (!inUse) delete player.dataset.playing;
+        };
+
+        videos.forEach(function (el) {
+          el.addEventListener("play", function () {
+            player.dataset.playing = el.classList.contains("wide") ? "wide" : "narrow";
+          });
+          el.addEventListener("ended", release);
+        });
+
+        document.addEventListener("fullscreenchange", release);
       });
     </script>
   </body>
