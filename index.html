@@ -72,9 +72,10 @@
 
         <p class="lede">
           When a supply chain attack turns a dependency against you, the payload still has to reach
-          the network to exfiltrate secrets or phone home. Buildcage blocks it: only the
-          destinations you allow are reachable. It runs entirely inside your GitHub Actions job — no
-          agent to install, no external service, no telemetry.
+          the network to exfiltrate secrets or phone home. Buildcage decides where that can be: only
+          the destinations you allow are reachable, so a host the attacker picked is not one of
+          them. It runs entirely inside your GitHub Actions job — no agent to install, no external
+          service, no telemetry.
         </p>
 
         <figure class="shot">
