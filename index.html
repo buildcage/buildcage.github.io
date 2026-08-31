@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Buildcage: restrict outbound access in GitHub Actions</title>
+    <meta
+      name="description"
+      content="Restrict outbound network access during builds on GitHub Actions to an allowlist of domains. Two actions: one for docker build, one for run: steps."
+    />
+    <link rel="canonical" href="https://buildcage.github.io/" />
+    <link rel="icon" href="/assets/favicon-CiLoXUqF.png" type="image/png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://buildcage.github.io/" />
+    <meta property="og:title" content="Buildcage: restrict outbound access in GitHub Actions" />
+    <meta
+      property="og:description"
+      content="Restrict outbound network access during builds on GitHub Actions to an allowlist of domains. Two actions: one for docker build, one for run: steps."
+    />
+    <meta property="og:image" content="https://buildcage.github.io/assets/banner.png" />
+    <!-- Declared so a crawler can lay out the card before it fetches the file. -->
+    <meta property="og:image:width" content="2560" />
+    <meta property="og:image:height" content="1200" />
+    <meta property="og:image:alt" content="Buildcage — network isolation for secure builds" />
+    <meta property="og:site_name" content="Buildcage" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-70R13YDQW4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-70R13YDQW4");
+    </script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CKAW14gr.css">
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "Adding Buildcage to a GitHub Actions workflow",
+  "description": "Adding Buildcage to a workflow, end to end: three steps, one audit run, and the allowlist it writes for you.",
+  "uploadDate": "2026-08-17T20:11:25+09:00",
+  "duration": "PT37S",
+  "contentUrl": "https://buildcage.github.io/assets/demo-wide-BVtrwpuO.mp4",
+  "thumbnailUrl": "https://buildcage.github.io/assets/demo-wide-poster-DcGN8UcW.png"
+}</script>
+  </head>
+  <body>
+    <svg class="sprite" aria-hidden="true">
+      <symbol id="gh-mark" viewBox="0 0 16 16">
+        <path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+        />
+      </symbol>
+    </svg>
+
+    <header class="hero">
+      <a class="gh-corner" href="https://github.com/buildcage" aria-label="Buildcage on GitHub">
+        <svg class="gh" aria-hidden="true"><use href="#gh-mark" /></svg>
+      </a>
+      <div class="wrap">
+        <!-- The mark is the page's headline, so it carries the h1. Its alt text
+             is what the heading reads as. -->
+        <h1 class="lockup">
+          <img
+            class="logo"
+            src="/assets/logo-2JcetwC0.png"
+            alt="Buildcage — network isolation for secure builds"
+            width="340"
+            height="230"
+          />
+        </h1>
+
+        <p class="tagline">
+          Restrict outbound network access during builds on GitHub Actions to an allowlist.
+        </p>
+
+        <p class="lede">
+          When a supply chain attack turns a dependency against you, the payload still has to reach
+          the network to exfiltrate secrets or phone home. Buildcage decides where that can be: only
+          the destinations you allow are reachable, so a host the attacker picked is not one of
+          them. It runs entirely inside your GitHub Actions job — no agent to install, no external
+          service, no telemetry.
+        </p>
+
+        <figure class="shot">
+          <div class="player" data-player>
+            <!-- Two cuts of the same walkthrough, each composed for its own
+                 aspect ratio; the stylesheet shows whichever suits the screen.
+                 Both are rendered from demo/, so they only exist on the publish
+                 branch — absent on main by design. `preload="none"` means the
+                 hidden one costs nothing either. -->
+            <video
+              class="wide"
+              poster="/assets/demo-wide-poster-DcGN8UcW.png"
+              preload="none"
+              playsinline
+              width="1920"
+              height="1080"
+            >
+              <source src="/assets/demo-wide-BVtrwpuO.mp4" type="video/mp4" />
+            </video>
+            <video
+              class="narrow"
+              poster="/assets/demo-narrow-poster-CvagN0-G.png"
+              preload="none"
+              playsinline
+              width="1440"
+              height="1080"
+            >
+              <source src="/assets/demo-narrow-CtNapds3.mp4" type="video/mp4" />
+            </video>
+            <button class="play" type="button" data-play aria-label="Play the walkthrough">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+            </button>
+          </div>
+          <figcaption>
+            Adding Buildcage to a workflow, end to end: three steps, one audit run, and the
+            allowlist it writes for you. No sound.
+          </figcaption>
+        </figure>
+
+        <p class="note">
+          This is not a hypothetical risk: the
+          <a href="https://unit42.paloaltonetworks.com/npm-supply-chain-attack/"
+            >Shai-Hulud npm worm</a
+          >
+          compromised hundreds of packages whose <code>postinstall</code> scripts exfiltrated CI/CD
+          secrets straight out of the build environment. npm v12 disables install scripts by
+          default, closing off that specific path, but builds still handle secrets and run plenty of
+          other commands that could do the same thing. That's the layer Buildcage protects.
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <section class="wrap">
+        <ul class="strip">
+          <li>
+            <!-- A piece dropping into a container that keeps its shape. -->
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="11" width="17" height="9.5" rx="2.5" />
+              <path d="M12 2.75V9" />
+              <path d="M9.25 6.25 12 9l2.75-2.75" />
+            </svg>
+            <div class="txt">
+              <b>Drops into the build you already have</b
+              ><span
+                >your Dockerfile, commands, and toolchain stay as they are, in any language</span
+              >
+            </div>
+          </li>
+          <li>
+            <!-- Inspecting a list: the audit run that produces the allowlist. -->
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 6.5h11" />
+              <path d="M4 11h8" />
+              <path d="M4 15.5h5" />
+              <circle cx="16.5" cy="15.5" r="4" />
+              <path d="m19.4 18.4 2.3 2.3" />
+            </svg>
+            <div class="txt">
+              <b>One audit run writes the allowlist for you</b
+              ><span
+                >see what a real build reaches, copy the generated config, switch to restrict</span
+              >
+            </div>
+          </li>
+          <li>
+            <!-- The cage from the logo, closed around the step inside it. -->
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2.6 20 7.3v9.4L12 21.4 4 16.7V7.3z" />
+              <rect x="9.4" y="9.4" width="5.2" height="5.2" rx="1.2" />
+            </svg>
+            <div class="txt">
+              <b>Guards the steps that fetch and run code</b
+              ><span
+                >each <code>RUN</code> of a <code>docker build</code>, or a single workflow
+                <code>run:</code></span
+              >
+            </div>
+          </li>
+          <li>
+            <!-- Open branches: the project is out in the open, free to use. -->
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="5" r="2.4" />
+              <circle cx="6" cy="19" r="2.4" />
+              <circle cx="18" cy="19" r="2.4" />
+              <path d="M12 7.4V13" />
+              <path d="M6 16.6V13h12v3.6" />
+            </svg>
+            <div class="txt">
+              <b>Free and open source</b
+              ><span>MIT licensed, free to use, with the implementation open to read</span>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="wrap">
+        <h2>What changes</h2>
+        <p class="sub">
+          A build step can normally open a connection to anywhere. Buildcage narrows that to the
+          destinations you named, and records every attempt either way.
+        </p>
+
+        <div class="ba">
+          <div class="ba-panel">
+            <h3 class="ba-head">Without Buildcage</h3>
+            <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
+            <p class="ba-arrow" aria-hidden="true">↓</p>
+            <ul class="ba-list">
+              <li class="open">any host on the internet</li>
+            </ul>
+            <p class="ba-foot">Nothing is recorded, so nothing looks unusual.</p>
+          </div>
+
+          <div class="ba-panel is-on">
+            <h3 class="ba-head">With Buildcage</h3>
+            <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
+            <p class="ba-arrow" aria-hidden="true">↓</p>
+            <ul class="ba-list">
+              <li class="ok"><span>registry.npmjs.org:443</span></li>
+              <li class="no"><span>evil.example.com:443</span> <b>BLOCKED</b></li>
+            </ul>
+            <p class="ba-foot">Both appear in the report, whichever way they went.</p>
+          </div>
+        </div>
+
+        <figure class="shot">
+          <img
+            src="/assets/report-restrict-mode-DKX3Ez1j.png"
+            alt="Buildcage report listing allowed destinations and one blocked connection"
+            width="1670"
+            height="1124"
+            loading="lazy"
+          />
+          <figcaption>
+            Every destination your build reached, written to the GitHub Job Summary. The one that
+            wasn't on the allowlist was blocked and recorded.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="wrap">
+        <h2>Your allowlist comes from a real build</h2>
+        <p class="sub">
+          Start in <code>audit</code> mode. Buildcage watches one real build, then hands you the
+          configuration for the strict one.
+        </p>
+
+        <ol class="steps">
+          <li>
+            <h3>Run once in audit mode</h3>
+            <p>One line of configuration. Nothing is blocked yet.</p>
+            <pre><code><i class="k">with:</i>
+  <i class="k">proxy_mode:</i> <i class="s">audit</i></code></pre>
+          </li>
+
+          <li>
+            <h3>Read what your build actually reached</h3>
+            <p>Every destination lands in the Job Summary.</p>
+            <figure class="shot inline">
+              <img
+                src="/assets/report-audit-mode-CMwSgQzv.png"
+                alt="Audit-mode report listing the hosts a build contacted"
+                width="1670"
+                height="932"
+                loading="lazy"
+              />
+            </figure>
+          </li>
+
+          <li>
+            <h3>Copy the configuration it generated for you</h3>
+            <p>
+              The report carries a <em>Switch to restrict mode</em> section with your allowlist
+              already filled in, built from the hosts above.
+            </p>
+            <pre><code><i class="k">proxy_mode:</i> <i class="s">restrict</i>
+<i class="k">allowed_https_rules:</i> <i class="p">&gt;-</i>
+  <i class="s">registry.npmjs.org:443</i>
+  <i class="s">fonts.googleapis.com:443</i></code></pre>
+          </li>
+        </ol>
+      </section>
+
+      <section class="wrap">
+        <h2>Two ways to use it</h2>
+        <p class="sub">Same audit → restrict flow either way.</p>
+      </section>
+
+      <section class="wrap product product--first">
+        <h3><a href="https://github.com/buildcage/docker">Buildcage for Docker</a></h3>
+        <p>
+          You build a Docker image. Every <code>RUN</code> step is isolated, with no Dockerfile
+          changes — Buildcage runs as a remote driver for Docker Buildx and routes the build's
+          outbound traffic through a proxy that enforces your allowlist.
+        </p>
+        <pre><code><i class="p">-</i> <i class="k">name:</i> Start Buildcage in restrict mode
+  <i class="k">uses:</i> <i class="a">buildcage/docker@c0a13552c2b7677f5d64e885392e0735a2b0b308</i> <i class="c"># v3.1.4</i>
+  <i class="k">with:</i>
+    <i class="k">proxy_mode:</i> <i class="s">restrict</i>
+    <i class="k">allowed_https_rules:</i> <i class="p">|</i>
+      <i class="s">registry.npmjs.org:443</i>
+
+<i class="p">-</i> <i class="k">name:</i> Set up Docker Buildx
+  <i class="k">uses:</i> <i class="a">docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c</i> <i class="c"># v4.2.0</i>
+  <i class="k">with:</i>
+    <i class="k">driver:</i> <i class="s">remote</i>
+    <i class="k">endpoint:</i> <i class="s">docker-container://buildcage</i>
+
+<i class="p">-</i> <i class="k">name:</i> Build
+  <i class="k">uses:</i> <i class="a">docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a</i> <i class="c"># v7.3.0</i>
+  <i class="k">with:</i>
+    <i class="k">context:</i> <i class="s">.</i>
+
+<i class="p">-</i> <i class="k">name:</i> Show Buildcage report
+  <i class="k">if:</i> <i class="s">always()</i>
+  <i class="k">uses:</i> <i class="a">buildcage/docker/report@c0a13552c2b7677f5d64e885392e0735a2b0b308</i> <i class="c"># v3.1.4</i></code></pre>
+        <p class="more">
+          <a href="https://github.com/buildcage/docker">Setup guide and reference →</a>
+        </p>
+      </section>
+
+      <section class="wrap product">
+        <h3>
+          <a href="https://github.com/buildcage/isolated-run"
+            >Buildcage for <code>run:</code> Steps</a
+          >
+        </h3>
+        <p>
+          You run a command directly in a workflow step — installing dependencies, a test suite, a
+          build script. The command runs in its own network namespace on the runner, keeping the
+          same UID and <code>$HOME</code> so credentials and caches set up by earlier steps keep
+          working.
+        </p>
+        <pre><code><i class="p">-</i> <i class="k">name:</i> Build and test with outbound restrictions
+  <i class="k">uses:</i> <i class="a">buildcage/isolated-run@9f33cbcfc42e8094652bf0b613478b9a1a6fd2d6</i> <i class="c"># v1.1.2</i>
+  <i class="k">with:</i>
+    <i class="k">proxy_mode:</i> <i class="s">restrict</i>
+    <i class="k">allowed_https_rules:</i> <i class="p">|</i>
+      <i class="s">registry.npmjs.org:443</i>
+    <i class="k">run:</i> <i class="p">|</i>
+      <i class="s">npm ci</i>
+      <i class="s">npm run build</i>
+      <i class="s">npm run test</i></code></pre>
+        <p class="note">
+          The sandbox covers more than the network. The command runs with every Linux capability
+          dropped and its supplementary groups cleared, so neither <code>sudo</code> nor the Docker
+          socket — membership of the <code>docker</code> group is equivalent to root on a runner —
+          gets it any further. Everything outside <code>$GITHUB_WORKSPACE</code>,
+          <code>$HOME</code>, <code>/tmp</code> and <code>$RUNNER_TEMP</code> is remounted
+          read-only, so a command that does get compromised can't leave anything behind for a later
+          step in the same job to pick up.
+        </p>
+        <p class="more">
+          <a href="https://github.com/buildcage/isolated-run">Setup guide and reference →</a>
+        </p>
+      </section>
+
+      <section class="wrap">
+        <h2>How it compares</h2>
+        <p class="sub">
+          The closest tools are
+          <a href="https://github.com/step-security/harden-runner">Harden-Runner</a> and
+          <a href="https://github.com/bullfrogsec/bullfrog">Bullfrog</a>. Both attach one egress
+          policy to the whole job, covering every step. Buildcage scopes the policy per build
+          instead: the wrapped step gets its own allowlist, but steps outside it aren't covered —
+          protecting a whole job means wrapping each step that needs it.
+        </p>
+
+        <div class="table-scroll">
+          <table class="cmp">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Buildcage</th>
+                <th scope="col">Harden-Runner</th>
+                <th scope="col">Bullfrog</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Scope of the policy</th>
+                <td>One build, or one <code>run:</code> step</td>
+                <td>Whole job</td>
+                <td>Whole job</td>
+              </tr>
+              <tr>
+                <th scope="row">Blocking decides on</th>
+                <td>SNI / Host header</td>
+                <td>The domain at DNS time, then the resolved IP</td>
+                <td>The domain at DNS time, then the resolved IP</td>
+              </tr>
+              <tr>
+                <th scope="row">Private repositories</th>
+                <td>Included</td>
+                <td>Enterprise tier</td>
+                <td>Included</td>
+              </tr>
+              <tr>
+                <th scope="row">Runner platform</th>
+                <td>Linux only</td>
+                <td>Linux, macOS, Windows</td>
+                <td>Linux only</td>
+              </tr>
+              <tr>
+                <th scope="row">External dashboard or account</th>
+                <td>Not required</td>
+                <td>Used for the detailed reporting</td>
+                <td>Not required</td>
+              </tr>
+              <tr>
+                <th scope="row">Also watches files and processes</th>
+                <td>No</td>
+                <td>Yes</td>
+                <td>No</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="fine">
+          Both allow whatever IP a name resolved to, with no further check — so on shared hosting,
+          one allowed domain can end up allowing every other site on that IP too. Buildcage's
+          SNI/Host check narrows this but doesn't close it: domain fronting through the same kind of
+          shared infrastructure still gets through, since it doesn't decrypt what's behind an
+          allowed SNI either. Harden-Runner is also a broader agent, correlating network, file, and
+          process events, and its paid plans read inside HTTPS via eBPF — for reporting, not the
+          block decision. Buildcage stays narrower on purpose.
+        </p>
+      </section>
+
+      <section class="wrap">
+        <h2>Designed to be adopted</h2>
+        <p>
+          Supply chain attacks keep getting more varied and more sophisticated: typosquatted
+          packages, compromised maintainer accounts, malicious postinstall scripts. No single
+          control catches all of it. Defense-in-depth is the baseline now, not an aspiration.
+        </p>
+        <p>
+          Buildcage is meant to be one of those layers: even if a secret gets stolen, it can't leave
+          the build environment. Layers like that only help if people actually deploy them. Real
+          network isolation for a build usually means someone on a security team configuring egress
+          rules and maintaining them over time. Most projects, especially small ones, don't have
+          that — not because they don't care, but because it's more setup than a side project or a
+          small team has time for.
+        </p>
+        <p>
+          Adopting this layer should take nothing more than adding an action. The easier it is to
+          adopt, the more systems get that protection, and the more people's personal information
+          stays where it belongs.
+        </p>
+      </section>
+
+      <section class="wrap cta">
+        <a class="button" href="https://github.com/buildcage/docker">
+          <svg class="gh" aria-hidden="true"><use href="#gh-mark" /></svg>
+          Buildcage for Docker</a
+        >
+        <a class="button" href="https://github.com/buildcage/isolated-run">
+          <svg class="gh" aria-hidden="true"><use href="#gh-mark" /></svg>
+          Buildcage for <code>run:</code> Steps</a
+        >
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <p>
+          <a href="https://github.com/buildcage">
+            <svg class="gh" aria-hidden="true"><use href="#gh-mark" /></svg>
+            github.com/buildcage</a
+          >
+          <span>· MIT licensed</span>
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Click-to-play: the poster and the styled button stand in for the video
+      // until it's asked for, so nothing downloads on page load. Native
+      // controls take over from the first play onward.
+      document.querySelectorAll("[data-player]").forEach(function (player) {
+        var videos = player.querySelectorAll("video");
+        var button = player.querySelector("[data-play]");
+        if (!videos.length || !button) return;
+
+        // A player holds one video per aspect ratio and the stylesheet hides
+        // all but one, so the visible cut has to be resolved on click rather
+        // than up front — the first in the markup is not the one on screen at
+        // every width. A hidden element has no client rects.
+        button.addEventListener("click", function () {
+          var video = null;
+          videos.forEach(function (el) {
+            if (el.getClientRects().length) video = el;
+          });
+          if (!video) return;
+
+          video.controls = true;
+          player.classList.add("is-playing");
+          video.play();
+        });
+
+        // Pin the cut that's playing. Going fullscreen on Android rotates the
+        // screen, which widens the viewport past the breakpoint and hands the
+        // stylesheet a different answer mid-playback: the cut being watched
+        // gets display:none and the other one's poster appears in its place.
+        // Once playback ends the page is free to answer by width again — but
+        // not while still fullscreen, where the swap would do the same thing.
+        var release = function () {
+          if (document.fullscreenElement) return;
+          // Paused counts as in use: someone stopped at 0:20 shouldn't come
+          // back from a rotation to the other cut's poster at 0:00.
+          var inUse = false;
+          videos.forEach(function (el) {
+            if (el.currentTime > 0 && !el.ended) inUse = true;
+          });
+          if (!inUse) delete player.dataset.playing;
+        };
+
+        videos.forEach(function (el) {
+          el.addEventListener("play", function () {
+            player.dataset.playing = el.classList.contains("wide") ? "wide" : "narrow";
+          });
+          el.addEventListener("ended", release);
+        });
+
+        document.addEventListener("fullscreenchange", release);
+      });
+    </script>
+  </body>
+</html>
