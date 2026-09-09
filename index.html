@@ -6,7 +6,7 @@
     <title>Buildcage: restrict outbound access in GitHub Actions</title>
     <meta
       name="description"
-      content="Restrict outbound network access during builds on GitHub Actions to an allowlist of domains. Two actions: one for docker build, one for run: steps."
+      content="Restrict outbound network access during builds on GitHub Actions to an allowlist you write by HTTP method and URL. Two actions: one for docker build, one for run: steps."
     />
     <link rel="canonical" href="https://buildcage.github.io/" />
     <link rel="icon" href="assets/favicon.png" type="image/png" />
@@ -16,7 +16,7 @@
     <meta property="og:title" content="Buildcage: restrict outbound access in GitHub Actions" />
     <meta
       property="og:description"
-      content="Restrict outbound network access during builds on GitHub Actions to an allowlist of domains. Two actions: one for docker build, one for run: steps."
+      content="Restrict outbound network access during builds on GitHub Actions to an allowlist you write by HTTP method and URL. Two actions: one for docker build, one for run: steps."
     />
     <meta property="og:image" content="https://buildcage.github.io/assets/banner.png" />
     <!-- Declared so a crawler can lay out the card before it fetches the file. -->
@@ -67,15 +67,15 @@
         </h1>
 
         <p class="tagline">
-          Restrict outbound network access during builds on GitHub Actions to an allowlist.
+          Restrict outbound network access during builds on GitHub Actions, by HTTP method and URL.
         </p>
 
         <p class="lede">
           When a supply chain attack turns a dependency against you, the payload still has to reach
           the network to exfiltrate secrets or phone home. Buildcage decides where that can be: only
-          the destinations you allow are reachable, so a host the attacker picked is not one of
-          them. It runs entirely inside your GitHub Actions job — no agent to install, no external
-          service, no telemetry.
+          the requests you allow go out, down to the method and the URL, so a host the attacker
+          picked is not one of them. It runs entirely inside your GitHub Actions job — no agent to
+          install, no external service, no telemetry.
         </p>
 
         <figure class="shot">
@@ -247,9 +247,10 @@
         <ol class="steps">
           <li>
             <h3>Run once in audit mode</h3>
-            <p>One line of configuration. Nothing is blocked yet.</p>
+            <p>Two lines of configuration. Nothing is blocked yet.</p>
             <pre><code><i class="k">with:</i>
-  <i class="k">proxy_mode:</i> <i class="s">audit</i></code></pre>
+  <i class="k">proxy_mode:</i> <i class="s">audit</i>
+  <i class="k">proxy_engine:</i> <i class="s">inspect</i></code></pre>
           </li>
 
           <li>
@@ -270,12 +271,14 @@
             <h3>Copy the configuration it generated for you</h3>
             <p>
               The report carries a <em>Switch to restrict mode</em> section with your allowlist
-              already filled in, built from the hosts above.
+              already filled in, built from the requests above.
             </p>
             <pre><code><i class="k">proxy_mode:</i> <i class="s">restrict</i>
-<i class="k">allowed_https_rules:</i> <i class="p">&gt;-</i>
-  <i class="s">registry.npmjs.org:443</i>
-  <i class="s">fonts.googleapis.com:443</i></code></pre>
+<i class="k">proxy_engine:</i> <i class="s">inspect</i>
+<i class="k">allowed_url_rules:</i> <i class="p">|</i>
+  <i class="s">GET http://deb.debian.org/**</i>
+  <i class="s">GET https://registry.npmjs.org/**</i>
+  <i class="s">POST https://registry.npmjs.org/-/npm/v1/security/advisories/bulk</i></code></pre>
           </li>
         </ol>
       </section>
@@ -290,14 +293,17 @@
         <p>
           You build a Docker image. Every <code>RUN</code> step is isolated, with no Dockerfile
           changes — Buildcage runs as a remote driver for Docker Buildx and routes the build's
-          outbound traffic through a proxy that enforces your allowlist.
+          outbound traffic through a proxy that enforces your allowlist. To match on the method and
+          URL the proxy has to read the request, so it injects a CA as each <code>RUN</code> step
+          starts; neither the CA nor the variables that trust it are left in the image layers.
         </p>
         <pre><code><i class="p">-</i> <i class="k">name:</i> Start Buildcage in restrict mode
   <i class="k">uses:</i> <i class="a">buildcage/docker@d6f130e3476121607affc037e1c56fafb48ea897</i> <i class="c"># v3.2.1</i>
   <i class="k">with:</i>
     <i class="k">proxy_mode:</i> <i class="s">restrict</i>
-    <i class="k">allowed_https_rules:</i> <i class="p">|</i>
-      <i class="s">registry.npmjs.org:443</i>
+    <i class="k">proxy_engine:</i> <i class="s">inspect</i>
+    <i class="k">allowed_url_rules:</i> <i class="p">|</i>
+      <i class="s">GET https://registry.npmjs.org/**</i>
 
 <i class="p">-</i> <i class="k">name:</i> Set up Docker Buildx
   <i class="k">uses:</i> <i class="a">docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c</i> <i class="c"># v4.2.0</i>
@@ -328,14 +334,16 @@
           You run a command directly in a workflow step — installing dependencies, a test suite, a
           build script. The command runs in its own network namespace on the runner, keeping the
           same UID and <code>$HOME</code> so credentials and caches set up by earlier steps keep
-          working.
+          working. The CA that lets the proxy read the request is mounted into the sandbox's own
+          view of the filesystem, so nothing is written to the runner itself.
         </p>
         <pre><code><i class="p">-</i> <i class="k">name:</i> Build and test with outbound restrictions
   <i class="k">uses:</i> <i class="a">buildcage/isolated-run@ab904288feaffae45b34737f3ebf3611c47df1b0</i> <i class="c"># v1.2.1</i>
   <i class="k">with:</i>
     <i class="k">proxy_mode:</i> <i class="s">restrict</i>
-    <i class="k">allowed_https_rules:</i> <i class="p">|</i>
-      <i class="s">registry.npmjs.org:443</i>
+    <i class="k">proxy_engine:</i> <i class="s">inspect</i>
+    <i class="k">allowed_url_rules:</i> <i class="p">|</i>
+      <i class="s">GET https://registry.npmjs.org/**</i>
     <i class="k">run:</i> <i class="p">|</i>
       <i class="s">npm ci</i>
       <i class="s">npm run build</i>
