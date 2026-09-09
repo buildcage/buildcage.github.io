@@ -422,7 +422,7 @@
               </tr>
               <tr>
                 <th scope="row">Also watches files and processes</th>
-                <td>No</td>
+                <td>No&nbsp;*</td>
                 <td>Yes</td>
                 <td>No</td>
               </tr>
@@ -438,6 +438,25 @@
           so narrows this without closing it. Harden-Runner is also a broader agent, correlating
           network, file, and process events, and its paid plans read inside HTTPS via eBPF — for
           reporting, not the block decision. Buildcage stays narrower on purpose.
+        </p>
+
+        <p class="fine">
+          * Buildcage watches no file or process events. Buildcage for <code>run:</code> Steps can
+          discard the step's filesystem writes instead, keeping only the paths you list (<code
+            >filesystem_mode: ephemeral</code
+          >, experimental).
+        </p>
+
+        <p class="sub">
+          GitHub is building an egress firewall into the runners themselves (<a
+            href="https://github.com/github-early-access/actions-native-egress-firewall"
+            >technical preview</a
+          >
+          as of August 2026): opt a job into a firewall-enabled runner image and every step's
+          traffic is observed at the runner boundary. Today that is audit only, across the whole
+          job. Buildcage sits at a different layer and works alongside it: the policy is scoped to
+          one build or one step, a rule can name a method and a URL, and enforcement is available
+          now.
         </p>
       </section>
 
