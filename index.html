@@ -196,29 +196,37 @@
         <h2>What changes</h2>
         <p class="sub">
           A build step can normally open a connection to anywhere. Buildcage narrows that to the
-          destinations you named, and records every attempt either way.
+          requests you named, method and URL included, and records every attempt either way.
         </p>
 
         <div class="ba">
           <div class="ba-panel">
             <h3 class="ba-head">Without Buildcage</h3>
-            <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
-            <p class="ba-arrow" aria-hidden="true">↓</p>
-            <ul class="ba-list">
-              <li class="open">any host on the internet</li>
-            </ul>
-            <p class="ba-foot">Nothing is recorded, so nothing looks unusual.</p>
+            <div class="ba-body">
+              <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
+              <p class="ba-arrow" aria-hidden="true">↓</p>
+              <ul class="ba-list">
+                <li class="open">any host on the internet</li>
+              </ul>
+              <p class="ba-foot">Nothing is recorded, so nothing looks unusual.</p>
+            </div>
           </div>
 
           <div class="ba-panel is-on">
             <h3 class="ba-head">With Buildcage</h3>
-            <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
-            <p class="ba-arrow" aria-hidden="true">↓</p>
-            <ul class="ba-list">
-              <li class="ok"><span>registry.npmjs.org:443</span></li>
-              <li class="no"><span>evil.example.com:443</span> <b>BLOCKED</b></li>
-            </ul>
-            <p class="ba-foot">Both appear in the report, whichever way they went.</p>
+            <div class="ba-body">
+              <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
+              <p class="ba-arrow" aria-hidden="true">↓</p>
+              <ul class="ba-list">
+                <li class="ok"><span>GET https://registry.npmjs.org/**</span></li>
+                <li class="no"><span>POST https://registry.npmjs.org/**</span> <b>BLOCKED</b></li>
+                <li class="no"><span>GET https://evil.example.com/</span> <b>BLOCKED</b></li>
+              </ul>
+              <p class="ba-foot">
+                Fetching a package is allowed; publishing one to the same host is not. All three
+                appear in the report, whichever way they went.
+              </p>
+            </div>
           </div>
         </div>
 

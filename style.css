@@ -462,16 +462,41 @@ p {
 
 .ba {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
   gap: 1rem;
   margin-top: 1.5rem;
 }
 
+/* Stacked, with the label beside its example rather than above it. Side by side
+   the two panels split .wrap in half, which isn't enough for a rule naming a
+   method and a full URL; this way each example gets most of the page width, and
+   both start at the same left edge so they read as one comparison. */
 .ba-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
+  column-gap: 1.5rem;
   border: 1px solid var(--rule);
   border-radius: 10px;
   padding: 1.25rem 1.25rem 1rem;
   background: var(--bg);
+}
+
+/* Too narrow for two columns: the label goes back above its example. A rule
+   this long can't fit either, so the rows are set smaller and the verdict moves
+   underneath — the same place on every blocked row, rather than wherever the
+   text happened to run out. */
+@media (max-width: 40rem) {
+  .ba-panel {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.75rem;
+  }
+
+  .ba-list {
+    --ba-row: 0.76rem;
+  }
+
+  .ba-list .no b {
+    display: block;
+  }
 }
 
 .ba-panel.is-on {
@@ -483,7 +508,10 @@ p {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
-  margin: 0 0 0.9rem;
+  /* Nudged down to sit on the first line of the example beside it, which is set
+     in the larger body size. */
+  margin: 0;
+  padding-top: 0.2rem;
 }
 
 .ba-panel.is-on .ba-head {
@@ -506,15 +534,15 @@ p {
   margin: 0.35rem 0 0.9rem;
   padding: 0;
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 0.84rem;
+  --ba-row: 0.84rem;
+  font-size: var(--ba-row);
   line-height: 1.9;
 }
 
 .ba-list li {
   position: relative;
   padding-left: 1.5rem;
-  white-space: nowrap;
-  overflow-x: auto;
+  overflow-wrap: break-word;
 }
 
 /* The markers sit in a smaller monospace list, but reading them at that size is
@@ -523,7 +551,7 @@ p {
   position: absolute;
   left: 0;
   font-size: var(--text);
-  line-height: 1.596rem;
+  line-height: calc(var(--ba-row) * 1.9);
   font-family: var(--font-body);
 }
 
