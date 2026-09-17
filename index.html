@@ -460,11 +460,13 @@
             href="https://github.com/github-early-access/actions-native-egress-firewall"
             >technical preview</a
           >
-          as of August 2026): opt a job into a firewall-enabled runner image and every step's
-          traffic is observed at the runner boundary. Today that is audit only, across the whole
-          job. Buildcage sits at a different layer and works alongside it: the policy is scoped to
-          one build or one step, a rule can name a method and a URL, and enforcement is available
-          now.
+          as of September 2026): opt a job into a firewall-enabled runner image and its traffic is
+          inspected outside the runner VM, in log or enforce mode, from one policy file per
+          repository. A workflow that gains root inside the runner cannot switch that off, and
+          Buildcage does not try to replace it. But one policy for the whole run is one allowlist
+          for every step in it. Buildcage scopes its allowlist to a single build or a single step,
+          where a rule can name a method and a URL rather than only a host, and it runs on any Linux
+          runner with Docker, self-hosted included.
         </p>
       </section>
 
