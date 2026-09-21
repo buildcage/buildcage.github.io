@@ -14,8 +14,8 @@ export type HostRow = {
 export type BlockedRow = HostRow & { readonly reason: string };
 
 export const auditedHosts: readonly HostRow[] = [
-  { host: "registry.npmjs.org:443", rule: "HTTPS", count: 16 },
-  { host: "fonts.googleapis.com:443", rule: "HTTPS", count: 2 },
+  { host: "deb.debian.org:80", rule: "HTTP", count: 12 },
+  { host: "registry.npmjs.org:443", rule: "HTTPS", count: 6 },
 ];
 
 export const allowedHosts = auditedHosts;

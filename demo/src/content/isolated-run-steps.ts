@@ -30,7 +30,7 @@ ${config
   .map((line) => `    ${line}`)
   .join("\n")}`;
 
-const auditStep = wrappedStep("proxy_mode: audit");
+const auditStep = wrappedStep("proxy_mode: audit\nproxy_engine: inspect");
 const restrictStep = wrappedStep(generatedConfig);
 
 export const isolatedRunStates: readonly WorkflowState[] = [

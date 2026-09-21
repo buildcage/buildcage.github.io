@@ -11,13 +11,16 @@ const buildcageStep = (body: string) => `- name: Start Buildcage
   with:
 ${body}`;
 
-const auditBuildcage = buildcageStep(`    proxy_mode: audit`);
+const auditBuildcage = buildcageStep(`    proxy_mode: audit
+    proxy_engine: inspect`);
 
 /** The block the audit report hands you, shown inside the Job Summary card. */
 export const generatedConfig = `proxy_mode: restrict
-allowed_https_rules: |
-  registry.npmjs.org:443
-  fonts.googleapis.com:443`;
+proxy_engine: inspect
+allowed_url_rules: |
+  GET http://deb.debian.org/**
+  GET https://registry.npmjs.org/**
+  POST https://registry.npmjs.org/-/npm/v1/security/advisories/bulk`;
 
 const restrictBuildcage = buildcageStep(
   generatedConfig

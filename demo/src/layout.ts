@@ -28,8 +28,8 @@ export const layoutFor = (width: number, height: number): Layout => {
   return wide
     ? {
         wide,
-        contentWidth: 1140,
-        fontSize: 30,
+        contentWidth: 1200,
+        fontSize: 25,
         framePadding: 40,
         columnGap: 48,
         cardScale: 1.25,
@@ -38,7 +38,7 @@ export const layoutFor = (width: number, height: number): Layout => {
     : {
         wide,
         contentWidth: 1120,
-        fontSize: 25,
+        fontSize: 23,
         framePadding: 40,
         columnGap: 0,
         cardScale: 1,

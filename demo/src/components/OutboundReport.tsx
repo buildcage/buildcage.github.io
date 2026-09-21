@@ -9,7 +9,7 @@ import { allowedHosts, blockedColumns, blockedHosts, hostColumns } from "../cont
  * differ only in that the scene fades the blocked table in.
  */
 
-export const RESTRICT_TITLE = "Outbound Traffic Report (restrict mode)";
+export const RESTRICT_TITLE = "Outbound Traffic Report";
 
 export const AllowedHosts: React.FC = () => (
   <>
