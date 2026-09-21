@@ -707,14 +707,12 @@ pre code {
   margin: 0;
 }
 
-/* ---- Figures: ported from each action's README diagram (assets/diagrams/*.html
-   there), rebuilt as fluid HTML so they follow the page's tokens and reflow to
-   phone width instead of shipping a fixed-width raster. Shared shell first, then
-   the overview flow, then the filesystem stack. ---- */
-
-/* The figure is a bounded canvas, narrower than the prose and set off from it
-   above and below, so it reads as one object rather than a run of full-width
-   bars. Cards sit on the canvas the way the source diagrams composed them. */
+/* ---- Figure: the run: filesystem sandbox, ported from isolated-run's README
+   diagram (assets/diagrams/filesystem.html there) and rebuilt as fluid HTML so
+   it follows the page's tokens and reflows to phone width instead of shipping a
+   fixed-width raster. It is a bounded canvas, narrower than the prose and set
+   off from it, so it reads as one object; layers sit on the canvas the way the
+   source composed them. ---- */
 .dg {
   margin: clamp(2rem, 5vw, 3rem) auto;
   max-width: 40rem;
@@ -736,12 +734,7 @@ pre code {
   color: var(--muted);
 }
 
-.dg-card,
-.dg-layer,
-.dg-hook,
-.dg-buildkit,
-.dg-proxy,
-.dg-step {
+.dg-layer {
   border: 1px solid var(--rule);
   border-radius: 10px;
   background: var(--code-bg);
@@ -772,94 +765,6 @@ pre code {
   color: var(--fg);
 }
 
-/* Arrows between stages: a caret down the column, a caret across a row that
-   flips back to down once the row stacks. */
-.dg-flow {
-  margin: 0;
-  text-align: center;
-  line-height: 1;
-  color: var(--brand-cyan);
-}
-
-.dg-flow-h {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--brand-cyan);
-}
-
-.dg-flow-h::before {
-  content: "→";
-}
-
-/* ---- Overview flow ---- */
-
-.dg-ov-workflow > * + *,
-.dg-proxy > * + * {
-  margin-top: 0.35rem;
-}
-
-.dg-ov-workflow .dg-eyebrow,
-.dg-ov-workflow code {
-  display: block;
-}
-
-.dg-builder {
-  border: 1px solid var(--rule);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--code-bg) 60%, transparent);
-  padding: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.dg-builder-row {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.dg-buildkit {
-  flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.dg-buildkit .dg-label {
-  color: var(--muted);
-}
-
-.dg-step {
-  padding: 0.5rem 0.7rem;
-}
-
-.dg-proxy {
-  flex: 0 0 auto;
-  border-color: var(--brand-cyan);
-}
-
-.dg-proxy-title {
-  display: block;
-  font-family: var(--font-head);
-  font-weight: 500;
-  font-size: 1rem;
-  color: var(--fg);
-}
-
-.dg-hooks {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-}
-
-.dg-outcome {
-  border-left: 3px solid var(--brand-cyan);
-}
-
-/* ---- Filesystem stack ---- */
-
 .dg-command {
   align-self: center;
   display: inline-flex;
@@ -882,36 +787,48 @@ pre code {
   color: var(--brand-cyan);
 }
 
-.dg-fs-stack {
+/* Every mount point sits in one continuous row (row 3), with each layer drawn
+   as a band above the columns it covers: read-only over the first four,
+   writable over the last four, and the ephemeral overlay above writable. Auto
+   columns size to the paths; the row stays single-line because the path font
+   scales down with the viewport rather than wrapping. */
+.dg-stack {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: start;
-  gap: 0.55rem;
+  grid-template-columns: repeat(8, auto);
+  justify-content: center;
+  column-gap: 0.3rem;
+  row-gap: 0.45rem;
+  align-items: end;
   border-top: 1px solid var(--rule);
-  padding-top: 0.55rem;
+  padding-top: 0.65rem;
 }
 
-.dg-fs-col {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+.dg-cover-ro {
+  grid-column: 1 / 5;
+  grid-row: 2;
 }
 
-.dg-paths {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
+.dg-cover-w {
+  grid-column: 5 / 9;
+  grid-row: 2;
 }
 
-.dg-paths code {
-  flex: 1 1 auto;
+.dg-cover-eph {
+  grid-column: 5 / 9;
+  grid-row: 1;
+}
+
+/* The concrete mount points, inverted into filled tokens so they read as the
+   real paths a layer sits over, not another labelled layer. */
+.dg-stack > code {
+  grid-row: 3;
+  white-space: nowrap;
   text-align: center;
-  border: 1px solid var(--rule);
   border-radius: 7px;
-  padding: 0.4rem 0.45rem;
-  background: color-mix(in srgb, var(--code-bg) 60%, transparent);
-  font-size: 0.72rem;
-  overflow-wrap: anywhere;
+  padding: 0.35rem 0.4rem;
+  background: color-mix(in srgb, var(--muted) 82%, var(--fg));
+  color: var(--bg);
+  font-size: clamp(0.5rem, 1.75vw, 0.72rem);
 }
 
 .dg-readonly {
@@ -946,23 +863,6 @@ pre code {
 
 .dg-floor .dg-eyebrow {
   display: inline;
-}
-
-/* Both figures fold to a single column once the row is too tight for two. */
-@media (max-width: 40rem) {
-  .dg-builder-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .dg-flow-h::before {
-    content: "↓";
-  }
-
-  .dg-hooks,
-  .dg-fs-stack {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* ---- CTA ---- */
