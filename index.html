@@ -204,7 +204,6 @@
             <h3 class="ba-head">Without Buildcage</h3>
             <div class="ba-body">
               <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
-              <p class="ba-arrow" aria-hidden="true">↓</p>
               <ul class="ba-list">
                 <li class="open">any host on the internet</li>
               </ul>
@@ -218,8 +217,11 @@
               <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
               <p class="ba-arrow" aria-hidden="true">↓</p>
               <ul class="ba-list">
-                <li class="ok"><span>GET https://registry.npmjs.org/**</span></li>
-                <li class="no"><span>POST https://registry.npmjs.org/**</span> <b>BLOCKED</b></li>
+                <li class="ok"><span>GET http://deb.debian.org/**</span> <b>PASSED</b></li>
+                <li class="ok"><span>GET https://registry.npmjs.org/**</span> <b>PASSED</b></li>
+                <li class="ok">
+                  <span>POST https://registry.npmjs.org/-/npm/v1/security/**</span> <b>PASSED</b>
+                </li>
                 <li class="no">
                   <span>POST https://evil.example.com/collect</span> <b>BLOCKED</b>
                 </li>
@@ -234,10 +236,10 @@
 
         <figure class="shot">
           <img
-            src="assets/report-restrict-mode.png"
+            src="assets/report-inspect-restrict-mode.png"
             alt="Buildcage report listing allowed destinations and one blocked connection"
-            width="1670"
-            height="1124"
+            width="1704"
+            height="1894"
             loading="lazy"
           />
           <figcaption>
@@ -276,10 +278,10 @@
             <p>Every destination lands in the Job Summary.</p>
             <figure class="shot inline">
               <img
-                src="assets/report-audit-mode.png"
+                src="assets/report-inspect-audit-mode.png"
                 alt="Audit-mode report listing the hosts a build contacted"
-                width="1670"
-                height="932"
+                width="1704"
+                height="1356"
                 loading="lazy"
               />
             </figure>
