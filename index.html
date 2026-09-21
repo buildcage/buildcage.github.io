@@ -219,7 +219,7 @@
               <p class="ba-arrow" aria-hidden="true">↓</p>
               <ul class="ba-list">
                 <li class="ok"><span>GET https://registry.npmjs.org/**</span></li>
-                <li class="no"><span>POST https://registry.npmjs.org/**</span> <b>BLOCKED</b></li>
+                <li class="no"><span>PUT https://registry.npmjs.org/**</span> <b>BLOCKED</b></li>
                 <li class="no"><span>GET https://evil.example.com/</span> <b>BLOCKED</b></li>
               </ul>
               <p class="ba-foot">
@@ -243,6 +243,14 @@
             wasn't on the allowlist was blocked and recorded.
           </figcaption>
         </figure>
+
+        <p class="note">
+          That method-and-URL precision is the <b>inspect</b> engine: it reads inside TLS with a CA
+          generated for each build and wired into the toolchain's own variables, with nothing left
+          behind. Set <code>proxy_engine: inspect</code> to turn it on, or fall back to
+          <code>universal</code>, which matches on the hostname without decrypting, when a tool
+          won't trust that CA.
+        </p>
       </section>
 
       <section class="wrap">
