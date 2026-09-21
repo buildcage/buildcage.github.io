@@ -759,32 +759,20 @@ pre code {
   color: var(--muted);
 }
 
+/* A body-font qualifier sitting inline after an uppercase label. */
+.dg-qual {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 0.82rem;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
 .dg code {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   color: var(--fg);
-}
-
-.dg-command {
-  align-self: center;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.7rem;
-  border: 1px solid var(--brand-cyan);
-  border-radius: 10px;
-  background: var(--code-bg);
-  padding: 0.55rem 1rem;
-}
-
-.dg-command .dg-eyebrow {
-  display: inline;
-}
-
-.dg-sees {
-  margin: 0;
-  text-align: center;
-  font-size: 0.82rem;
-  color: var(--brand-cyan);
 }
 
 /* Every mount point sits in one continuous row (row 3), with each layer drawn
@@ -799,8 +787,6 @@ pre code {
   column-gap: 0.3rem;
   row-gap: 0.45rem;
   align-items: end;
-  border-top: 1px solid var(--rule);
-  padding-top: 0.65rem;
 }
 
 .dg-cover-ro {
