@@ -6,7 +6,7 @@
     <title>Buildcage: restrict outbound access in GitHub Actions</title>
     <meta
       name="description"
-      content="Restrict outbound network access during builds on GitHub Actions to an allowlist of domains. Two actions: one for docker build, one for run: steps."
+      content="Restrict outbound network access during builds on GitHub Actions to an allowlist you write by HTTP method and URL. Two actions: one for docker build, one for run: steps."
     />
     <link rel="canonical" href="https://buildcage.github.io/" />
     <link rel="icon" href="assets/favicon.png" type="image/png" />
@@ -16,7 +16,7 @@
     <meta property="og:title" content="Buildcage: restrict outbound access in GitHub Actions" />
     <meta
       property="og:description"
-      content="Restrict outbound network access during builds on GitHub Actions to an allowlist of domains. Two actions: one for docker build, one for run: steps."
+      content="Restrict outbound network access during builds on GitHub Actions to an allowlist you write by HTTP method and URL. Two actions: one for docker build, one for run: steps."
     />
     <meta property="og:image" content="https://buildcage.github.io/assets/banner.png" />
     <!-- Declared so a crawler can lay out the card before it fetches the file. -->
@@ -67,15 +67,15 @@
         </h1>
 
         <p class="tagline">
-          Restrict outbound network access during builds on GitHub Actions to an allowlist.
+          Restrict outbound network access during builds on GitHub Actions, by HTTP method and URL.
         </p>
 
         <p class="lede">
           When a supply chain attack turns a dependency against you, the payload still has to reach
           the network to exfiltrate secrets or phone home. Buildcage decides where that can be: only
-          the destinations you allow are reachable, so a host the attacker picked is not one of
-          them. It runs entirely inside your GitHub Actions job — no agent to install, no external
-          service, no telemetry.
+          the requests you allow go out, down to the method and the URL, so a host the attacker
+          picked is not one of them. It runs entirely inside your GitHub Actions job — no agent to
+          install, no external service, no telemetry.
         </p>
 
         <figure class="shot">
@@ -196,38 +196,50 @@
         <h2>What changes</h2>
         <p class="sub">
           A build step can normally open a connection to anywhere. Buildcage narrows that to the
-          destinations you named, and records every attempt either way.
+          requests you named, method and URL included, and records every attempt either way.
         </p>
 
         <div class="ba">
           <div class="ba-panel">
             <h3 class="ba-head">Without Buildcage</h3>
-            <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
-            <p class="ba-arrow" aria-hidden="true">↓</p>
-            <ul class="ba-list">
-              <li class="open">any host on the internet</li>
-            </ul>
-            <p class="ba-foot">Nothing is recorded, so nothing looks unusual.</p>
+            <div class="ba-body">
+              <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
+              <ul class="ba-list">
+                <li class="open">any host on the internet</li>
+              </ul>
+              <p class="ba-foot">Nothing is recorded, so nothing looks unusual.</p>
+            </div>
           </div>
 
           <div class="ba-panel is-on">
             <h3 class="ba-head">With Buildcage</h3>
-            <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
-            <p class="ba-arrow" aria-hidden="true">↓</p>
-            <ul class="ba-list">
-              <li class="ok"><span>registry.npmjs.org:443</span></li>
-              <li class="no"><span>evil.example.com:443</span> <b>BLOCKED</b></li>
-            </ul>
-            <p class="ba-foot">Both appear in the report, whichever way they went.</p>
+            <div class="ba-body">
+              <p class="ba-step"><code>RUN npm ci &amp;&amp; npm run build</code></p>
+              <p class="ba-arrow" aria-hidden="true">↓</p>
+              <ul class="ba-list">
+                <li class="ok"><span>GET http://deb.debian.org/**</span> <b>PASSED</b></li>
+                <li class="ok"><span>GET https://registry.npmjs.org/**</span> <b>PASSED</b></li>
+                <li class="ok">
+                  <span>POST https://registry.npmjs.org/-/npm/v1/security/**</span> <b>PASSED</b>
+                </li>
+                <li class="no">
+                  <span>POST https://evil.example.com/collect</span> <b>BLOCKED</b>
+                </li>
+              </ul>
+              <p class="ba-foot">
+                Fetching a package is allowed; publishing one to the same host is not. All three
+                appear in the report, whichever way they went.
+              </p>
+            </div>
           </div>
         </div>
 
         <figure class="shot">
           <img
-            src="assets/report-restrict-mode.png"
+            src="assets/report-inspect-restrict-mode.png"
             alt="Buildcage report listing allowed destinations and one blocked connection"
-            width="1670"
-            height="1124"
+            width="1704"
+            height="1894"
             loading="lazy"
           />
           <figcaption>
@@ -235,6 +247,14 @@
             wasn't on the allowlist was blocked and recorded.
           </figcaption>
         </figure>
+
+        <p class="note">
+          That method-and-URL precision is the <b>inspect</b> engine: it reads inside TLS with a CA
+          generated for each build and wired into the toolchain's own variables, with nothing left
+          behind. Set <code>proxy_engine: inspect</code> to turn it on, or fall back to
+          <code>universal</code>, which matches on the hostname without decrypting, when a tool
+          won't trust that CA.
+        </p>
       </section>
 
       <section class="wrap">
@@ -247,9 +267,10 @@
         <ol class="steps">
           <li>
             <h3>Run once in audit mode</h3>
-            <p>One line of configuration. Nothing is blocked yet.</p>
+            <p>Two lines of configuration. Nothing is blocked yet.</p>
             <pre><code><i class="k">with:</i>
-  <i class="k">proxy_mode:</i> <i class="s">audit</i></code></pre>
+  <i class="k">proxy_mode:</i> <i class="s">audit</i>
+  <i class="k">proxy_engine:</i> <i class="s">inspect</i></code></pre>
           </li>
 
           <li>
@@ -257,10 +278,10 @@
             <p>Every destination lands in the Job Summary.</p>
             <figure class="shot inline">
               <img
-                src="assets/report-audit-mode.png"
+                src="assets/report-inspect-audit-mode.png"
                 alt="Audit-mode report listing the hosts a build contacted"
-                width="1670"
-                height="932"
+                width="1704"
+                height="1356"
                 loading="lazy"
               />
             </figure>
@@ -270,12 +291,14 @@
             <h3>Copy the configuration it generated for you</h3>
             <p>
               The report carries a <em>Switch to restrict mode</em> section with your allowlist
-              already filled in, built from the hosts above.
+              already filled in, built from the requests above.
             </p>
             <pre><code><i class="k">proxy_mode:</i> <i class="s">restrict</i>
-<i class="k">allowed_https_rules:</i> <i class="p">&gt;-</i>
-  <i class="s">registry.npmjs.org:443</i>
-  <i class="s">fonts.googleapis.com:443</i></code></pre>
+<i class="k">proxy_engine:</i> <i class="s">inspect</i>
+<i class="k">allowed_url_rules:</i> <i class="p">|</i>
+  <i class="s">GET http://deb.debian.org/**</i>
+  <i class="s">GET https://registry.npmjs.org/**</i>
+  <i class="s">POST https://registry.npmjs.org/-/npm/v1/security/advisories/bulk</i></code></pre>
           </li>
         </ol>
       </section>
@@ -288,16 +311,18 @@
       <section class="wrap product product--first">
         <h3><a href="https://github.com/buildcage/docker">Buildcage for Docker</a></h3>
         <p>
-          You build a Docker image. Every <code>RUN</code> step is isolated, with no Dockerfile
-          changes — Buildcage runs as a remote driver for Docker Buildx and routes the build's
-          outbound traffic through a proxy that enforces your allowlist.
+          You build a Docker image, with no Dockerfile changes. Buildcage runs as a remote driver
+          for Docker Buildx and routes every <code>RUN</code> step's outbound traffic through a
+          proxy that enforces your allowlist. Nothing it does is left in the image layers.
         </p>
+
         <pre><code><i class="p">-</i> <i class="k">name:</i> Start Buildcage in restrict mode
   <i class="k">uses:</i> <i class="a">buildcage/docker@d6f130e3476121607affc037e1c56fafb48ea897</i> <i class="c"># v3.2.1</i>
   <i class="k">with:</i>
     <i class="k">proxy_mode:</i> <i class="s">restrict</i>
-    <i class="k">allowed_https_rules:</i> <i class="p">|</i>
-      <i class="s">registry.npmjs.org:443</i>
+    <i class="k">proxy_engine:</i> <i class="s">inspect</i>
+    <i class="k">allowed_url_rules:</i> <i class="p">|</i>
+      <i class="s">GET https://registry.npmjs.org/**</i>
 
 <i class="p">-</i> <i class="k">name:</i> Set up Docker Buildx
   <i class="k">uses:</i> <i class="a">docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c</i> <i class="c"># v4.2.0</i>
@@ -328,27 +353,62 @@
           You run a command directly in a workflow step — installing dependencies, a test suite, a
           build script. The command runs in its own network namespace on the runner, keeping the
           same UID and <code>$HOME</code> so credentials and caches set up by earlier steps keep
-          working.
+          working. The CA that lets the proxy read the request is mounted into the sandbox's own
+          view of the filesystem, so nothing is written to the runner itself.
         </p>
+
         <pre><code><i class="p">-</i> <i class="k">name:</i> Build and test with outbound restrictions
   <i class="k">uses:</i> <i class="a">buildcage/isolated-run@ab904288feaffae45b34737f3ebf3611c47df1b0</i> <i class="c"># v1.2.1</i>
   <i class="k">with:</i>
     <i class="k">proxy_mode:</i> <i class="s">restrict</i>
-    <i class="k">allowed_https_rules:</i> <i class="p">|</i>
-      <i class="s">registry.npmjs.org:443</i>
+    <i class="k">proxy_engine:</i> <i class="s">inspect</i>
+    <i class="k">allowed_url_rules:</i> <i class="p">|</i>
+      <i class="s">GET https://registry.npmjs.org/**</i>
     <i class="k">run:</i> <i class="p">|</i>
       <i class="s">npm ci</i>
       <i class="s">npm run build</i>
       <i class="s">npm run test</i></code></pre>
         <p class="note">
-          The sandbox covers more than the network. The command runs with every Linux capability
-          dropped and its supplementary groups cleared, so neither <code>sudo</code> nor the Docker
-          socket — membership of the <code>docker</code> group is equivalent to root on a runner —
-          gets it any further. Everything outside <code>$GITHUB_WORKSPACE</code>,
-          <code>$HOME</code>, <code>/tmp</code> and <code>$RUNNER_TEMP</code> is remounted
-          read-only, so a command that does get compromised can't leave anything behind for a later
-          step in the same job to pick up.
+          The sandbox covers more than the network. Every Linux capability is dropped, so
+          <code>sudo</code> or a setuid binary has nothing left to acquire. The Docker socket is
+          handled on its own, since membership of the <code>docker</code> group is equivalent to
+          root on a runner: the command's groups are checked before it starts, and the runtime
+          sockets are masked inside the sandbox either way. A later step in the same job isn't
+          isolated unless you wrap it too, so it can still read whatever the command wrote to those
+          writable paths.
         </p>
+
+        <figure class="dg dg-fs">
+          <div class="dg-frame">
+            <div class="dg-stack">
+              <div class="dg-layer dg-ephemeral dg-cover-eph">
+                <span class="dg-label">filesystem_mode: ephemeral</span>
+                <span class="dg-note">writes discarded at step end, except the paths you list</span>
+              </div>
+              <div class="dg-layer dg-readonly dg-cover-ro">
+                <span class="dg-label">Read-only mount</span>
+              </div>
+              <div class="dg-layer dg-writable dg-cover-w">
+                <span class="dg-label">Writable <span class="dg-qual">- passthrough</span></span>
+              </div>
+              <code>/usr</code><code>/etc</code><code>/opt</code><code>/var</code
+              ><code>$GITHUB_WORKSPACE</code><code>$HOME</code><code>/tmp</code
+              ><code>$RUNNER_TEMP</code>
+            </div>
+
+            <p class="dg-floor">
+              <span class="dg-eyebrow">The runner's filesystem</span> the real files, as any other
+              step sees them
+            </p>
+          </div>
+
+          <figcaption>
+            The command sees a sandbox: the system read-only, only four paths writable, and
+            <code>filesystem_mode: ephemeral</code> throws even those writes away when the step
+            ends.
+          </figcaption>
+        </figure>
+
         <p class="more">
           <a href="https://github.com/buildcage/isolated-run">Setup guide and reference →</a>
         </p>
@@ -384,7 +444,10 @@
               </tr>
               <tr>
                 <th scope="row">Blocking decides on</th>
-                <td>SNI / Host header</td>
+                <td>
+                  The HTTP method and URL (<code>inspect</code>), or the SNI / <code>Host</code>
+                  header (<code>universal</code>)
+                </td>
                 <td>The domain at DNS time, then the resolved IP</td>
                 <td>The domain at DNS time, then the resolved IP</td>
               </tr>
@@ -408,7 +471,7 @@
               </tr>
               <tr>
                 <th scope="row">Also watches files and processes</th>
-                <td>No</td>
+                <td>No&nbsp;*</td>
                 <td>Yes</td>
                 <td>No</td>
               </tr>
@@ -418,12 +481,33 @@
 
         <p class="fine">
           Both allow whatever IP a name resolved to, with no further check — so on shared hosting,
-          one allowed domain can end up allowing every other site on that IP too. Buildcage's
-          SNI/Host check narrows this but doesn't close it: domain fronting through the same kind of
-          shared infrastructure still gets through, since it doesn't decrypt what's behind an
-          allowed SNI either. Harden-Runner is also a broader agent, correlating network, file, and
-          process events, and its paid plans read inside HTTPS via eBPF — for reporting, not the
-          block decision. Buildcage stays narrower on purpose.
+          one allowed domain can end up allowing every other site on that IP too. Buildcage matches
+          on the name instead: <code>inspect</code> reads the real <code>Host</code>, so a request
+          fronted behind an allowed SNI is refused, while <code>universal</code> never decrypts and
+          so narrows this without closing it. Harden-Runner is also a broader agent, correlating
+          network, file, and process events, and its paid plans read inside HTTPS via eBPF — for
+          reporting, not the block decision. Buildcage stays narrower on purpose.
+        </p>
+
+        <p class="fine">
+          * Buildcage watches no file or process events. Buildcage for <code>run:</code> Steps can
+          discard the step's filesystem writes instead, keeping only the paths you list (<code
+            >filesystem_mode: ephemeral</code
+          >, experimental).
+        </p>
+
+        <p class="sub">
+          GitHub is building an egress firewall into the runners themselves (<a
+            href="https://github.com/github-early-access/actions-native-egress-firewall"
+            >technical preview</a
+          >
+          as of September 2026): opt a job into a firewall-enabled runner image and its traffic is
+          inspected outside the runner VM, in log or enforce mode, from one policy file per
+          repository. A workflow that gains root inside the runner cannot switch that off, and
+          Buildcage does not try to replace it. But one policy for the whole run is one allowlist
+          for every step in it. Buildcage scopes its allowlist to a single build or a single step,
+          where a rule can name a method and a URL rather than only a host, and it runs on any Linux
+          runner with Docker, self-hosted included.
         </p>
       </section>
 
