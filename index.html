@@ -355,48 +355,6 @@
           view of the filesystem, so nothing is written to the runner itself.
         </p>
 
-        <figure class="dg dg-fs">
-          <div class="dg-frame">
-            <div class="dg-command">
-              <span class="dg-eyebrow">The run: command</span>
-              <code>npm ci</code>
-            </div>
-
-            <p class="dg-sees" aria-hidden="true">
-              ↓&nbsp; sees one filesystem, made of these layers
-            </p>
-
-            <div class="dg-stack">
-              <div class="dg-layer dg-ephemeral dg-cover-eph">
-                <span class="dg-label">filesystem_mode: ephemeral</span>
-                <span class="dg-note">writes discarded at step end, except the paths you list</span>
-              </div>
-              <div class="dg-layer dg-readonly dg-cover-ro">
-                <span class="dg-label">Read-only root</span>
-                <span class="dg-note">nothing changes</span>
-              </div>
-              <div class="dg-layer dg-writable dg-cover-w">
-                <span class="dg-label">Writable</span>
-                <span class="dg-note">persistent (default): writes stay on the runner</span>
-              </div>
-              <code>/usr</code><code>/etc</code><code>/opt</code><code>/var</code
-              ><code>$GITHUB_WORKSPACE</code><code>$HOME</code><code>/tmp</code
-              ><code>$RUNNER_TEMP</code>
-            </div>
-
-            <p class="dg-floor">
-              <span class="dg-eyebrow">The runner's filesystem</span> the real files, as any other
-              step sees them
-            </p>
-          </div>
-
-          <figcaption>
-            The command sees a sandbox: the system read-only, only four paths writable, and
-            <code>filesystem_mode: ephemeral</code> throws even those writes away when the step
-            ends.
-          </figcaption>
-        </figure>
-
         <pre><code><i class="p">-</i> <i class="k">name:</i> Build and test with outbound restrictions
   <i class="k">uses:</i> <i class="a">buildcage/isolated-run@ab904288feaffae45b34737f3ebf3611c47df1b0</i> <i class="c"># v1.2.1</i>
   <i class="k">with:</i>
@@ -417,6 +375,45 @@
           isolated unless you wrap it too, so it can still read whatever the command wrote to those
           writable paths.
         </p>
+
+        <figure class="dg dg-fs">
+          <div class="dg-frame">
+            <div class="dg-command">
+              <span class="dg-eyebrow">The run: command</span>
+              <code>npm ci</code>
+            </div>
+
+            <p class="dg-sees" aria-hidden="true">↓</p>
+
+            <div class="dg-stack">
+              <div class="dg-layer dg-ephemeral dg-cover-eph">
+                <span class="dg-label">filesystem_mode: ephemeral</span>
+                <span class="dg-note">writes discarded at step end, except the paths you list</span>
+              </div>
+              <div class="dg-layer dg-readonly dg-cover-ro">
+                <span class="dg-label">Read-only mount</span>
+              </div>
+              <div class="dg-layer dg-writable dg-cover-w">
+                <span class="dg-label">Writable - passthrough</span>
+              </div>
+              <code>/usr</code><code>/etc</code><code>/opt</code><code>/var</code
+              ><code>$GITHUB_WORKSPACE</code><code>$HOME</code><code>/tmp</code
+              ><code>$RUNNER_TEMP</code>
+            </div>
+
+            <p class="dg-floor">
+              <span class="dg-eyebrow">The runner's filesystem</span> the real files, as any other
+              step sees them
+            </p>
+          </div>
+
+          <figcaption>
+            The command sees a sandbox: the system read-only, only four paths writable, and
+            <code>filesystem_mode: ephemeral</code> throws even those writes away when the step
+            ends.
+          </figcaption>
+        </figure>
+
         <p class="more">
           <a href="https://github.com/buildcage/isolated-run">Setup guide and reference →</a>
         </p>
