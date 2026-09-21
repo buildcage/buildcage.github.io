@@ -837,53 +837,10 @@ pre code {
   color: var(--fg);
 }
 
-.dg-hooks,
-.dg-verdicts {
+.dg-hooks {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.6rem;
-}
-
-.dg-allowed,
-.dg-blocked,
-.dg-report {
-  border-left-width: 3px;
-}
-
-.dg-allowed {
-  border-left-color: var(--brand-mint);
-}
-
-.dg-allowed .dg-label {
-  color: var(--brand-mint);
-}
-
-.dg-blocked {
-  border-left-color: var(--coral);
-}
-
-.dg-blocked .dg-label {
-  color: var(--coral);
-}
-
-.dg-report {
-  border-left-color: var(--brand-cyan);
-}
-
-.dg-allowed code,
-.dg-blocked code {
-  display: block;
-  font-size: 0.74rem;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
-}
-
-.dg-report .dg-ok {
-  color: var(--brand-mint);
-}
-
-.dg-report .dg-no {
-  color: var(--coral);
 }
 
 .dg-outcome {
@@ -994,7 +951,6 @@ pre code {
   }
 
   .dg-hooks,
-  .dg-verdicts,
   .dg-fs-stack {
     grid-template-columns: 1fr;
   }
