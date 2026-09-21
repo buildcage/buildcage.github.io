@@ -119,7 +119,7 @@ export default defineConfig({
       },
 
       build: {
-        command: "vite build",
+        command: "vp build",
         dependsOn: ["stage:demo"],
       },
 
