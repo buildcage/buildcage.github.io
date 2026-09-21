@@ -373,9 +373,14 @@
           <code>sudo</code> or a setuid binary has nothing left to acquire. The Docker socket is
           handled on its own, since membership of the <code>docker</code> group is equivalent to
           root on a runner: the command's groups are checked before it starts, and the runtime
-          sockets are masked inside the sandbox either way. A later step in the same job isn't
-          isolated unless you wrap it too, so it can still read whatever the command wrote to those
-          writable paths.
+          sockets are masked inside the sandbox either way. The system is mounted read-only, and
+          only <code>$GITHUB_WORKSPACE</code>, <code>$HOME</code>, <code>/tmp</code> and
+          <code>$RUNNER_TEMP</code> are writable. A later step in the same job isn't isolated unless
+          you wrap it too, so it can still read whatever the command wrote to those writable paths.
+          By default those writes stay on the runner (<code>filesystem_mode: persistent</code>);
+          <code>filesystem_mode: ephemeral</code>
+          (experimental) discards them when the step ends, keeping only the paths you name in
+          <code>write_through:</code>.
         </p>
 
         <figure class="dg dg-fs">
