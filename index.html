@@ -315,46 +315,48 @@
         </p>
 
         <figure class="dg dg-ov">
-          <div class="dg-card dg-ov-workflow">
-            <span class="dg-eyebrow">Your workflow</span>
-            <code>docker build .</code>
-            <span class="dg-note">Dockerfile unchanged</span>
-          </div>
+          <div class="dg-frame">
+            <div class="dg-card dg-ov-workflow">
+              <span class="dg-eyebrow">Your workflow</span>
+              <code>docker build .</code>
+              <span class="dg-note">Dockerfile unchanged</span>
+            </div>
 
-          <p class="dg-flow" aria-hidden="true">↓</p>
+            <p class="dg-flow" aria-hidden="true">↓</p>
 
-          <div class="dg-builder">
-            <span class="dg-eyebrow">Builder container in your job</span>
-            <div class="dg-builder-row">
-              <div class="dg-buildkit">
-                <span class="dg-label">BuildKit, unpatched</span>
-                <div class="dg-step"><code>RUN npm ci</code></div>
-                <div class="dg-step"><code>RUN npm run build</code></div>
-                <div class="dg-step"><code>RUN pip install</code></div>
+            <div class="dg-builder">
+              <span class="dg-eyebrow">Builder container in your job</span>
+              <div class="dg-builder-row">
+                <div class="dg-buildkit">
+                  <span class="dg-label">BuildKit, unpatched</span>
+                  <div class="dg-step"><code>RUN npm ci</code></div>
+                  <div class="dg-step"><code>RUN npm run build</code></div>
+                  <div class="dg-step"><code>RUN pip install</code></div>
+                </div>
+                <span class="dg-flow-h" aria-hidden="true"></span>
+                <div class="dg-proxy">
+                  <span class="dg-proxy-title">Proxy</span>
+                  <span class="dg-note">every connection against your allowlist</span>
+                </div>
               </div>
-              <span class="dg-flow-h" aria-hidden="true"></span>
-              <div class="dg-proxy">
-                <span class="dg-proxy-title">Proxy</span>
-                <span class="dg-note">every connection against your allowlist</span>
+              <div class="dg-hooks">
+                <div class="dg-hook">
+                  <span class="dg-label">Runtime wrapper</span>
+                  <span class="dg-note">mounts the build-only certificate</span>
+                </div>
+                <div class="dg-hook">
+                  <span class="dg-label">Network config</span>
+                  <span class="dg-note">each step on its own network</span>
+                </div>
               </div>
             </div>
-            <div class="dg-hooks">
-              <div class="dg-hook">
-                <span class="dg-label">Runtime wrapper</span>
-                <span class="dg-note">mounts the build-only certificate</span>
-              </div>
-              <div class="dg-hook">
-                <span class="dg-label">Network config</span>
-                <span class="dg-note">each step on its own network</span>
-              </div>
+
+            <p class="dg-flow" aria-hidden="true">↓</p>
+
+            <div class="dg-card dg-outcome">
+              <span class="dg-eyebrow">The image you get</span>
+              <span class="dg-note">No certificate, no settings, no traces</span>
             </div>
-          </div>
-
-          <p class="dg-flow" aria-hidden="true">↓</p>
-
-          <div class="dg-card dg-outcome">
-            <span class="dg-eyebrow">The image you get</span>
-            <span class="dg-note">No certificate, no settings, no traces</span>
           </div>
 
           <figcaption>
@@ -406,48 +408,50 @@
         </p>
 
         <figure class="dg dg-fs">
-          <div class="dg-command">
-            <span class="dg-eyebrow">The run: command</span>
-            <code>npm ci</code>
-          </div>
+          <div class="dg-frame">
+            <div class="dg-command">
+              <span class="dg-eyebrow">The run: command</span>
+              <code>npm ci</code>
+            </div>
 
-          <p class="dg-sees" aria-hidden="true">
-            ↓&nbsp; sees one filesystem, made of these layers
-          </p>
+            <p class="dg-sees" aria-hidden="true">
+              ↓&nbsp; sees one filesystem, made of these layers
+            </p>
 
-          <div class="dg-fs-stack">
-            <div class="dg-fs-col">
-              <div class="dg-layer dg-readonly">
-                <span class="dg-label">Read-only root</span>
-                <span class="dg-note">the system stays visible, nothing changes</span>
+            <div class="dg-fs-stack">
+              <div class="dg-fs-col">
+                <div class="dg-layer dg-readonly">
+                  <span class="dg-label">Read-only root</span>
+                  <span class="dg-note">the system stays visible, nothing changes</span>
+                </div>
+                <div class="dg-paths">
+                  <code>/usr</code><code>/etc</code><code>/opt</code><code>/var</code>
+                </div>
               </div>
-              <div class="dg-paths">
-                <code>/usr</code><code>/etc</code><code>/opt</code><code>/var</code>
+
+              <div class="dg-fs-col">
+                <div class="dg-layer dg-writable">
+                  <span class="dg-label">Writable</span>
+                  <span class="dg-note">persistent (default): writes stay on the runner</span>
+                </div>
+                <div class="dg-layer dg-ephemeral">
+                  <span class="dg-label">filesystem_mode: ephemeral</span>
+                  <span class="dg-note"
+                    >discards those writes at step end, except the paths you list</span
+                  >
+                </div>
+                <div class="dg-paths">
+                  <code>$GITHUB_WORKSPACE</code><code>$HOME</code><code>/tmp</code
+                  ><code>$RUNNER_TEMP</code>
+                </div>
               </div>
             </div>
 
-            <div class="dg-fs-col">
-              <div class="dg-layer dg-writable">
-                <span class="dg-label">Writable</span>
-                <span class="dg-note">persistent (default): writes stay on the runner</span>
-              </div>
-              <div class="dg-layer dg-ephemeral">
-                <span class="dg-label">filesystem_mode: ephemeral</span>
-                <span class="dg-note"
-                  >discards those writes at step end, except the paths you list</span
-                >
-              </div>
-              <div class="dg-paths">
-                <code>$GITHUB_WORKSPACE</code><code>$HOME</code><code>/tmp</code
-                ><code>$RUNNER_TEMP</code>
-              </div>
-            </div>
+            <p class="dg-floor">
+              <span class="dg-eyebrow">The runner's filesystem</span> the real files, as any other
+              step sees them
+            </p>
           </div>
-
-          <p class="dg-floor">
-            <span class="dg-eyebrow">The runner's filesystem</span> the real files, as any other
-            step sees them
-          </p>
 
           <figcaption>
             The command sees a sandbox: the system read-only, only four paths writable, and

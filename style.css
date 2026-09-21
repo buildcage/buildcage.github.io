@@ -712,15 +712,26 @@ pre code {
    phone width instead of shipping a fixed-width raster. Shared shell first, then
    the overview flow, then the filesystem stack. ---- */
 
+/* The figure is a bounded canvas, narrower than the prose and set off from it
+   above and below, so it reads as one object rather than a run of full-width
+   bars. Cards sit on the canvas the way the source diagrams composed them. */
 .dg {
-  margin: 1.5rem 0 0;
+  margin: clamp(2rem, 5vw, 3rem) auto;
+  max-width: 40rem;
+}
+
+.dg-frame {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.4rem;
+  background: var(--hero-bg);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: clamp(0.9rem, 3vw, 1.35rem);
 }
 
 .dg figcaption {
-  margin-top: 0.4rem;
+  margin-top: 0.65rem;
   font-size: 0.86rem;
   color: var(--muted);
 }
@@ -734,7 +745,7 @@ pre code {
   border: 1px solid var(--rule);
   border-radius: 10px;
   background: var(--code-bg);
-  padding: 0.8rem 1rem;
+  padding: 0.6rem 0.8rem;
 }
 
 .dg-eyebrow,
@@ -797,10 +808,10 @@ pre code {
   border: 1px solid var(--rule);
   border-radius: 12px;
   background: color-mix(in srgb, var(--code-bg) 60%, transparent);
-  padding: 1rem;
+  padding: 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .dg-builder-row {
@@ -813,7 +824,7 @@ pre code {
   flex: 1 1 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .dg-buildkit .dg-label {
@@ -840,7 +851,7 @@ pre code {
 .dg-hooks {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 
 .dg-outcome {
@@ -874,24 +885,22 @@ pre code {
 .dg-fs-stack {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
+  align-items: start;
+  gap: 0.55rem;
   border-top: 1px solid var(--rule);
-  padding-top: 0.75rem;
+  padding-top: 0.55rem;
 }
 
 .dg-fs-col {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .dg-paths {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  /* Bottom-aligned so both columns' paths sit on one line despite the writable
-     side carrying an extra layer above them. */
-  margin-top: auto;
 }
 
 .dg-paths code {
