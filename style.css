@@ -51,6 +51,8 @@
   --rule: #2c3b3c;
   --code-bg: #1d2a2b;
   --link: var(--brand-mint);
+  /* Blocked/ephemeral accent, shared with the two figures. */
+  --coral: #e8917f;
 
   /* Faint grid echoing the wireframe cage in the logo. Kept at the edge of
      visibility — it should read as texture, never as a drawn element. */
@@ -703,6 +705,299 @@ pre code {
 
 .more {
   margin: 0;
+}
+
+/* ---- Figures: ported from each action's README diagram (assets/diagrams/*.html
+   there), rebuilt as fluid HTML so they follow the page's tokens and reflow to
+   phone width instead of shipping a fixed-width raster. Shared shell first, then
+   the overview flow, then the filesystem stack. ---- */
+
+.dg {
+  margin: 1.5rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.dg figcaption {
+  margin-top: 0.4rem;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.dg-card,
+.dg-layer,
+.dg-hook,
+.dg-buildkit,
+.dg-proxy,
+.dg-step {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--code-bg);
+  padding: 0.8rem 1rem;
+}
+
+.dg-eyebrow,
+.dg-label {
+  display: block;
+  font-family: var(--font-head);
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-cyan);
+}
+
+.dg-note {
+  display: block;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.dg code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--fg);
+}
+
+/* Arrows between stages: a caret down the column, a caret across a row that
+   flips back to down once the row stacks. */
+.dg-flow {
+  margin: 0;
+  text-align: center;
+  line-height: 1;
+  color: var(--brand-cyan);
+}
+
+.dg-flow-h {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand-cyan);
+}
+
+.dg-flow-h::before {
+  content: "→";
+}
+
+/* ---- Overview flow ---- */
+
+.dg-ov-workflow > * + *,
+.dg-proxy > * + * {
+  margin-top: 0.35rem;
+}
+
+.dg-ov-workflow .dg-eyebrow,
+.dg-ov-workflow code {
+  display: block;
+}
+
+.dg-builder {
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--code-bg) 60%, transparent);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dg-builder-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dg-buildkit {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dg-buildkit .dg-label {
+  color: var(--muted);
+}
+
+.dg-step {
+  padding: 0.5rem 0.7rem;
+}
+
+.dg-proxy {
+  flex: 0 0 auto;
+  border-color: var(--brand-cyan);
+}
+
+.dg-proxy-title {
+  display: block;
+  font-family: var(--font-head);
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--fg);
+}
+
+.dg-hooks,
+.dg-verdicts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.dg-allowed,
+.dg-blocked,
+.dg-report {
+  border-left-width: 3px;
+}
+
+.dg-allowed {
+  border-left-color: var(--brand-mint);
+}
+
+.dg-allowed .dg-label {
+  color: var(--brand-mint);
+}
+
+.dg-blocked {
+  border-left-color: var(--coral);
+}
+
+.dg-blocked .dg-label {
+  color: var(--coral);
+}
+
+.dg-report {
+  border-left-color: var(--brand-cyan);
+}
+
+.dg-allowed code,
+.dg-blocked code {
+  display: block;
+  font-size: 0.74rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.dg-report .dg-ok {
+  color: var(--brand-mint);
+}
+
+.dg-report .dg-no {
+  color: var(--coral);
+}
+
+.dg-outcome {
+  border-left: 3px solid var(--brand-cyan);
+}
+
+/* ---- Filesystem stack ---- */
+
+.dg-command {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: 1px solid var(--brand-cyan);
+  border-radius: 10px;
+  background: var(--code-bg);
+  padding: 0.55rem 1rem;
+}
+
+.dg-command .dg-eyebrow {
+  display: inline;
+}
+
+.dg-sees {
+  margin: 0;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--brand-cyan);
+}
+
+.dg-fs-stack {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 0.75rem;
+}
+
+.dg-fs-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dg-paths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  /* Bottom-aligned so both columns' paths sit on one line despite the writable
+     side carrying an extra layer above them. */
+  margin-top: auto;
+}
+
+.dg-paths code {
+  flex: 1 1 auto;
+  text-align: center;
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  padding: 0.4rem 0.45rem;
+  background: color-mix(in srgb, var(--code-bg) 60%, transparent);
+  font-size: 0.72rem;
+  overflow-wrap: anywhere;
+}
+
+.dg-readonly {
+  border-color: var(--muted);
+}
+
+.dg-readonly .dg-label {
+  color: var(--muted);
+}
+
+.dg-writable {
+  border-color: var(--brand-cyan);
+}
+
+.dg-ephemeral {
+  border-style: dashed;
+  border-color: var(--coral);
+}
+
+.dg-ephemeral .dg-label {
+  color: var(--coral);
+}
+
+.dg-floor {
+  margin: 0;
+  border-top: 1px solid var(--rule);
+  padding-top: 0.6rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.dg-floor .dg-eyebrow {
+  display: inline;
+}
+
+/* Both figures fold to a single column once the row is too tight for two. */
+@media (max-width: 40rem) {
+  .dg-builder-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dg-flow-h::before {
+    content: "↓";
+  }
+
+  .dg-hooks,
+  .dg-verdicts,
+  .dg-fs-stack {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ---- CTA ---- */
