@@ -249,11 +249,11 @@
         </figure>
 
         <p class="note">
-          That method-and-URL precision is the <b>inspect</b> engine: it reads inside TLS with a CA
-          generated for each build and wired into the toolchain's own variables, with nothing left
-          behind. Set <code>proxy_engine: inspect</code> to turn it on, or fall back to
-          <code>universal</code>, which matches on the hostname without decrypting, when a tool
-          won't trust that CA.
+          That method-and-URL precision is the <b>inspect</b> engine, and it's the default: it reads
+          inside TLS with a CA generated for each build and wired into the toolchain's own
+          variables, with nothing left behind. When a tool won't trust that CA, set
+          <code>proxy_engine: universal</code> instead, which matches on the hostname without
+          decrypting.
         </p>
       </section>
 
@@ -267,10 +267,9 @@
         <ol class="steps">
           <li>
             <h3>Run once in audit mode</h3>
-            <p>Two lines of configuration. Nothing is blocked yet.</p>
+            <p>One line of configuration. Nothing is blocked yet.</p>
             <pre><code><i class="k">with:</i>
-  <i class="k">proxy_mode:</i> <i class="s">audit</i>
-  <i class="k">proxy_engine:</i> <i class="s">inspect</i></code></pre>
+  <i class="k">proxy_mode:</i> <i class="s">audit</i></code></pre>
           </li>
 
           <li>
@@ -294,7 +293,6 @@
               already filled in, built from the requests above.
             </p>
             <pre><code><i class="k">proxy_mode:</i> <i class="s">restrict</i>
-<i class="k">proxy_engine:</i> <i class="s">inspect</i>
 <i class="k">allowed_url_rules:</i> <i class="p">|</i>
   <i class="s">GET http://deb.debian.org/**</i>
   <i class="s">GET https://registry.npmjs.org/**</i>
@@ -320,7 +318,6 @@
   <i class="k">uses:</i> <i class="a">buildcage/docker@d6f130e3476121607affc037e1c56fafb48ea897</i> <i class="c"># v3.2.1</i>
   <i class="k">with:</i>
     <i class="k">proxy_mode:</i> <i class="s">restrict</i>
-    <i class="k">proxy_engine:</i> <i class="s">inspect</i>
     <i class="k">allowed_url_rules:</i> <i class="p">|</i>
       <i class="s">GET https://registry.npmjs.org/**</i>
 
@@ -361,7 +358,6 @@
   <i class="k">uses:</i> <i class="a">buildcage/isolated-run@ab904288feaffae45b34737f3ebf3611c47df1b0</i> <i class="c"># v1.2.1</i>
   <i class="k">with:</i>
     <i class="k">proxy_mode:</i> <i class="s">restrict</i>
-    <i class="k">proxy_engine:</i> <i class="s">inspect</i>
     <i class="k">allowed_url_rules:</i> <i class="p">|</i>
       <i class="s">GET https://registry.npmjs.org/**</i>
     <i class="k">run:</i> <i class="p">|</i>

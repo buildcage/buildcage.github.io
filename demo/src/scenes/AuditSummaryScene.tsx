@@ -56,7 +56,7 @@ export const AuditSummaryScene: React.FC<{
             label="Switch to restrict mode"
             icon="🛡️"
             progress={openProgress}
-            bodyHeight={270}
+            bodyHeight={234}
           >
             <div style={{ position: "relative" }}>
               <pre
