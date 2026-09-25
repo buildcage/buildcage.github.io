@@ -1,15 +1,9 @@
 # syntax=docker/dockerfile:1
-#
-# Pinned Linux environment for building the landing site, including the Remotion
-# render of the demo video. Used by .github/workflows/deploy.yml so the published
-# video renders the same way every time: the same Debian fonts (Noto, incl. colour
-# emoji) and the same Chrome Headless Shell, rather than whatever the GitHub runner
-# image happens to ship. Building the site off macOS swaps Apple's emoji for Noto's;
-# everything else (Google-fonts text, layout) is unchanged.
+# Pinned Linux env for building the site, so the Remotion render is reproducible
+# (fixed Debian fonts/Chrome instead of the runner's). Off macOS, emoji become Noto.
 FROM node:24-bookworm-slim
 
-# Chrome Headless Shell runtime libraries + fonts. fonts-noto-color-emoji is what
-# renders the report card's ✅/🚫 in colour instead of tofu.
+# Chrome Headless Shell libs + fonts; fonts-noto-color-emoji keeps ✅/🚫 in colour.
 RUN apt-get update && apt-get install -y --no-install-recommends \
       ca-certificates curl git tar \
       libnss3 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 libcups2 \
@@ -19,9 +13,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       fonts-liberation fonts-noto-core fonts-noto-color-emoji \
     && rm -rf /var/lib/apt/lists/*
 
-RUN corepack enable
-
-# vp launcher on PATH; it delegates to the vite-plus devDependency pnpm installs.
 RUN curl -fsSL https://vite.plus | bash
 ENV PATH="/root/.local/share/vite-plus/bin:${PATH}"
 

@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
-#
-# Builds the site into /out/dist inside the pinned container. The repo is mounted
-# read-only at /src and copied out (minus node_modules and other build products) so
-# a host checkout's platform-specific node_modules never leaks into the Linux build.
+# Builds the site into /out/dist inside the container. Repo is mounted at /src:ro
+# and copied out (minus node_modules) so a host checkout's binaries never leak in.
 set -euo pipefail
 
-echo "==> staging source into /site"
 mkdir -p /site
 tar -C /src \
     --exclude=node_modules \
@@ -16,15 +13,10 @@ tar -C /src \
     -cf - . | tar -C /site -xf -
 
 cd /site
-echo "==> pnpm install"
-corepack pnpm install --frozen-lockfile
-
-echo "==> vp run build (render -> stage:demo -> build)"
+vp install --frozen-lockfile
 vp run build
 
-echo "==> exporting dist to /out/dist"
 mkdir -p /out
 rm -rf /out/dist
 cp -r /site/dist /out/dist
 ls -la /out/dist | head
-echo "==> done"
