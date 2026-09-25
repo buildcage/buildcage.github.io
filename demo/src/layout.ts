@@ -31,9 +31,9 @@ export const layoutFor = (width: number, height: number): Layout => {
   return wide
     ? {
         wide,
-        contentWidth: 1060,
+        contentWidth: 1100,
         fontSize: 26,
-        framePadding: 120,
+        framePadding: 90,
         frameTop: 64,
         columnGap: 56,
         cardScale: 1.25,
