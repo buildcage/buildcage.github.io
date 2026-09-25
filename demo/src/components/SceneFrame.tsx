@@ -37,8 +37,8 @@ export const SceneFrame: React.FC<{
     <AbsoluteFill
       style={{
         alignItems: "center",
-        justifyContent: "center",
-        padding: `0 ${layout.framePadding}px`,
+        justifyContent: layout.frameTop === null ? "center" : "flex-start",
+        padding: `${layout.frameTop ?? 0}px ${layout.framePadding}px 0`,
       }}
     >
       <div

@@ -14,6 +14,9 @@ export type Layout = {
   readonly contentWidth: number;
   readonly fontSize: number;
   readonly framePadding: number;
+  /** Where a wide frame's content starts. Centring it would sink the heading
+   * below where the narrow cut puts it; null centres (narrow). */
+  readonly frameTop: number | null;
   readonly columnGap: number;
   /** Enlarges the Job Summary card, whose type is sized in absolute pixels and
    * reads small in a wide frame. Scaling keeps its GitHub proportions. */
@@ -28,10 +31,11 @@ export const layoutFor = (width: number, height: number): Layout => {
   return wide
     ? {
         wide,
-        contentWidth: 1200,
+        contentWidth: 1100,
         fontSize: 26,
-        framePadding: 40,
-        columnGap: 48,
+        framePadding: 90,
+        frameTop: 64,
+        columnGap: 56,
         cardScale: 1.25,
         headingGap: 0,
       }
@@ -40,6 +44,7 @@ export const layoutFor = (width: number, height: number): Layout => {
         contentWidth: 1120,
         fontSize: 24,
         framePadding: 40,
+        frameTop: null,
         columnGap: 0,
         cardScale: 1,
         headingGap: 28,
