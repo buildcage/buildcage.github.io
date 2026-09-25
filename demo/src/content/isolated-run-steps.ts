@@ -19,7 +19,7 @@ const plainStep = `- name: Build and test
 // Configuration accumulates below the command, so pasting the allowlist back
 // appends to the step rather than pushing the command down mid-block.
 const wrappedStep = (config: string) => `- name: Build and test
-  uses: buildcage/isolated-run@<sha> # v1.x.x
+  uses: buildcage/isolated-run@<sha> # v2.x.x
   with:
     run: |
       npm ci

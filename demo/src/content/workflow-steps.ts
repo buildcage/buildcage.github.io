@@ -7,7 +7,7 @@
  */
 
 const buildcageStep = (body: string) => `- name: Start Buildcage
-  uses: buildcage/docker@<sha> # v3.x.x
+  uses: buildcage/docker@<sha> # v4.x.x
   with:
 ${body}`;
 
@@ -37,7 +37,7 @@ const buildStep = `- name: Build
 
 const reportStep = `- name: Show Buildcage report
   if: always()
-  uses: buildcage/docker/report@<sha> # v3.x.x`;
+  uses: buildcage/docker/report@<sha> # v4.x.x`;
 
 const plainBuildx = buildxStep("");
 
