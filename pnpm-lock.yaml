@@ -180,7 +180,7 @@ importers:
         version: 4.0.512(lightningcss@1.33.0)(postcss@8.5.26)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(typescript@7.0.2)
       '@remotion/google-fonts':
         specifier: ^4.0.512
-        version: 4.0.512(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 4.0.523(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       codehike:
         specifier: ^1.1.0
         version: 1.1.0(supports-color@8.1.1)
@@ -861,8 +861,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@remotion/google-fonts@4.0.512':
-    resolution: {integrity: sha512-QDL51k6LTe5fCwPqPZRcFR5DLJ3l/ondXpXIssuHcI9nPtFxKY7cojt12UtSaDtoeE21cEGyT6u8mHblrIWODg==}
+  '@remotion/google-fonts@4.0.523':
+    resolution: {integrity: sha512-XECkNxGJRz559uVbEEz3sMGaol4HBaU8XZuYqhuZAMjqrm2/ZkemheHR4EQYlpuu0/oT9or91KMaOmSen4Yqpw==}
 
   '@remotion/licensing@4.0.512':
     resolution: {integrity: sha512-TRDcdvgQXOxC12A/hu1VlTzt9CqIQr2RrhlL9kODgbqOEjefK1fS4EJY+PsmpxBcQqTI4+pw3KHbo9NkddPLfg==}
@@ -2469,6 +2469,12 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
+  remotion@4.0.523:
+    resolution: {integrity: sha512-dtDmkgFNsy9Dbh4EdyFwa53/UC3EpAhV1VvAPjzNbijqaEDCuALF7jnycOe/grex8DKB64NGUP6PaCrs5dcDOw==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+
   require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
@@ -3326,9 +3332,9 @@ snapshots:
   '@remotion/compositor-win32-x64-msvc@4.0.512':
     optional: true
 
-  '@remotion/google-fonts@4.0.512(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@remotion/google-fonts@4.0.523(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      remotion: 4.0.512(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      remotion: 4.0.523(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     transitivePeerDependencies:
       - react
       - react-dom
@@ -4824,6 +4830,11 @@ snapshots:
       tslib: 2.8.1
 
   remotion@4.0.512(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+    dependencies:
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+
+  remotion@4.0.523(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     dependencies:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
