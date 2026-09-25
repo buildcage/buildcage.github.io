@@ -5,6 +5,34 @@ import { SceneFrame } from "../components/SceneFrame";
 import { useLayout } from "../layout";
 import { color, font } from "../theme";
 
+type StepState = "pending" | "active" | "done";
+
+/**
+ * Drawn rather than typed: the glyphs come from whatever fallback font the
+ * renderer has, and a row grew or shrank as one mark replaced another.
+ */
+const StepMark: React.FC<{ readonly state: StepState; readonly stroke: string }> = ({
+  state,
+  stroke,
+}) => (
+  <svg width={32} height={32} viewBox="0 0 32 32" style={{ flexShrink: 0 }}>
+    {state === "done" ? (
+      <path
+        d="M7 16.5 L13.5 23 L25 9.5"
+        fill="none"
+        stroke={stroke}
+        strokeWidth={3.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    ) : state === "active" ? (
+      <circle cx={16} cy={16} r={8} fill={stroke} />
+    ) : (
+      <circle cx={16} cy={16} r={7} fill="none" stroke={stroke} strokeWidth={2.5} />
+    )}
+  </svg>
+);
+
 /**
  * A stylized stand-in for the Actions run — deliberately not a screen recording,
  * so it never goes stale when GitHub's UI changes.
@@ -49,7 +77,7 @@ export const RunScene: React.FC<{
             extrapolateRight: "clamp",
           });
 
-          const mark = done ? "✓" : active ? "●" : "○";
+          const state: StepState = done ? "done" : active ? "active" : "pending";
           const markColor = done ? color.mint : active ? color.cyan : color.rule;
 
           return (
@@ -66,7 +94,7 @@ export const RunScene: React.FC<{
                 color: done || active ? color.fg : color.muted,
               }}
             >
-              <span style={{ color: markColor, width: 32 }}>{mark}</span>
+              <StepMark state={state} stroke={markColor} />
               <span>{label}</span>
             </div>
           );
