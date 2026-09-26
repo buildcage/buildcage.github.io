@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # Pinned Linux env for building the site, so the Remotion render is reproducible
 # (fixed Debian fonts/Chrome instead of the runner's). Off macOS, emoji become Noto.
-FROM node:24-bookworm-slim
+FROM node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6
 
 # Chrome Headless Shell libs + fonts; fonts-noto-color-emoji keeps ✅/🚫 in colour.
 RUN apt-get update && apt-get install -y --no-install-recommends \
