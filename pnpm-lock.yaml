@@ -180,7 +180,7 @@ importers:
         version: 4.0.523(lightningcss@1.33.0)(postcss@8.5.26)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(typescript@7.0.2)
       '@remotion/google-fonts':
         specifier: ^4.0.512
-        version: 4.0.523(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 4.0.524(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       codehike:
         specifier: ^1.1.0
         version: 1.1.0(supports-color@8.1.1)
@@ -867,8 +867,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@remotion/google-fonts@4.0.523':
-    resolution: {integrity: sha512-XECkNxGJRz559uVbEEz3sMGaol4HBaU8XZuYqhuZAMjqrm2/ZkemheHR4EQYlpuu0/oT9or91KMaOmSen4Yqpw==}
+  '@remotion/google-fonts@4.0.524':
+    resolution: {integrity: sha512-U9MkDwO6Dyr9bTWOBCiDjGfj6RDpHw6fZ5pjcC9O6QqtHK23qPmEuv63bSqA9jZSrDCVUL2KoCfWWaGRLVmprQ==}
 
   '@remotion/licensing@4.0.523':
     resolution: {integrity: sha512-kjhF1B8oKNNnHq7QQScO39howrSv8fbdMyVFdOMgIaqwb1CMdwjrtdGUjlUKcXVoCW5SBlTFEICuq9d4l0iEMw==}
@@ -2507,6 +2507,12 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
+  remotion@4.0.524:
+    resolution: {integrity: sha512-jtoQbO7+UD7/4gcl0Onjq/Q27DP3qjI9hRimJJGuvU9p6OekY+Oyn1wNjYxG+hGH4i6InDFneN3sazFLuSF4Og==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+
   require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
@@ -3375,9 +3381,9 @@ snapshots:
   '@remotion/compositor-win32-x64-msvc@4.0.523':
     optional: true
 
-  '@remotion/google-fonts@4.0.523(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@remotion/google-fonts@4.0.524(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      remotion: 4.0.523(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      remotion: 4.0.524(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     transitivePeerDependencies:
       - react
       - react-dom
@@ -4908,6 +4914,11 @@ snapshots:
       react-dom: 19.2.8(react@19.2.8)
 
   remotion@4.0.523(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+    dependencies:
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+
+  remotion@4.0.524(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     dependencies:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
