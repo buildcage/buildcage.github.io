@@ -1,0 +1,10 @@
+# Keeps a host checkout's binaries and build output out of the image.
+**/node_modules
+**/.DS_Store
+.git
+.claude
+dist
+demo/out
+assets/demo-*.mp4
+assets/demo-*.png
+assets/demo-*.gif

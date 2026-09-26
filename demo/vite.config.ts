@@ -42,6 +42,9 @@ export default defineConfig({
           "out/demo-narrow.mp4",
           "out/demo-narrow-poster.png",
         ],
+        // A cached task drops unlisted env vars; the Chrome download under
+        // Buildcage needs its proxy CA.
+        untrackedEnv: ["NODE_EXTRA_CA_CERTS"],
       },
 
       // The GIF is for buildcage/docker's README, not this site, so it never

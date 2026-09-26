@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1
 # Pinned Linux env for building the site, so the Remotion render is reproducible
 # (fixed Debian fonts/Chrome instead of the runner's). Off macOS, emoji become Noto.
-FROM node:24-bookworm-slim
+# Build from the repo root: `docker buildx build -f demo/Dockerfile -o dist .`
+FROM node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6 AS build
 
 # Chrome Headless Shell libs + fonts; fonts-noto-color-emoji keeps ✅/🚫 in colour.
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -16,7 +17,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl -fsSL https://vite.plus | bash
 ENV PATH="/root/.local/share/vite-plus/bin:${PATH}"
 
-COPY build-site.sh /usr/local/bin/build-site.sh
-RUN chmod +x /usr/local/bin/build-site.sh
+WORKDIR /site
+COPY . .
+RUN vp install --frozen-lockfile
+RUN vp run build
 
-ENTRYPOINT ["/usr/local/bin/build-site.sh"]
+FROM scratch
+COPY --from=build /site/dist/ /
