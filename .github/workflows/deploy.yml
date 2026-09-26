@@ -19,29 +19,55 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      # The render fetches packages, a Chrome build and fonts; Buildcage keeps
+      # the image build to exactly those.
+      - name: Start Buildcage builder
+        uses: buildcage/docker@50b861fa913fd9c701b0062526494a182b2e8882 # v4.0.1
+        with:
+          proxy_mode: restrict
+          allowed_url_rules: |
+            # apt
+            GET http://deb.debian.org/**
 
-      - name: Build the site image
+            # vite-plus installer; vite.plus redirects to viteplus.dev
+            GET https://vite.plus/
+            GET https://viteplus.dev/install.sh
+
+            # Node.js: the installer's runtime, then the one devEngines pins
+            GET https://nodejs.org/dist/**
+            GET https://nodejs.org/download/release/**
+
+            GET|HEAD https://registry.npmjs.org/**
+
+            # Chrome Headless Shell that Remotion renders with
+            GET https://remotion.media/chromium-headless-shell-linux-*.zip
+
+            # Google Fonts and Code Hike grammars, fetched while rendering
+            GET https://fonts.gstatic.com/s/**
+            GET https://lighter.codehike.org/grammars/**
+          known_blocked_rules: |
+            # The runner appends its DNS search domain to every lookup.
+            **.internal.cloudapp.net
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          driver: remote
+          endpoint: docker-container://buildcage
+
+      - name: Build the site
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          context: demo
+          context: .
           file: demo/Dockerfile
-          tags: buildcage-site-build:latest
-          load: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          outputs: type=local,dest=${{ runner.temp }}/dist
 
-      - name: Build the site in the container
-        run: |
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE":/src:ro \
-            -v "$RUNNER_TEMP/out":/out \
-            buildcage-site-build
-          sudo chown -R "$(id -u):$(id -g)" "$RUNNER_TEMP/out"
+      - name: Show Buildcage report
+        if: always()
+        uses: buildcage/docker/report@50b861fa913fd9c701b0062526494a182b2e8882 # v4.0.1
 
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
-          path: ${{ runner.temp }}/out/dist
+          path: ${{ runner.temp }}/dist
 
   deploy:
     needs: build
