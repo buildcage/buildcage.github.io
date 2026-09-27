@@ -20,6 +20,11 @@
       "description": "Buildcage's own actions are exempt from minimumReleaseAge, so the landing page can show a new release immediately.",
       "matchPackageNames": ["/^buildcage\\//"],
       "minimumReleaseAge": "0 days"
+    },
+    {
+      "description": "Remotion packages share one version and one lockfile entry, so separate PRs for each merge into duplicate keys.",
+      "matchPackageNames": ["remotion", "@remotion/**"],
+      "groupName": "remotion"
     }
   ]
 }
