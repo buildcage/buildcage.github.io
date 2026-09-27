@@ -57,6 +57,8 @@ jobs:
           context: .
           file: demo/Dockerfile
           outputs: type=local,dest=${{ runner.temp }}/dist
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Show Buildcage report
         if: always()
