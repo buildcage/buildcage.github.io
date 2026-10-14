@@ -493,7 +493,7 @@
           Both allow whatever IP a name resolved to, with no further check — so on shared hosting,
           one allowed domain can end up allowing every other site on that IP too. Buildcage matches
           on the name instead: <code>inspect</code> reads the real <code>Host</code>, so a request
-          fronted behind an allowed SNI is refused, while <code>universal</code> never decrypts and
+          fronted behind an allowed SNI is blocked, while <code>universal</code> never decrypts and
           so narrows this without closing it. Harden-Runner is also a broader agent, correlating
           network, file, and process events, and its paid plans read inside HTTPS via eBPF — for
           reporting, not the block decision. Buildcage stays narrower on purpose.
