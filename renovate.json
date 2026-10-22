@@ -1,8 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "description": [
+    "lockFileMaintenance is how transitive dependencies get updated at all. It has no release timestamp, so Renovate's minimumReleaseAge would keep it pending forever and is \"0 days\" there; pnpm applies the one in pnpm-workspace.yaml when it regenerates the lockfile.",
+    "lockFileMaintenance has its own default schedule, so it repeats the weekly one."
+  ],
+  "timezone": "Asia/Tokyo",
+  "schedule": ["* * * * 6"],
   "minimumReleaseAge": "14 days",
-  "internalChecksFilter": "strict",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["* * * * 6"],
+    "minimumReleaseAge": "0 days"
+  },
   "customManagers": [
     {
       "description": "Keep the SHA-pinned `uses:` examples in index.html current, the same way buildcage/docker tracks the ones in its Markdown docs. The examples are syntax-highlighted, so `(?:</?[a-z][^>]*>|\\s)*` lets tags and whitespace sit between the tokens; it still matches the plain-text form too.",
@@ -17,9 +27,10 @@
   ],
   "packageRules": [
     {
-      "description": "Buildcage's own actions are exempt from minimumReleaseAge, so the landing page can show a new release immediately.",
+      "description": "Buildcage's own actions are exempt from minimumReleaseAge and from the weekly schedule, so the landing page can show a new release immediately.",
       "matchPackageNames": ["/^buildcage\\//"],
-      "minimumReleaseAge": "0 days"
+      "minimumReleaseAge": "0 days",
+      "schedule": ["at any time"]
     },
     {
       "description": "Remotion packages share one version and one lockfile entry, so separate PRs for each merge into duplicate keys.",
