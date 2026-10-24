@@ -27,11 +27,11 @@ export const RestrictSummaryScene: React.FC<{
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const blockedIn = spring({
-    frame: frame - 32,
-    fps,
-    config: { damping: 200 },
-    durationInFrames: 22,
+  // Halfway in when the growth ends, so the fade still reads after the reveal.
+  const blockedIn = interpolate(frame, [32, 60], [0, 1], {
+    easing: Easing.inOut(Easing.ease),
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
   });
 
   return (
