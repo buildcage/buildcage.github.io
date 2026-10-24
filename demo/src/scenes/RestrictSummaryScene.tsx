@@ -31,8 +31,6 @@ export const RestrictSummaryScene: React.FC<{
         }}
       >
         <BuildSummaryCard title={RESTRICT_TITLE} width={layout.contentWidth}>
-          <AllowedHosts />
-
           <div
             style={{
               opacity: blockedIn,
@@ -41,6 +39,8 @@ export const RestrictSummaryScene: React.FC<{
           >
             <BlockedHosts />
           </div>
+
+          <AllowedHosts />
         </BuildSummaryCard>
       </div>
     </SceneFrame>

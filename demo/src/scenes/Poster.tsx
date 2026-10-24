@@ -56,8 +56,8 @@ export const Poster: React.FC = () => {
 
   const card = (
     <BuildSummaryCard title={RESTRICT_TITLE} width={layout.contentWidth}>
-      <AllowedHosts />
       <BlockedHosts />
+      <AllowedHosts />
     </BuildSummaryCard>
   );
 
