@@ -3,7 +3,12 @@ import { AbsoluteFill } from "remotion";
 
 import { BuildSummaryCard } from "../components/BuildSummaryCard";
 import { Tagline, Wordmark } from "../components/Lockup";
-import { AllowedHosts, BlockedHosts, RESTRICT_TITLE } from "../components/OutboundReport";
+import {
+  AllowedHosts,
+  BlockedCaution,
+  BlockedHosts,
+  RESTRICT_TITLE,
+} from "../components/OutboundReport";
 import { useLayout } from "../layout";
 import { color } from "../theme";
 
@@ -56,8 +61,9 @@ export const Poster: React.FC = () => {
 
   const card = (
     <BuildSummaryCard title={RESTRICT_TITLE} width={layout.contentWidth}>
-      <AllowedHosts />
+      <BlockedCaution />
       <BlockedHosts />
+      <AllowedHosts />
     </BuildSummaryCard>
   );
 
