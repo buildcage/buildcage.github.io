@@ -2,7 +2,12 @@ import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 
 import { BuildSummaryCard } from "../components/BuildSummaryCard";
-import { AllowedHosts, BlockedHosts, RESTRICT_TITLE } from "../components/OutboundReport";
+import {
+  AllowedHosts,
+  BlockedCaution,
+  BlockedHosts,
+  RESTRICT_TITLE,
+} from "../components/OutboundReport";
 import { SceneFrame } from "../components/SceneFrame";
 import { useLayout } from "../layout";
 
@@ -37,6 +42,7 @@ export const RestrictSummaryScene: React.FC<{
               transform: `translateY(${interpolate(blockedIn, [0, 1], [16, 0])}px)`,
             }}
           >
+            <BlockedCaution />
             <BlockedHosts />
           </div>
 

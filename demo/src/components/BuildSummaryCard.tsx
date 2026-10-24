@@ -4,7 +4,7 @@ import { font, gh } from "../theme";
 
 /**
  * GitHub's Job Summary card, matching the real reports in
- * ../../assets/report-{audit,restrict}-mode.png. Rendered rather than
+ * ../../../assets/report-inspect-{audit,restrict}-mode.png. Rendered rather than
  * screenshotted so the disclosure can open and its contents can morph into the
  * workflow in the next scene.
  */

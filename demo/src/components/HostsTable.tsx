@@ -2,11 +2,16 @@ import React from "react";
 
 import { font, gh } from "../theme";
 
-export type Column = { readonly label: string; readonly align: "left" | "center" | "right" };
+export type Column = {
+  readonly label: string;
+  readonly align: "left" | "center" | "right";
+  /** Rendered as a code span, as the report writes host names. */
+  readonly code?: boolean;
+};
 
 /**
  * Styled exactly as GitHub renders it — no emphasis of our own on the blocked
- * row. The real report has none (see ../../assets/report-restrict-mode.png),
+ * row. The real report has none (see ../../../assets/report-inspect-restrict-mode.png),
  * and inventing one would show an interface viewers will never get.
  */
 export const HostsTable: React.FC<{
@@ -52,7 +57,21 @@ export const HostsTable: React.FC<{
                   background: i % 2 === 1 ? gh.rowAlt : gh.cardBg,
                 }}
               >
-                {value}
+                {columns[j]?.code ? (
+                  <code
+                    style={{
+                      fontFamily: font.mono,
+                      fontSize: "85%",
+                      padding: "3px 7px",
+                      borderRadius: 6,
+                      background: gh.codeBg,
+                    }}
+                  >
+                    {value}
+                  </code>
+                ) : (
+                  value
+                )}
               </td>
             ))}
           </tr>

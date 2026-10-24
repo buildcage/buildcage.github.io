@@ -2,7 +2,7 @@ import type { Column } from "../components/HostsTable";
 
 /**
  * The rows shown in the reproduced Job Summary cards. Kept in sync with the
- * real reports captured in ../../assets/report-{audit,restrict}-mode.png.
+ * real reports captured in ../../../assets/report-inspect-{audit,restrict}-mode.png.
  */
 
 export type HostRow = {
@@ -21,7 +21,7 @@ export const auditedHosts: readonly HostRow[] = [
 export const allowedHosts = auditedHosts;
 
 export const blockedHosts: readonly BlockedRow[] = [
-  { host: "www.example.com:80", rule: "HTTP", reason: "not-allowed", count: 1 },
+  { host: "example.com:443", rule: "HTTPS", reason: "🚫 not-allowed", count: 1 },
 ];
 
 /**
@@ -30,13 +30,13 @@ export const blockedHosts: readonly BlockedRow[] = [
  * same tables and were each carrying their own copy of these.
  */
 export const hostColumns: readonly Column[] = [
-  { label: "Host", align: "left" },
+  { label: "Host", align: "left", code: true },
   { label: "Rule", align: "center" },
   { label: "Count", align: "right" },
 ];
 
 export const blockedColumns: readonly Column[] = [
-  { label: "Host", align: "left" },
+  { label: "Host", align: "left", code: true },
   { label: "Rule", align: "center" },
   { label: "Reason", align: "center" },
   { label: "Count", align: "right" },

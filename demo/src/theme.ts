@@ -21,6 +21,8 @@ export const gh = {
   fg: "#1f2328",
   muted: "#59636e",
   rowAlt: "#f6f8fa",
+  codeBg: "rgba(129, 139, 152, 0.12)",
+  caution: "#d1242f",
 } as const;
 
 export const font = {
