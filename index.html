@@ -599,17 +599,15 @@
       <section class="wrap product">
         <h3>Filesystem audit</h3>
         <p>
-          An allowlist decides where a step's traffic can go, not what the step does on the runner.
-          A dependency that reads credentials it has no use for, or leaves a file for a later step,
-          shows up nowhere in a network report.
-        </p>
-        <p>
-          <code>filesystem_audit: record</code> watches the step from the kernel, records each file
-          it reads, writes, moves, deletes, runs or changes the attributes of, and summarizes them
-          in the Job Summary. Name the accesses the step normally makes in
+          <code>filesystem_audit: record</code> watches the step's file access from the kernel. It
+          records each file the step reads, writes, moves, deletes, runs or changes the attributes
+          of, and summarizes them in the Job Summary. Name the accesses the step normally makes in
           <code>expected_filesystem_rules</code>, and the summary shows only the ones outside them.
-          It records and never blocks. It runs on GitHub-hosted Ubuntu runners, and on self-hosted
-          Linux 6.1 or newer (6.4 on arm64) with cgroup v2 and kernel BTF.
+          It records and never blocks.
+          <a
+            href="https://github.com/buildcage/isolated-run/blob/main/docs/filesystem-audit.md#what-it-needs"
+            >What it needs to run</a
+          >.
         </p>
         <pre><code><i class="k">with:</i>
   <i class="k">proxy_mode:</i> <i class="s">audit</i>
