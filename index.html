@@ -481,7 +481,7 @@
               </tr>
               <tr>
                 <th scope="row">Also watches files and processes</th>
-                <td>No&nbsp;*</td>
+                <td>Files, in <code>run:</code> Steps&nbsp;*</td>
                 <td>Yes</td>
                 <td>No</td>
               </tr>
@@ -496,14 +496,14 @@
           fronted behind an allowed SNI is blocked, while <code>universal</code> never decrypts and
           so narrows this without closing it. Harden-Runner is also a broader agent, correlating
           network, file, and process events, and its paid plans read inside HTTPS via eBPF — for
-          reporting, not the block decision. Buildcage stays narrower on purpose.
+          reporting, not the block decision.
         </p>
 
         <p class="fine">
-          * Buildcage watches no file or process events. Buildcage for <code>run:</code> Steps can
-          discard the step's filesystem writes instead, keeping only the paths you list (<code
-            >filesystem-mode: ephemeral</code
-          >, experimental).
+          * Buildcage for <code>run:</code> Steps can record each file the step touches, with the
+          command that touched it, and never blocks an access (<code>filesystem_audit</code>,
+          experimental, below). It can also discard the step's filesystem writes, keeping only the
+          paths you list (<code>filesystem_mode: ephemeral</code>, experimental).
         </p>
 
         <p class="sub">
@@ -556,9 +556,9 @@
       <section class="wrap">
         <h2>Experimental</h2>
         <p class="sub">
-          Two features of Buildcage for <code>run:</code> Steps reach past the destination
-          allowlist. Both are experimental: their inputs and output may still change without
-          following semver, so try them in a non-critical workflow first.
+          Two features of Buildcage for <code>run:</code> Steps cover more than the destination
+          allowlist. Both are experimental: their behavior, inputs and output may still change
+          without following semver, so try them in a non-critical workflow first.
           <code>filesystem_mode: ephemeral</code>, above, is experimental too.
         </p>
       </section>
@@ -573,11 +573,12 @@
         </p>
         <p>
           With <code>aws_key_check: true</code>, a signed request to an AWS API passes only when the
-          proxy knows its key: mainly the key the step was given, and the keys STS issues for roles
-          in the accounts you name in <code>allowed_aws_role_accounts</code>. It needs the
+          proxy knows its key: the key the step was given, and the keys STS issues for roles in the
+          accounts you name in <code>allowed_aws_role_accounts</code>. It needs the
           <b>inspect</b> engine.
         </p>
         <pre><code><i class="k">with:</i>
+  <i class="k">proxy_mode:</i> <i class="s">audit</i>
   <i class="k">aws_key_check:</i> <i class="s">true</i>
   <i class="k">run:</i> <i class="s">aws ecs update-service --cluster app --service web --force-new-deployment</i></code></pre>
         <p class="more">
@@ -595,14 +596,15 @@
           shows up nowhere in a network report.
         </p>
         <p>
-          <code>filesystem_audit: record</code> watches the step from the kernel, records every file
-          it reads, writes, moves, deletes or runs, and summarizes them in the Job Summary. Name the
-          accesses the step normally makes in <code>expected_filesystem_rules</code>, and the
-          summary shows only the ones outside them. It records and never blocks. It runs on
-          GitHub-hosted Ubuntu runners, and on self-hosted Linux 6.1 or newer (6.4 on arm64) with
-          cgroup v2 and kernel BTF.
+          <code>filesystem_audit: record</code> watches the step from the kernel, records each file
+          it reads, writes, moves, deletes, runs or changes the attributes of, and summarizes them
+          in the Job Summary. Name the accesses the step normally makes in
+          <code>expected_filesystem_rules</code>, and the summary shows only the ones outside them.
+          It records and never blocks. It runs on GitHub-hosted Ubuntu runners, and on self-hosted
+          Linux 6.1 or newer (6.4 on arm64) with cgroup v2 and kernel BTF.
         </p>
         <pre><code><i class="k">with:</i>
+  <i class="k">proxy_mode:</i> <i class="s">audit</i>
   <i class="k">filesystem_audit:</i> <i class="s">record</i>
   <i class="k">run:</i> <i class="s">npm ci</i></code></pre>
         <p class="more">
