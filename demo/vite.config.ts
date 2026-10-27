@@ -30,21 +30,23 @@ export default defineConfig({
           "remotion render DemoNarrow out/demo-narrow.mp4 --crf=28",
           "remotion still PosterNarrow out/demo-narrow-poster.png",
         ],
-        input: [
-          "src/**",
-          "package.json",
-          "remotion.config.ts",
-          { pattern: "assets/logo.png", base: "workspace" },
-        ],
-        output: [
-          "out/demo-wide.mp4",
-          "out/demo-wide-poster.png",
-          "out/demo-narrow.mp4",
-          "out/demo-narrow-poster.png",
-        ],
-        // A cached task drops unlisted env vars; the Chrome download under
-        // Buildcage needs its proxy CA.
-        untrackedEnv: ["NODE_EXTRA_CA_CERTS"],
+        cache: {
+          input: [
+            "src/**",
+            "package.json",
+            "remotion.config.ts",
+            { pattern: "assets/logo.png", base: "workspace" },
+          ],
+          output: [
+            "out/demo-wide.mp4",
+            "out/demo-wide-poster.png",
+            "out/demo-narrow.mp4",
+            "out/demo-narrow-poster.png",
+          ],
+          // A cached task drops unlisted env vars; the Chrome download under
+          // Buildcage needs its proxy CA.
+          untrackedEnv: ["NODE_EXTRA_CA_CERTS"],
+        },
       },
 
       // The GIF is for buildcage/docker's README, not this site, so it never
@@ -54,13 +56,15 @@ export default defineConfig({
       "render:gif": {
         command:
           "remotion render DemoShort ../assets/demo-docker.gif --codec=gif --scale=0.5 --every-nth-frame=2",
-        input: [
-          "src/**",
-          "package.json",
-          "remotion.config.ts",
-          { pattern: "assets/logo.png", base: "workspace" },
-        ],
-        output: [{ pattern: "assets/demo-docker.gif", base: "workspace" }],
+        cache: {
+          input: [
+            "src/**",
+            "package.json",
+            "remotion.config.ts",
+            { pattern: "assets/logo.png", base: "workspace" },
+          ],
+          output: [{ pattern: "assets/demo-docker.gif", base: "workspace" }],
+        },
       },
 
       // The same walkthrough for buildcage/isolated-run, whose action is
@@ -69,13 +73,15 @@ export default defineConfig({
       "render:gif:isolated-run": {
         command:
           "remotion render IsolatedRunShort ../assets/demo-isolated-run.gif --codec=gif --scale=0.5 --every-nth-frame=2",
-        input: [
-          "src/**",
-          "package.json",
-          "remotion.config.ts",
-          { pattern: "assets/logo.png", base: "workspace" },
-        ],
-        output: [{ pattern: "assets/demo-isolated-run.gif", base: "workspace" }],
+        cache: {
+          input: [
+            "src/**",
+            "package.json",
+            "remotion.config.ts",
+            { pattern: "assets/logo.png", base: "workspace" },
+          ],
+          output: [{ pattern: "assets/demo-isolated-run.gif", base: "workspace" }],
+        },
       },
     },
   },
