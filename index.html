@@ -553,6 +553,65 @@
         </p>
       </section>
 
+      <section class="wrap">
+        <h2>Experimental</h2>
+        <p class="sub">
+          Two features of Buildcage for <code>run:</code> Steps reach past the destination
+          allowlist. Both are experimental: their inputs and output may still change without
+          following semver, so try them in a non-critical workflow first.
+          <code>filesystem_mode: ephemeral</code>, above, is experimental too.
+        </p>
+      </section>
+
+      <section class="wrap product product--first">
+        <h3>AWS access key check</h3>
+        <p>
+          Many AWS APIs, such as STS or CloudFormation, name no account in the URL. The account a
+          request reaches is whichever one signed it, so a compromised dependency can sign with a
+          key of its own and send data through a host your rules allow. The call is logged only in
+          the account that owns that key, where none of your IAM policies apply.
+        </p>
+        <p>
+          With <code>aws_key_check: true</code>, a signed request to an AWS API passes only when the
+          proxy knows its key: mainly the key the step was given, and the keys STS issues for roles
+          in the accounts you name in <code>allowed_aws_role_accounts</code>. It needs the
+          <b>inspect</b> engine.
+        </p>
+        <pre><code><i class="k">with:</i>
+  <i class="k">aws_key_check:</i> <i class="s">true</i>
+  <i class="k">run:</i> <i class="s">aws ecs update-service --cluster app --service web --force-new-deployment</i></code></pre>
+        <p class="more">
+          <a href="https://github.com/buildcage/isolated-run/blob/main/docs/aws.md"
+            >AWS access key check →</a
+          >
+        </p>
+      </section>
+
+      <section class="wrap product">
+        <h3>Filesystem audit</h3>
+        <p>
+          An allowlist decides where a step's traffic can go, not what the step does on the runner.
+          A dependency that reads credentials it has no use for, or leaves a file for a later step,
+          shows up nowhere in a network report.
+        </p>
+        <p>
+          <code>filesystem_audit: record</code> watches the step from the kernel, records every file
+          it reads, writes, moves, deletes or runs, and summarizes them in the Job Summary. Name the
+          accesses the step normally makes in <code>expected_filesystem_rules</code>, and the
+          summary shows only the ones outside them. It records and never blocks. It runs on
+          GitHub-hosted Ubuntu runners, and on self-hosted Linux 6.1 or newer (6.4 on arm64) with
+          cgroup v2 and kernel BTF.
+        </p>
+        <pre><code><i class="k">with:</i>
+  <i class="k">filesystem_audit:</i> <i class="s">record</i>
+  <i class="k">run:</i> <i class="s">npm ci</i></code></pre>
+        <p class="more">
+          <a href="https://github.com/buildcage/isolated-run/blob/main/docs/filesystem-audit.md"
+            >Filesystem audit →</a
+          >
+        </p>
+      </section>
+
       <section class="wrap cta">
         <a class="button" href="https://github.com/buildcage/docker">
           <svg class="gh" aria-hidden="true"><use href="#gh-mark" /></svg>
