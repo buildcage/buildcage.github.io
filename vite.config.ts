@@ -104,18 +104,20 @@ export default defineConfig({
           "cp demo/out/demo-narrow-poster.png assets/demo-narrow-poster.png",
         ],
         dependsOn: ["buildcage-demo#render"],
-        input: [
-          "demo/out/demo-wide.mp4",
-          "demo/out/demo-wide-poster.png",
-          "demo/out/demo-narrow.mp4",
-          "demo/out/demo-narrow-poster.png",
-        ],
-        output: [
-          "assets/demo-wide.mp4",
-          "assets/demo-wide-poster.png",
-          "assets/demo-narrow.mp4",
-          "assets/demo-narrow-poster.png",
-        ],
+        cache: {
+          input: [
+            "demo/out/demo-wide.mp4",
+            "demo/out/demo-wide-poster.png",
+            "demo/out/demo-narrow.mp4",
+            "demo/out/demo-narrow-poster.png",
+          ],
+          output: [
+            "assets/demo-wide.mp4",
+            "assets/demo-wide-poster.png",
+            "assets/demo-narrow.mp4",
+            "assets/demo-narrow-poster.png",
+          ],
+        },
       },
 
       build: {
