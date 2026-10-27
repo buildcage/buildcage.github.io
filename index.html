@@ -579,10 +579,16 @@
           accounts you name in <code>allowed_aws_role_accounts</code>. It needs the
           <b>inspect</b> engine.
         </p>
-        <pre><code><i class="k">with:</i>
-  <i class="k">proxy_mode:</i> <i class="s">audit</i>
-  <i class="k">aws_key_check:</i> <i class="s">true</i>
-  <i class="k">run:</i> <i class="s">aws ecs update-service --cluster app --service web --force-new-deployment</i></code></pre>
+        <pre><code><i class="p">-</i> <i class="k">uses:</i> <i class="a">aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd</i> <i class="c"># v6.3.0</i>
+  <i class="k">with:</i>
+    <i class="k">role-to-assume:</i> <i class="s">arn:aws:iam::111111111111:role/deploy</i>
+    <i class="k">aws-region:</i> <i class="s">us-east-1</i>
+
+<i class="p">-</i> <i class="k">uses:</i> <i class="a">buildcage/isolated-run@b3c6b5415d1ce2dc9cd3e580b8dac8962a17c9d2</i> <i class="c"># v2.4.0</i>
+  <i class="k">with:</i>
+    <i class="k">proxy_mode:</i> <i class="s">audit</i>
+    <i class="k">aws_key_check:</i> <i class="s">true</i>
+    <i class="k">run:</i> <i class="s">aws ecs update-service --cluster app --service web --force-new-deployment</i></code></pre>
         <p class="more">
           <a href="https://github.com/buildcage/isolated-run/blob/main/docs/aws.md"
             >AWS access key check →</a
