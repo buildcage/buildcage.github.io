@@ -503,7 +503,9 @@
           * Buildcage for <code>run:</code> Steps can record each file the step touches, with the
           command that touched it, and never blocks an access (<code>filesystem_audit</code>,
           experimental, below). It can also discard the step's filesystem writes, keeping only the
-          paths you list (<code>filesystem_mode: ephemeral</code>, experimental).
+          paths you list (<code>filesystem_mode: ephemeral</code>, experimental). The command still
+          writes wherever it normally would, yet what it leaves for later steps is only what you
+          named.
         </p>
 
         <p class="sub">
