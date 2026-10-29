@@ -25,7 +25,7 @@ suits the screen: wide gets the widescreen cut, and below 900px the 4:3 one, whi
 same width and so sets its type larger. Both are `preload="none"`, so the hidden one costs nothing.
 
 At ~2.4 MB per cut they stay out of `main` entirely — otherwise every version would sit in the
-history for good. The deploy renders them each time instead.
+history for good. The deploy renders them each time.
 
 ## Commands
 
@@ -42,9 +42,6 @@ whole site with one command. Plain `vp build` runs Vite alone and skips the rend
 
 The render is cached on `demo/src/**`, so it only actually runs when the video's source changed; a
 text-only rebuild is near-instant.
-
-The `publish` branch and `vp run publish` are left from the previous setup, which served that
-branch. Pages now serves only what the workflow deploys, so pushing `publish` changes nothing.
 
 ### Why there's a build step
 

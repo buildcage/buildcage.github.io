@@ -82,9 +82,9 @@
           <div class="player" data-player>
             <!-- Two cuts of the same walkthrough, each composed for its own
                  aspect ratio; the stylesheet shows whichever suits the screen.
-                 Both are rendered from demo/, so they only exist on the publish
-                 branch — absent on main by design. `preload="none"` means the
-                 hidden one costs nothing either. -->
+                 Both are rendered from demo/ at build time, so main never
+                 carries them. `preload="none"` means the hidden one costs
+                 nothing either. -->
             <video
               class="wide"
               poster="assets/demo-wide-poster.png"
