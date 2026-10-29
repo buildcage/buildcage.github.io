@@ -397,6 +397,37 @@ h3 a:hover {
   text-decoration: underline;
 }
 
+/* A sub-heading that follows prose needs room to start a topic of its own. */
+section > p + h3 {
+  margin-top: 2.5rem;
+}
+
+h4 {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.35;
+  margin: 2.5rem 0 0.6rem;
+}
+
+.note + h4 {
+  margin-top: 1.5rem;
+}
+
+.tag {
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  margin-left: 0.4rem;
+  padding: 0.1rem 0.5rem;
+  text-transform: uppercase;
+  vertical-align: 0.15em;
+}
+
 p {
   margin: 0 0 1rem;
 }
@@ -416,6 +447,13 @@ p {
   border-top: none;
   padding-top: 0;
   margin-top: 1.5rem;
+}
+
+/* The products run on with sub-headings of their own, so a rule marks where
+   the page moves on from them. */
+.closes-products {
+  border-top: 1px solid var(--rule);
+  padding-top: clamp(2.5rem, 6vw, 4rem);
 }
 
 /* ---- Feature strip ---- */
@@ -645,6 +683,10 @@ p {
 
 .shot.inline img {
   border-color: var(--rule);
+}
+
+.product .shot.inline {
+  margin-bottom: 1.25rem;
 }
 
 /* ---- Comparison table ---- */

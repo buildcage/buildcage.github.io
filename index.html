@@ -307,7 +307,9 @@
       </section>
 
       <section class="wrap product product--first">
-        <h3><a href="https://github.com/buildcage/docker">Buildcage for Docker</a></h3>
+        <h3>
+          <a href="https://github.com/buildcage/docker">Buildcage docker</a>
+        </h3>
         <p>
           You build a Docker image, with no Dockerfile changes. Buildcage runs as a remote driver
           for Docker Buildx and routes every <code>RUN</code> step's outbound traffic through a
@@ -346,9 +348,7 @@
 
       <section class="wrap product">
         <h3>
-          <a href="https://github.com/buildcage/isolated-run"
-            >Buildcage for <code>run:</code> Steps</a
-          >
+          <a href="https://github.com/buildcage/isolated-run">Buildcage isolated-run</a>
         </h3>
         <p>
           You run a command directly in a workflow step — installing dependencies, a test suite, a
@@ -422,17 +422,101 @@
             >Threat model →</a
           >
         </p>
+
+        <p class="note">
+          Two more features check something other than destinations. Like
+          <code>filesystem-mode: ephemeral</code>, both are experimental: their behavior, inputs and
+          output may still change without following semver, so try them in a non-critical workflow
+          first.
+        </p>
+
+        <h4>AWS access key check <span class="tag">Experimental</span></h4>
+        <p>
+          Many AWS APIs, such as STS or CloudFormation, name no account in the URL. However narrowly
+          your rules allow such a URL, a compromised dependency can still call it with a key of its
+          own and reach its author's account instead of yours, where none of your IAM policies
+          apply.
+        </p>
+        <p>
+          With <code>aws-key-check: true</code>, a signed request to an AWS API passes only when the
+          proxy knows its key: the key the step was given, and the keys STS issues for roles in the
+          accounts you name in <code>allowed-aws-role-accounts</code>. It needs the
+          <b>inspect</b> engine.
+        </p>
+        <pre><code><i class="p">-</i> <i class="k">uses:</i> <i class="a">aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd</i> <i class="c"># v6.3.0</i>
+  <i class="k">with:</i>
+    <i class="k">role-to-assume:</i> <i class="s">arn:aws:iam::111111111111:role/deploy</i>
+    <i class="k">aws-region:</i> <i class="s">us-east-1</i>
+
+<i class="p">-</i> <i class="k">uses:</i> <i class="a">buildcage/isolated-run@e17dbc9c53e03b39835b2f3e11834243d90aa183</i> <i class="c"># v2.5.0</i>
+  <i class="k">with:</i>
+    <i class="k">proxy-mode:</i> <i class="s">audit</i>
+    <i class="k">aws-key-check:</i> <i class="s">true</i>
+    <i class="k">run:</i> <i class="s">aws ecs update-service --cluster app --service web --force-new-deployment</i></code></pre>
+        <figure class="shot inline">
+          <img
+            src="assets/report-aws-key-check.png"
+            alt="Report blocking an STS call signed with an unknown key, with a table of each AWS key and where it came from"
+            width="1670"
+            height="1780"
+            loading="lazy"
+          />
+          <figcaption>
+            The AWS Keys table shows where each key came from. The call signed with a key the proxy
+            never saw was blocked.
+          </figcaption>
+        </figure>
+        <p class="more">
+          <a href="https://github.com/buildcage/isolated-run/blob/main/docs/aws.md"
+            >AWS access key check →</a
+          >
+        </p>
+
+        <h4>Filesystem audit <span class="tag">Experimental</span></h4>
+        <p>
+          <code>filesystem-audit: record</code> watches the step's file access from the kernel. It
+          records each file the step reads, writes, moves, deletes, runs or changes the attributes
+          of, and summarizes them in the Job Summary. Name the accesses the step normally makes in
+          <code>expected-filesystem-rules</code>, and the summary shows only the ones outside them.
+          It records and never blocks.
+          <a
+            href="https://github.com/buildcage/isolated-run/blob/main/docs/filesystem-audit.md#what-it-needs"
+            >What it needs to run</a
+          >.
+        </p>
+        <pre><code><i class="k">with:</i>
+  <i class="k">proxy-mode:</i> <i class="s">audit</i>
+  <i class="k">filesystem-audit:</i> <i class="s">record</i>
+  <i class="k">run:</i> <i class="s">npm ci</i></code></pre>
+        <figure class="shot inline">
+          <img
+            src="assets/report-filesystem-audit.png"
+            alt="Filesystem Activity Report listing the time, access flags, command and path of each file npm ci touched"
+            width="1670"
+            height="1954"
+            loading="lazy"
+          />
+          <figcaption>
+            The Filesystem Activity Report follows the traffic report and lists each path with when
+            it was touched, how, and by which command.
+          </figcaption>
+        </figure>
+        <p class="more">
+          <a href="https://github.com/buildcage/isolated-run/blob/main/docs/filesystem-audit.md"
+            >Filesystem audit →</a
+          >
+        </p>
       </section>
 
-      <section class="wrap">
+      <section class="wrap closes-products">
         <h2>How it compares</h2>
         <p class="sub">
           The closest tools are
           <a href="https://github.com/step-security/harden-runner">Harden-Runner</a> and
           <a href="https://github.com/bullfrogsec/bullfrog">Bullfrog</a>. Both attach one egress
-          policy to the whole job, covering every step. Buildcage scopes the policy per build
-          instead: the wrapped step gets its own allowlist, but steps outside it aren't covered —
-          protecting a whole job means wrapping each step that needs it.
+          policy to the whole job, covering every step. Buildcage is designed to set the policy per
+          step instead, so each step can be held to the narrowest allowlist it needs. Steps it
+          doesn't wrap aren't covered: to protect a whole job, wrap each step that needs it.
         </p>
 
         <div class="table-scroll">
@@ -481,7 +565,7 @@
               </tr>
               <tr>
                 <th scope="row">Also watches files and processes</th>
-                <td>No&nbsp;*</td>
+                <td>Files, in isolated-run&nbsp;*</td>
                 <td>Yes</td>
                 <td>No</td>
               </tr>
@@ -496,28 +580,30 @@
           fronted behind an allowed SNI is blocked, while <code>universal</code> never decrypts and
           so narrows this without closing it. Harden-Runner is also a broader agent, correlating
           network, file, and process events, and its paid plans read inside HTTPS via eBPF — for
-          reporting, not the block decision. Buildcage stays narrower on purpose.
+          reporting, not the block decision.
         </p>
 
         <p class="fine">
-          * Buildcage watches no file or process events. Buildcage for <code>run:</code> Steps can
-          discard the step's filesystem writes instead, keeping only the paths you list (<code
+          * isolated-run can record each file the step touches, with the command that touched it,
+          and never blocks an access (<code>filesystem-audit</code>, experimental, above). It can
+          also discard the step's filesystem writes, keeping only the paths you list (<code
             >filesystem-mode: ephemeral</code
-          >, experimental).
+          >, experimental). The command still writes wherever it normally would, but only what you
+          named is left for later steps.
         </p>
 
+        <h3>GitHub's native egress firewall</h3>
         <p class="sub">
-          GitHub is building an egress firewall into the runners themselves (<a
+          GitHub is building an egress firewall into its hosted Linux runners (<a
             href="https://github.com/github-early-access/actions-native-egress-firewall"
             >technical preview</a
           >
-          as of September 2026): opt a job into a firewall-enabled runner image and its traffic is
+          as of October 2026): opt a job into a firewall-enabled runner image and its traffic is
           inspected outside the runner VM, in log or enforce mode, from one policy file per
-          repository. A workflow that gains root inside the runner cannot switch that off, and
-          Buildcage does not try to replace it. But one policy for the whole run is one allowlist
-          for every step in it. Buildcage scopes its allowlist to a single build or a single step,
-          where a rule can name a method and a URL rather than only a host, and it runs on any Linux
-          runner with Docker, self-hosted included.
+          repository. A workflow that gains root inside the runner cannot switch that off. Buildcage
+          does not try to replace it and works at a different scope: a single build or step, with
+          rules that can name a method and a URL, on any Linux runner with Docker, self-hosted
+          included.
         </p>
       </section>
 
@@ -556,11 +642,11 @@
       <section class="wrap cta">
         <a class="button" href="https://github.com/buildcage/docker">
           <svg class="gh" aria-hidden="true"><use href="#gh-mark" /></svg>
-          Buildcage for Docker</a
+          Buildcage docker</a
         >
         <a class="button" href="https://github.com/buildcage/isolated-run">
           <svg class="gh" aria-hidden="true"><use href="#gh-mark" /></svg>
-          Buildcage for <code>run:</code> Steps</a
+          Buildcage isolated-run</a
         >
       </section>
     </main>
