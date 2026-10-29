@@ -308,8 +308,7 @@
 
       <section class="wrap product product--first">
         <h3>
-          <a href="https://github.com/buildcage/docker">Buildcage for Docker</a>
-          <span class="repo">buildcage/docker</span>
+          <a href="https://github.com/buildcage/docker">Buildcage docker</a>
         </h3>
         <p>
           You build a Docker image, with no Dockerfile changes. Buildcage runs as a remote driver
@@ -349,10 +348,7 @@
 
       <section class="wrap product">
         <h3>
-          <a href="https://github.com/buildcage/isolated-run"
-            >Buildcage for <code>run:</code> Steps</a
-          >
-          <span class="repo">buildcage/isolated-run</span>
+          <a href="https://github.com/buildcage/isolated-run">Buildcage isolated-run</a>
         </h3>
         <p>
           You run a command directly in a workflow step — installing dependencies, a test suite, a
@@ -519,8 +515,9 @@
           <a href="https://github.com/step-security/harden-runner">Harden-Runner</a> and
           <a href="https://github.com/bullfrogsec/bullfrog">Bullfrog</a>. Both attach one egress
           policy to the whole job, covering every step. Buildcage scopes the policy per build
-          instead: the wrapped step gets its own allowlist, but steps outside it aren't covered —
-          protecting a whole job means wrapping each step that needs it.
+          instead, giving the step that runs third-party code its own allowlist rather than the
+          union of what every step needs. Steps outside it aren't covered — protecting a whole job
+          means wrapping each step that needs it.
         </p>
 
         <div class="table-scroll">
@@ -569,7 +566,7 @@
               </tr>
               <tr>
                 <th scope="row">Also watches files and processes</th>
-                <td>Files, in <code>run:</code> Steps&nbsp;*</td>
+                <td>Files, in isolated-run&nbsp;*</td>
                 <td>Yes</td>
                 <td>No</td>
               </tr>
@@ -588,12 +585,12 @@
         </p>
 
         <p class="fine">
-          * Buildcage for <code>run:</code> Steps can record each file the step touches, with the
-          command that touched it, and never blocks an access (<code>filesystem-audit</code>,
-          experimental, above). It can also discard the step's filesystem writes, keeping only the
-          paths you list (<code>filesystem-mode: ephemeral</code>, experimental). The command still
-          writes wherever it normally would, yet what it leaves for later steps is only what you
-          named.
+          * isolated-run can record each file the step touches, with the command that touched it,
+          and never blocks an access (<code>filesystem-audit</code>, experimental, above). It can
+          also discard the step's filesystem writes, keeping only the paths you list (<code
+            >filesystem-mode: ephemeral</code
+          >, experimental). The command still writes wherever it normally would, yet what it leaves
+          for later steps is only what you named.
         </p>
 
         <p class="sub">
@@ -646,11 +643,11 @@
       <section class="wrap cta">
         <a class="button" href="https://github.com/buildcage/docker">
           <svg class="gh" aria-hidden="true"><use href="#gh-mark" /></svg>
-          Buildcage for Docker</a
+          Buildcage docker</a
         >
         <a class="button" href="https://github.com/buildcage/isolated-run">
           <svg class="gh" aria-hidden="true"><use href="#gh-mark" /></svg>
-          Buildcage for <code>run:</code> Steps</a
+          Buildcage isolated-run</a
         >
       </section>
     </main>
