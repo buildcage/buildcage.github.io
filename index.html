@@ -252,7 +252,7 @@
           That method-and-URL precision is the <b>inspect</b> engine, and it's the default: it reads
           inside TLS with a CA generated fresh for each proxy container and wired into the
           toolchain's own variables, with nothing left behind. When a tool won't trust that CA, set
-          <code>proxy_engine: universal</code> instead, which matches on the hostname without
+          <code>proxy-engine: universal</code> instead, which matches on the hostname without
           decrypting.
         </p>
       </section>
@@ -269,7 +269,7 @@
             <h3>Run once in audit mode</h3>
             <p>One line of configuration. Nothing is blocked yet.</p>
             <pre><code><i class="k">with:</i>
-  <i class="k">proxy_mode:</i> <i class="s">audit</i></code></pre>
+  <i class="k">proxy-mode:</i> <i class="s">audit</i></code></pre>
           </li>
 
           <li>
@@ -292,8 +292,8 @@
               The report carries a <em>Switch to restrict mode</em> section with your allowlist
               already filled in, built from the requests above.
             </p>
-            <pre><code><i class="k">proxy_mode:</i> <i class="s">restrict</i>
-<i class="k">allowed_url_rules:</i> <i class="p">|</i>
+            <pre><code><i class="k">proxy-mode:</i> <i class="s">restrict</i>
+<i class="k">allowed-url-rules:</i> <i class="p">|</i>
   <i class="s">GET http://deb.debian.org/**</i>
   <i class="s">GET https://registry.npmjs.org/**</i>
   <i class="s">POST https://registry.npmjs.org/-/npm/v1/security/advisories/bulk</i></code></pre>
@@ -317,8 +317,8 @@
         <pre><code><i class="p">-</i> <i class="k">name:</i> Start Buildcage in restrict mode
   <i class="k">uses:</i> <i class="a">buildcage/docker@ef2b79a3baaddc6a69c1b10a2c473a134ece2eca</i> <i class="c"># v4.4.0</i>
   <i class="k">with:</i>
-    <i class="k">proxy_mode:</i> <i class="s">restrict</i>
-    <i class="k">allowed_url_rules:</i> <i class="p">|</i>
+    <i class="k">proxy-mode:</i> <i class="s">restrict</i>
+    <i class="k">allowed-url-rules:</i> <i class="p">|</i>
       <i class="s">GET https://registry.npmjs.org/**</i>
 
 <i class="p">-</i> <i class="k">name:</i> Set up Docker Buildx
@@ -361,8 +361,8 @@
         <pre><code><i class="p">-</i> <i class="k">name:</i> Build and test with outbound restrictions
   <i class="k">uses:</i> <i class="a">buildcage/isolated-run@e17dbc9c53e03b39835b2f3e11834243d90aa183</i> <i class="c"># v2.5.0</i>
   <i class="k">with:</i>
-    <i class="k">proxy_mode:</i> <i class="s">restrict</i>
-    <i class="k">allowed_url_rules:</i> <i class="p">|</i>
+    <i class="k">proxy-mode:</i> <i class="s">restrict</i>
+    <i class="k">allowed-url-rules:</i> <i class="p">|</i>
       <i class="s">GET https://registry.npmjs.org/**</i>
     <i class="k">run:</i> <i class="p">|</i>
       <i class="s">npm ci</i>
@@ -377,17 +377,17 @@
           only <code>$GITHUB_WORKSPACE</code>, <code>$HOME</code>, <code>/tmp</code> and
           <code>$RUNNER_TEMP</code> are writable. A later step in the same job isn't isolated unless
           you wrap it too, so it can still read whatever the command wrote to those writable paths.
-          By default those writes stay on the runner (<code>filesystem_mode: persistent</code>);
-          <code>filesystem_mode: ephemeral</code>
+          By default those writes stay on the runner (<code>filesystem-mode: persistent</code>);
+          <code>filesystem-mode: ephemeral</code>
           (experimental) discards them when the step ends, keeping only the paths you name in
-          <code>write_through:</code>.
+          <code>write-through:</code>.
         </p>
 
         <figure class="dg dg-fs">
           <div class="dg-frame">
             <div class="dg-stack">
               <div class="dg-layer dg-ephemeral dg-cover-eph">
-                <span class="dg-label">filesystem_mode: ephemeral</span>
+                <span class="dg-label">filesystem-mode: ephemeral</span>
                 <span class="dg-note">writes discarded at step end, except the paths you list</span>
               </div>
               <div class="dg-layer dg-readonly dg-cover-ro">
@@ -409,7 +409,7 @@
 
           <figcaption>
             The command sees a sandbox: the system read-only, only four paths writable, and
-            <code>filesystem_mode: ephemeral</code> throws even those writes away when the step
+            <code>filesystem-mode: ephemeral</code> throws even those writes away when the step
             ends.
           </figcaption>
         </figure>
@@ -502,7 +502,7 @@
         <p class="fine">
           * Buildcage watches no file or process events. Buildcage for <code>run:</code> Steps can
           discard the step's filesystem writes instead, keeping only the paths you list (<code
-            >filesystem_mode: ephemeral</code
+            >filesystem-mode: ephemeral</code
           >, experimental).
         </p>
 

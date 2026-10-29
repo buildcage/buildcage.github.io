@@ -24,8 +24,8 @@ jobs:
       - name: Start Buildcage builder
         uses: buildcage/docker@ef2b79a3baaddc6a69c1b10a2c473a134ece2eca # v4.4.0
         with:
-          proxy_mode: restrict
-          allowed_url_rules: |
+          proxy-mode: restrict
+          allowed-url-rules: |
             # apt
             GET http://deb.debian.org/**
 
