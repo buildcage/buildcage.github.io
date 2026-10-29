@@ -307,7 +307,10 @@
       </section>
 
       <section class="wrap product product--first">
-        <h3><a href="https://github.com/buildcage/docker">Buildcage for Docker</a></h3>
+        <h3>
+          <a href="https://github.com/buildcage/docker">Buildcage for Docker</a>
+          <span class="repo">buildcage/docker</span>
+        </h3>
         <p>
           You build a Docker image, with no Dockerfile changes. Buildcage runs as a remote driver
           for Docker Buildx and routes every <code>RUN</code> step's outbound traffic through a
@@ -349,6 +352,7 @@
           <a href="https://github.com/buildcage/isolated-run"
             >Buildcage for <code>run:</code> Steps</a
           >
+          <span class="repo">buildcage/isolated-run</span>
         </h3>
         <p>
           You run a command directly in a workflow step — installing dependencies, a test suite, a
@@ -420,6 +424,90 @@
           <a
             href="https://github.com/buildcage/isolated-run/blob/main/docs/security.md#threat-model"
             >Threat model →</a
+          >
+        </p>
+
+        <p class="note">
+          Two more features go beyond the destination allowlist. Like
+          <code>filesystem-mode: ephemeral</code>, both are experimental: their behavior, inputs and
+          output may still change without following semver, so try them in a non-critical workflow
+          first.
+        </p>
+
+        <h4>AWS access key check <span class="tag">Experimental</span></h4>
+        <p>
+          Many AWS APIs, such as STS or CloudFormation, name no account in the URL. However narrowly
+          your rules allow such a URL, a compromised dependency can still call it with a key of its
+          own and reach its author's account instead of yours, where none of your IAM policies
+          apply.
+        </p>
+        <p>
+          With <code>aws-key-check: true</code>, a signed request to an AWS API passes only when the
+          proxy knows its key: the key the step was given, and the keys STS issues for roles in the
+          accounts you name in <code>allowed-aws-role-accounts</code>. It needs the
+          <b>inspect</b> engine.
+        </p>
+        <pre><code><i class="p">-</i> <i class="k">uses:</i> <i class="a">aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd</i> <i class="c"># v6.3.0</i>
+  <i class="k">with:</i>
+    <i class="k">role-to-assume:</i> <i class="s">arn:aws:iam::111111111111:role/deploy</i>
+    <i class="k">aws-region:</i> <i class="s">us-east-1</i>
+
+<i class="p">-</i> <i class="k">uses:</i> <i class="a">buildcage/isolated-run@e17dbc9c53e03b39835b2f3e11834243d90aa183</i> <i class="c"># v2.5.0</i>
+  <i class="k">with:</i>
+    <i class="k">proxy-mode:</i> <i class="s">audit</i>
+    <i class="k">aws-key-check:</i> <i class="s">true</i>
+    <i class="k">run:</i> <i class="s">aws ecs update-service --cluster app --service web --force-new-deployment</i></code></pre>
+        <figure class="shot inline">
+          <img
+            src="assets/report-aws-key-check.png"
+            alt="Report blocking an STS call signed with an unknown key, with a table of each AWS key and where it came from"
+            width="1670"
+            height="1780"
+            loading="lazy"
+          />
+          <figcaption>
+            The AWS Keys table shows where each key came from. The call signed with a key the proxy
+            never saw was blocked.
+          </figcaption>
+        </figure>
+        <p class="more">
+          <a href="https://github.com/buildcage/isolated-run/blob/main/docs/aws.md"
+            >AWS access key check →</a
+          >
+        </p>
+
+        <h4>Filesystem audit <span class="tag">Experimental</span></h4>
+        <p>
+          <code>filesystem-audit: record</code> watches the step's file access from the kernel. It
+          records each file the step reads, writes, moves, deletes, runs or changes the attributes
+          of, and summarizes them in the Job Summary. Name the accesses the step normally makes in
+          <code>expected-filesystem-rules</code>, and the summary shows only the ones outside them.
+          It records and never blocks.
+          <a
+            href="https://github.com/buildcage/isolated-run/blob/main/docs/filesystem-audit.md#what-it-needs"
+            >What it needs to run</a
+          >.
+        </p>
+        <pre><code><i class="k">with:</i>
+  <i class="k">proxy-mode:</i> <i class="s">audit</i>
+  <i class="k">filesystem-audit:</i> <i class="s">record</i>
+  <i class="k">run:</i> <i class="s">npm ci</i></code></pre>
+        <figure class="shot inline">
+          <img
+            src="assets/report-filesystem-audit.png"
+            alt="Filesystem Activity Report listing the time, access flags, command and path of each file npm ci touched"
+            width="1670"
+            height="1954"
+            loading="lazy"
+          />
+          <figcaption>
+            The Filesystem Activity Report follows the traffic report: when, how, by which command,
+            and which path.
+          </figcaption>
+        </figure>
+        <p class="more">
+          <a href="https://github.com/buildcage/isolated-run/blob/main/docs/filesystem-audit.md"
+            >Filesystem audit →</a
           >
         </p>
       </section>
@@ -502,7 +590,7 @@
         <p class="fine">
           * Buildcage for <code>run:</code> Steps can record each file the step touches, with the
           command that touched it, and never blocks an access (<code>filesystem-audit</code>,
-          experimental, below). It can also discard the step's filesystem writes, keeping only the
+          experimental, above). It can also discard the step's filesystem writes, keeping only the
           paths you list (<code>filesystem-mode: ephemeral</code>, experimental). The command still
           writes wherever it normally would, yet what it leaves for later steps is only what you
           named.
@@ -552,97 +640,6 @@
           Adopting this layer should take nothing more than adding an action. The easier it is to
           adopt, the more systems get that protection, and the more people's personal information
           stays where it belongs.
-        </p>
-      </section>
-
-      <section class="wrap">
-        <h2>Experimental</h2>
-        <p class="sub">
-          Two features of Buildcage for <code>run:</code> Steps cover more than the destination
-          allowlist. Both are experimental: their behavior, inputs and output may still change
-          without following semver, so try them in a non-critical workflow first.
-          <code>filesystem-mode: ephemeral</code>, above, is experimental too.
-        </p>
-      </section>
-
-      <section class="wrap product product--first">
-        <h3>AWS access key check</h3>
-        <p>
-          Many AWS APIs, such as STS or CloudFormation, name no account in the URL. However narrowly
-          your rules allow such a URL, a compromised dependency can still call it with a key of its
-          own and reach its author's account instead of yours, where none of your IAM policies
-          apply.
-        </p>
-        <p>
-          With <code>aws-key-check: true</code>, a signed request to an AWS API passes only when the
-          proxy knows its key: the key the step was given, and the keys STS issues for roles in the
-          accounts you name in <code>allowed-aws-role-accounts</code>. It needs the
-          <b>inspect</b> engine.
-        </p>
-        <pre><code><i class="p">-</i> <i class="k">uses:</i> <i class="a">aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd</i> <i class="c"># v6.3.0</i>
-  <i class="k">with:</i>
-    <i class="k">role-to-assume:</i> <i class="s">arn:aws:iam::111111111111:role/deploy</i>
-    <i class="k">aws-region:</i> <i class="s">us-east-1</i>
-
-<i class="p">-</i> <i class="k">uses:</i> <i class="a">buildcage/isolated-run@e17dbc9c53e03b39835b2f3e11834243d90aa183</i> <i class="c"># v2.5.0</i>
-  <i class="k">with:</i>
-    <i class="k">proxy-mode:</i> <i class="s">audit</i>
-    <i class="k">aws-key-check:</i> <i class="s">true</i>
-    <i class="k">run:</i> <i class="s">aws ecs update-service --cluster app --service web --force-new-deployment</i></code></pre>
-        <figure class="shot inline">
-          <img
-            src="assets/report-aws-key-check.png"
-            alt="Report blocking an STS call signed with an unknown key, with a table of each AWS key and where it came from"
-            width="1670"
-            height="1780"
-            loading="lazy"
-          />
-          <figcaption>
-            The AWS Keys table shows where each key came from. The call signed with a key the proxy
-            never saw was blocked.
-          </figcaption>
-        </figure>
-        <p class="more">
-          <a href="https://github.com/buildcage/isolated-run/blob/main/docs/aws.md"
-            >AWS access key check →</a
-          >
-        </p>
-      </section>
-
-      <section class="wrap product">
-        <h3>Filesystem audit</h3>
-        <p>
-          <code>filesystem-audit: record</code> watches the step's file access from the kernel. It
-          records each file the step reads, writes, moves, deletes, runs or changes the attributes
-          of, and summarizes them in the Job Summary. Name the accesses the step normally makes in
-          <code>expected-filesystem-rules</code>, and the summary shows only the ones outside them.
-          It records and never blocks.
-          <a
-            href="https://github.com/buildcage/isolated-run/blob/main/docs/filesystem-audit.md#what-it-needs"
-            >What it needs to run</a
-          >.
-        </p>
-        <pre><code><i class="k">with:</i>
-  <i class="k">proxy-mode:</i> <i class="s">audit</i>
-  <i class="k">filesystem-audit:</i> <i class="s">record</i>
-  <i class="k">run:</i> <i class="s">npm ci</i></code></pre>
-        <figure class="shot inline">
-          <img
-            src="assets/report-filesystem-audit.png"
-            alt="Filesystem Activity Report listing the time, access flags, command and path of each file npm ci touched"
-            width="1670"
-            height="1954"
-            loading="lazy"
-          />
-          <figcaption>
-            The Filesystem Activity Report follows the traffic report: when, how, by which command,
-            and which path.
-          </figcaption>
-        </figure>
-        <p class="more">
-          <a href="https://github.com/buildcage/isolated-run/blob/main/docs/filesystem-audit.md"
-            >Filesystem audit →</a
-          >
         </p>
       </section>
 

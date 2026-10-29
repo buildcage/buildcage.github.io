@@ -397,6 +397,42 @@ h3 a:hover {
   text-decoration: underline;
 }
 
+/* The repository name is what `uses:` takes. */
+h3 .repo {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75em;
+  font-weight: 400;
+  margin-left: 0.4rem;
+  white-space: nowrap;
+}
+
+h4 {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.35;
+  margin: 2.5rem 0 0.6rem;
+}
+
+.note + h4 {
+  margin-top: 1.5rem;
+}
+
+.tag {
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  margin-left: 0.4rem;
+  padding: 0.1rem 0.5rem;
+  text-transform: uppercase;
+  vertical-align: 0.15em;
+}
+
 p {
   margin: 0 0 1rem;
 }
