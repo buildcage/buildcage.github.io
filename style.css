@@ -397,6 +397,11 @@ h3 a:hover {
   text-decoration: underline;
 }
 
+/* A sub-heading that follows prose needs room to start a topic of its own. */
+section > p + h3 {
+  margin-top: 2.5rem;
+}
+
 h4 {
   font-family: var(--font-head);
   font-size: 1.05rem;
