@@ -124,13 +124,6 @@ export default defineConfig({
         command: "vp build",
         dependsOn: ["stage:demo"],
       },
-
-      // Replaces the publish branch with a single parentless commit of dist/.
-      publish: {
-        command: "./scripts/publish.sh",
-        dependsOn: ["build"],
-        cache: false,
-      },
     },
   },
 });

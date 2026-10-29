@@ -5,12 +5,19 @@ The landing page for the [Buildcage](https://github.com/buildcage) organization,
 
 The page is plain HTML and CSS, with a few lines of inline JavaScript for the click-to-play video.
 
-## Branches
+## Deploying
 
-| Branch    | Contents                                                   |
-| --------- | ---------------------------------------------------------- |
-| `main`    | Source. Authored files only — no rendered video or poster  |
-| `publish` | What Pages serves: the site files plus the rendered assets |
+Run the **Deploy site** workflow (`.github/workflows/deploy.yml`) from the Actions tab, or:
+
+```sh
+gh workflow run deploy.yml -R buildcage/buildcage.github.io
+```
+
+It builds `demo/Dockerfile` under Buildcage, which renders the video in a pinned Linux environment
+and builds the page into `dist/`, then deploys that to Pages. Pushing to `main` does **not** deploy.
+
+`main` holds only authored files, with no rendered video or poster. To roll the site back, run the
+workflow on a branch or tag at the older commit.
 
 The hero video is the one generated part of the site, rendered from the Remotion project in
 [`demo/`](#demo-video). It ships as **two cuts** — 16:9 and 4:3 — and the stylesheet shows whichever
@@ -18,14 +25,7 @@ suits the screen: wide gets the widescreen cut, and below 900px the 4:3 one, whi
 same width and so sets its type larger. Both are `preload="none"`, so the hidden one costs nothing.
 
 At ~2.4 MB per cut they stay out of `main` entirely — otherwise every version would sit in the
-history for good. `publish` is rebuilt as a single parentless commit each time, so it doesn't
-accumulate them either.
-
-Nothing is lost by `publish` having no history: it's reproducible from `main`, and each commit
-message records the source commit it was built from. To roll the site back, check out the older
-`main`, re-render, and publish again.
-
-> Pages is configured to deploy from the `publish` branch. Pushing to `main` does **not** deploy.
+history for good. The deploy renders them each time.
 
 ## Commands
 
@@ -34,8 +34,6 @@ vp install          # once
 vp dev              # dev server with HMR
 vp run build        # render the video if stale, then build the page into dist/
 vp preview          # serve dist/ as Pages will
-vp run publish      # rebuild the publish branch from dist/
-git push --force origin publish
 ```
 
 `vp run build` is the real build: it depends on the video render, so a fresh clone produces the
@@ -44,10 +42,6 @@ whole site with one command. Plain `vp build` runs Vite alone and skips the rend
 
 The render is cached on `demo/src/**`, so it only actually runs when the video's source changed; a
 text-only rebuild is near-instant.
-
-`vp run publish` refuses to run with uncommitted changes, so the recorded source commit always
-describes what was actually published. It only writes the local branch; pushing is deliberate and
-separate.
 
 ### Why there's a build step
 
