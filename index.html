@@ -424,7 +424,7 @@
         </p>
 
         <p class="note">
-          Two more features go beyond the destination allowlist. Like
+          Two more features check something other than destinations. Like
           <code>filesystem-mode: ephemeral</code>, both are experimental: their behavior, inputs and
           output may still change without following semver, so try them in a non-critical workflow
           first.
@@ -497,8 +497,8 @@
             loading="lazy"
           />
           <figcaption>
-            The Filesystem Activity Report follows the traffic report: when, how, by which command,
-            and which path.
+            The Filesystem Activity Report follows the traffic report and lists each path with when
+            it was touched, how, and by which command.
           </figcaption>
         </figure>
         <p class="more">
@@ -514,9 +514,9 @@
           The closest tools are
           <a href="https://github.com/step-security/harden-runner">Harden-Runner</a> and
           <a href="https://github.com/bullfrogsec/bullfrog">Bullfrog</a>. Both attach one egress
-          policy to the whole job, covering every step. Buildcage sets the policy per step instead,
-          by design, so each step can be held to the narrowest allowlist it needs. Steps it doesn't
-          wrap aren't covered, so protecting a whole job means wrapping each step that needs it.
+          policy to the whole job, covering every step. Buildcage is designed to set the policy per
+          step instead, so each step can be held to the narrowest allowlist it needs. Steps it
+          doesn't wrap aren't covered: to protect a whole job, wrap each step that needs it.
         </p>
 
         <div class="table-scroll">
@@ -588,8 +588,8 @@
           and never blocks an access (<code>filesystem-audit</code>, experimental, above). It can
           also discard the step's filesystem writes, keeping only the paths you list (<code
             >filesystem-mode: ephemeral</code
-          >, experimental). The command still writes wherever it normally would, yet what it leaves
-          for later steps is only what you named.
+          >, experimental). The command still writes wherever it normally would, but only what you
+          named is left for later steps.
         </p>
 
         <h3>GitHub's native egress firewall</h3>
@@ -600,10 +600,10 @@
           >
           as of October 2026): opt a job into a firewall-enabled runner image and its traffic is
           inspected outside the runner VM, in log or enforce mode, from one policy file per
-          repository. A workflow that gains root inside the runner cannot switch that off, and
-          Buildcage does not try to replace it. Buildcage works at a different scope: a single build
-          or step, with rules that can name a method and a URL, on any Linux runner with Docker,
-          self-hosted included.
+          repository. A workflow that gains root inside the runner cannot switch that off. Buildcage
+          does not try to replace it and works at a different scope: a single build or step, with
+          rules that can name a method and a URL, on any Linux runner with Docker, self-hosted
+          included.
         </p>
       </section>
 
