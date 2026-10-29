@@ -514,10 +514,9 @@
           The closest tools are
           <a href="https://github.com/step-security/harden-runner">Harden-Runner</a> and
           <a href="https://github.com/bullfrogsec/bullfrog">Bullfrog</a>. Both attach one egress
-          policy to the whole job, covering every step. Buildcage scopes the policy per build
-          instead, giving the step that runs third-party code its own allowlist rather than the
-          union of what every step needs. Steps outside it aren't covered — protecting a whole job
-          means wrapping each step that needs it.
+          policy to the whole job, covering every step. Buildcage sets the policy per step instead,
+          by design, so each step can be held to the narrowest allowlist it needs. Steps it doesn't
+          wrap aren't covered, so protecting a whole job means wrapping each step that needs it.
         </p>
 
         <div class="table-scroll">
@@ -595,17 +594,16 @@
 
         <h3>GitHub's native egress firewall</h3>
         <p class="sub">
-          GitHub is building an egress firewall into the runners themselves (<a
+          GitHub is building an egress firewall into its hosted Linux runners (<a
             href="https://github.com/github-early-access/actions-native-egress-firewall"
             >technical preview</a
           >
-          as of September 2026): opt a job into a firewall-enabled runner image and its traffic is
+          as of October 2026): opt a job into a firewall-enabled runner image and its traffic is
           inspected outside the runner VM, in log or enforce mode, from one policy file per
           repository. A workflow that gains root inside the runner cannot switch that off, and
-          Buildcage does not try to replace it. But one policy for the whole run is one allowlist
-          for every step in it. Buildcage scopes its allowlist to a single build or a single step,
-          where a rule can name a method and a URL rather than only a host, and it runs on any Linux
-          runner with Docker, self-hosted included.
+          Buildcage does not try to replace it. Buildcage works at a different scope: a single build
+          or step, with rules that can name a method and a URL, on any Linux runner with Docker,
+          self-hosted included.
         </p>
       </section>
 
