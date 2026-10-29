@@ -22,7 +22,7 @@ jobs:
       # The render fetches packages, a Chrome build and fonts; Buildcage keeps
       # the image build to exactly those.
       - name: Start Buildcage builder
-        uses: buildcage/docker@85cfae351eda1cb31743111246e5b291ed3556cb # v4.3.1
+        uses: buildcage/docker@ef2b79a3baaddc6a69c1b10a2c473a134ece2eca # v4.4.0
         with:
           proxy_mode: restrict
           allowed_url_rules: |
@@ -62,7 +62,7 @@ jobs:
 
       - name: Show Buildcage report
         if: always()
-        uses: buildcage/docker/report@85cfae351eda1cb31743111246e5b291ed3556cb # v4.3.1
+        uses: buildcage/docker/report@ef2b79a3baaddc6a69c1b10a2c473a134ece2eca # v4.4.0
 
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
