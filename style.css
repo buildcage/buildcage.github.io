@@ -647,6 +647,10 @@ p {
   border-color: var(--rule);
 }
 
+.product .shot.inline {
+  margin-bottom: 1.25rem;
+}
+
 /* ---- Comparison table ---- */
 
 .table-scroll {

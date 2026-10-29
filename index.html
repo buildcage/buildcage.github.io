@@ -589,6 +589,19 @@
     <i class="k">proxy-mode:</i> <i class="s">audit</i>
     <i class="k">aws-key-check:</i> <i class="s">true</i>
     <i class="k">run:</i> <i class="s">aws ecs update-service --cluster app --service web --force-new-deployment</i></code></pre>
+        <figure class="shot inline">
+          <img
+            src="assets/report-aws-key-check.png"
+            alt="Report blocking an STS call signed with an unknown key, with a table of each AWS key and where it came from"
+            width="1670"
+            height="1780"
+            loading="lazy"
+          />
+          <figcaption>
+            The AWS Keys table shows where each key came from. The call signed with a key the proxy
+            never saw was blocked.
+          </figcaption>
+        </figure>
         <p class="more">
           <a href="https://github.com/buildcage/isolated-run/blob/main/docs/aws.md"
             >AWS access key check →</a
@@ -613,6 +626,19 @@
   <i class="k">proxy-mode:</i> <i class="s">audit</i>
   <i class="k">filesystem-audit:</i> <i class="s">record</i>
   <i class="k">run:</i> <i class="s">npm ci</i></code></pre>
+        <figure class="shot inline">
+          <img
+            src="assets/report-filesystem-audit.png"
+            alt="Filesystem Activity Report listing the time, access flags, command and path of each file npm ci touched"
+            width="1670"
+            height="1954"
+            loading="lazy"
+          />
+          <figcaption>
+            The Filesystem Activity Report follows the traffic report: when, how, by which command,
+            and which path.
+          </figcaption>
+        </figure>
         <p class="more">
           <a href="https://github.com/buildcage/isolated-run/blob/main/docs/filesystem-audit.md"
             >Filesystem audit →</a
