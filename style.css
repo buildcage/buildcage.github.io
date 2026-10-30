@@ -838,6 +838,16 @@ pre code {
   align-items: end;
 }
 
+/* Side by side, the two bands share one height even when a narrow viewport
+   wraps one label, with each label centered in its band. */
+.dg-cover-ro,
+.dg-cover-w {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .dg-cover-ro {
   grid-column: 1 / 5;
   grid-row: 2;
